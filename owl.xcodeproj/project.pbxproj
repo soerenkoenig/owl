@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		28175DB41F91FD0B004ECB87 /* template_utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28175DB21F91FD0B004ECB87 /* template_utils.cpp */; };
+		28175DB51F91FD0B004ECB87 /* binary_serialization.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28175DB31F91FD0B004ECB87 /* binary_serialization.cpp */; };
 		2883C2561F91BAFA007DDB3C /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2883C2551F91BAFA007DDB3C /* main.cpp */; };
 		2883C25B1F91BB33007DDB3C /* libowl.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2883C2411F91BA7F007DDB3C /* libowl.dylib */; };
 		288A6F971F91BE4400783E52 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 288A6F961F91BE4400783E52 /* main.cpp */; };
@@ -36,7 +38,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		28175DAC1F91FC0E004ECB87 /* owl */ = {isa = PBXFileReference; lastKnownFileType = folder; path = owl; sourceTree = "<group>"; };
+		28175DB21F91FD0B004ECB87 /* template_utils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = template_utils.cpp; sourceTree = "<group>"; };
+		28175DB31F91FD0B004ECB87 /* binary_serialization.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = binary_serialization.cpp; sourceTree = "<group>"; };
 		2883C2411F91BA7F007DDB3C /* libowl.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libowl.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		2883C2531F91BAFA007DDB3C /* test */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = test; sourceTree = BUILT_PRODUCTS_DIR; };
 		2883C2551F91BAFA007DDB3C /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
@@ -81,6 +84,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		28175DAD1F91FC83004ECB87 /* owl */ = {
+			isa = PBXGroup;
+			children = (
+				28175DB31F91FD0B004ECB87 /* binary_serialization.cpp */,
+				28175DB21F91FD0B004ECB87 /* template_utils.cpp */,
+			);
+			path = owl;
+			sourceTree = "<group>";
+		};
 		2883C2381F91BA7F007DDB3C = {
 			isa = PBXGroup;
 			children = (
@@ -117,7 +129,7 @@
 		2883C2541F91BAFA007DDB3C /* test */ = {
 			isa = PBXGroup;
 			children = (
-				28175DAC1F91FC0E004ECB87 /* owl */,
+				28175DAD1F91FC83004ECB87 /* owl */,
 				2883C2551F91BAFA007DDB3C /* main.cpp */,
 			);
 			path = test;
@@ -302,6 +314,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				2883C2561F91BAFA007DDB3C /* main.cpp in Sources */,
+				28175DB41F91FD0B004ECB87 /* template_utils.cpp in Sources */,
+				28175DB51F91FD0B004ECB87 /* binary_serialization.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
