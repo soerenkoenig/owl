@@ -88,8 +88,7 @@ namespace owl
   struct is_unordered_multimap : std::false_type {};
 
   template <typename... Ts>
-  struct is_unordered_multimap<std::unordered_multimap<Ts...>>
-  : public std::true_type {};
+  struct is_unordered_multimap<std::unordered_multimap<Ts...>> : public std::true_type {};
 
   template <typename T>
   struct is_set :  std::false_type {};
@@ -113,39 +112,26 @@ namespace owl
   struct is_unordered_multiset :  std::false_type {};
 
   template <typename... Ts>
-  struct is_unordered_multiset<std::unordered_multiset<Ts...>>
-  : std::true_type {};
-
-
+  struct is_unordered_multiset<std::unordered_multiset<Ts...>> : std::true_type {};
 
   template <typename T>
   using is_continuous_container =
-  std::conditional_t< is_array<T>::value || is_vector<T>::value || is_basic_string<T>::value,
-  std::true_type, std::false_type>;
-
+  std::conditional_t< is_array<T>::value || is_vector<T>::value || is_basic_string<T>::value, std::true_type, std::false_type>;
 
   template <typename T>
-  using is_sequence_container =
-  std::conditional_t<is_deque<T>::value || is_forward_list<T>::value || is_list<T>::value ||
-  is_continuous_container<T>::value, std::true_type, std::false_type>;
+  using is_sequence_container = std::conditional_t<is_deque<T>::value || is_forward_list<T>::value || is_list<T>::value || is_continuous_container<T>::value, std::true_type, std::false_type>;
 
   template <typename T>
-  using is_unordered_associative_container = std::conditional_t<
-  is_unordered_map<T>::value || is_unordered_multimap<T>::value ||
-  is_unordered_set<T>::value || is_unordered_multiset<T>::value,
-  std::true_type, std::false_type>;
+  using is_unordered_associative_container = std::conditional_t< is_unordered_map<T>::value || is_unordered_multimap<T>::value || is_unordered_set<T>::value || is_unordered_multiset<T>::value,
+    std::true_type, std::false_type>;
 
   template <typename T>
-  using is_ordered_associative_container =
-  std::conditional_t<is_map<T>::value || is_multimap<T>::value ||
-  is_set<T>::value || is_multiset<T>::value,
-  std::true_type, std::false_type>;
+  using is_ordered_associative_container = std::conditional_t<is_map<T>::value || is_multimap<T>::value ||
+    is_set<T>::value || is_multiset<T>::value, std::true_type, std::false_type>;
 
   template <typename T>
-  using is_associative_container =
-  std::conditional_t<is_ordered_associative_container<T>::value ||
-  is_unordered_associative_container<T>::value,
-  std::true_type, std::false_type>;
+  using is_associative_container = std::conditional_t<is_ordered_associative_container<T>::value ||
+    is_unordered_associative_container<T>::value, std::true_type, std::false_type>;
 
   template <typename T>
   struct is_container : std::integral_constant<bool, has_begin<T>::value && has_end<T>::value> {};
