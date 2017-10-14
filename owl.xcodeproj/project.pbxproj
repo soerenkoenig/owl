@@ -51,6 +51,8 @@
 		288A6FA61F91CA9E00783E52 /* binary_serialization.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = binary_serialization.cpp; sourceTree = "<group>"; };
 		288A6FA91F91CD9E00783E52 /* LICENSE.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE.txt; sourceTree = "<group>"; };
 		288A6FAA1F91CDDD00783E52 /* LICENSE.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE.txt; sourceTree = "<group>"; };
+		288A6FAB1F91D83C00783E52 /* template_utils.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = template_utils.hpp; sourceTree = "<group>"; };
+		288A6FAD1F91D97B00783E52 /* constants.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = constants.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -105,8 +107,10 @@
 		2883C2431F91BA7F007DDB3C /* owl */ = {
 			isa = PBXGroup;
 			children = (
+				288A6FAC1F91D96200783E52 /* math */,
 				288A6F9F1F91C18500783E52 /* binary_serialization.hpp */,
 				288A6FA01F91C21000783E52 /* type_utils.hpp */,
+				288A6FAB1F91D83C00783E52 /* template_utils.hpp */,
 			);
 			path = owl;
 			sourceTree = "<group>";
@@ -179,6 +183,14 @@
 				288A6FA61F91CA9E00783E52 /* binary_serialization.cpp */,
 			);
 			path = owl;
+			sourceTree = "<group>";
+		};
+		288A6FAC1F91D96200783E52 /* math */ = {
+			isa = PBXGroup;
+			children = (
+				288A6FAD1F91D97B00783E52 /* constants.hpp */,
+			);
+			path = math;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
