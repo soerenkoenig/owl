@@ -1,6 +1,6 @@
 #include <sstream>
 
-#include "owl/binary_serialization.hpp"
+#include "owl/utils/binary_serialization.hpp"
 #include "catch/catch.hpp"
 
 namespace test
@@ -12,12 +12,12 @@ namespace test
   
     bool write_binary(std::ostream& out) const
     {
-      return owl::write_binary(out, std::tie(name,age));
+      return owl::utils::write_binary(out, std::tie(name,age));
     }
   
     bool read_binary(std::istream& in)
     {
-      return owl::read_binary(in, std::tie(name,age));
+      return owl::utils::read_binary(in, std::tie(name,age));
     }
   
     bool operator==(const person& other) const
@@ -29,7 +29,7 @@ namespace test
   TEST_CASE( "binary_serialization", "[]" )
   {
     std::stringstream  str;
-    using namespace owl;
+    using namespace owl::utils;
     std::set<int> name1 = {1,2,3,4,5,6,7,8};
     std::string name = u8"hello world";
   

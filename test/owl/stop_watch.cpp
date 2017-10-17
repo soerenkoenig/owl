@@ -13,7 +13,7 @@ namespace test
     using namespace std::chrono_literals;
     stop_watch s(false);
     std::this_thread::sleep_for(2s);
-    double duration = s.toc();
+    double duration = s.stop();
   
     CHECK(Approx(duration).epsilon(0.01) == 2.0);
   }

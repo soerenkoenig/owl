@@ -1,5 +1,5 @@
 #include "benchpress/benchpress.hpp"
-#include "owl/binary_serialization.hpp"
+#include "owl/utils/binary_serialization.hpp"
 #include <array>
 
 namespace benchpress
@@ -13,7 +13,7 @@ namespace benchpress
     ctx->reset_timer();
     for (size_t i = 0; i < ctx->num_iterations(); ++i)
     {
-      owl::write_binary(ss, data);
+      owl::utils::write_binary(ss, data);
     }
   })
   
@@ -25,7 +25,7 @@ namespace benchpress
     ctx->reset_timer();
     for (size_t i = 0; i < ctx->num_iterations(); ++i)
     {
-      owl::write_binary(ss, data);
+      owl::utils::write_binary(ss, data);
     }
   }))
 

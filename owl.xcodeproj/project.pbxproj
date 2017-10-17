@@ -105,6 +105,9 @@
 			children = (
 				28175DB71F95BD14004ECB87 /* stop_watch.cpp */,
 				28175DB81F95BD14004ECB87 /* stop_watch.hpp */,
+				288A6FAB1F91D83C00783E52 /* template_utils.hpp */,
+				288A6FA01F91C21000783E52 /* type_utils.hpp */,
+				288A6F9F1F91C18500783E52 /* binary_serialization.hpp */,
 			);
 			path = utils;
 			sourceTree = "<group>";
@@ -136,9 +139,6 @@
 			children = (
 				28175DB61F95BCE1004ECB87 /* utils */,
 				288A6FAC1F91D96200783E52 /* math */,
-				288A6F9F1F91C18500783E52 /* binary_serialization.hpp */,
-				288A6FA01F91C21000783E52 /* type_utils.hpp */,
-				288A6FAB1F91D83C00783E52 /* template_utils.hpp */,
 			);
 			path = owl;
 			sourceTree = "<group>";

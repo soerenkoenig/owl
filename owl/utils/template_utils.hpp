@@ -52,22 +52,25 @@ public:                                                                         
 
 namespace owl
 {
-  template<typename T>
-  struct identity
+  namespace utils
   {
-    typedef T type;
-  };
-  
-  //check if T is same as one of given type list
-  template<typename T, typename... Rest>
-  struct is_one_of : std::false_type {};
+    template<typename T>
+    struct identity
+    {
+      typedef T type;
+    };
+    
+    //check if T is same as one of given type list
+    template<typename T, typename... Rest>
+    struct is_one_of : std::false_type {};
 
-  template<typename T, typename First>
-  struct is_one_of<T, First> : std::is_same<T, First> {};
+    template<typename T, typename First>
+    struct is_one_of<T, First> : std::is_same<T, First> {};
 
-  template<typename T, typename First, typename... Rest>
-  struct is_one_of<T, First, Rest...>
-    : std::integral_constant<bool, std::is_same<T, First>::value
-      || is_one_of<T, Rest...>::value>
-  {};
+    template<typename T, typename First, typename... Rest>
+    struct is_one_of<T, First, Rest...>
+      : std::integral_constant<bool, std::is_same<T, First>::value
+        || is_one_of<T, Rest...>::value>
+    {};
+  }
 }

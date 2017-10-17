@@ -19,21 +19,22 @@ namespace owl
     class stop_watch
     {
     public:
-        stop_watch(bool verbose = true);
+      stop_watch(bool verbose = true);
     
-        ~stop_watch();
+      ~stop_watch();
     
-        void tic();
+      void start();
     
-        double toc(std::ostream& out = std::cout) const;
+      double stop(std::ostream& out = std::cout) const;
 
     private:
-        using clock_type = std::chrono::high_resolution_clock ;
-        using second_type = std::chrono::duration<double, std::ratio<1> >;
-        using milli_second_type = std::chrono::duration<double, std::milli >;
+      using clock_type = std::chrono::high_resolution_clock;
+     
+      using time_point = std::chrono::time_point<clock_type>;
     
-        std::chrono::time_point<clock_type> _begin;
-        bool _verbose;
+      time_point _begin;
+       
+      bool _verbose;
     };
   }
 }
