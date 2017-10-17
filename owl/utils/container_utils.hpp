@@ -20,6 +20,7 @@
 #include <forward_list>
 #include <deque>
 #include <string>
+#include <iterator>
 
 #include "owl/utils/template_utils.hpp"
 
@@ -27,11 +28,11 @@ namespace owl
 {
   namespace utils
   {
-    DEFINE_HAS_MEMBER(has_const_iterator, T::const_iterator, typename T::const_iterator)
+    DEFINE_HAS_MEMBER(has_const_iterator, T::const_iterator, typename T::const_iterator);
+    DEFINE_HAS_MEMBER(has_iterator, T::iterator, typename T::iterator);
     DEFINE_HAS_SIGNATURE(has_begin, T::begin, typename T::const_iterator (T::*)() const);
     DEFINE_HAS_SIGNATURE(has_end, T::end, typename T::const_iterator (T::*)() const);
-    DEFINE_HAS_SIGNATURE(has_resize, T::resize, void (T::*)(typename T::size_type));
-    
+  
     template <typename T>
     struct is_basic_string :  std::false_type {};
 
@@ -141,10 +142,27 @@ namespace owl
     template <typename T, std::size_t N>
     struct is_container<T[N]> : std::true_type {};
 
-    template <std::size_t N>
-    struct is_container<char[N]> : std::false_type {};
-
     template <typename T>
     struct is_container<std::valarray<T>> : std::true_type {};
+  
+    template <typename Container, typename = std::enable_if_t<is_container<Container>::value> >
+    struct container_traits
+    {
+      typedef decltype(std::begin(std::declval<Container>())) iterator;
+      typedef decltype(std::begin(std::declval<const Container>())) const_iterator;
+      typedef decltype(std::size(std::declval<const Container>())) size_type;
+      typedef typename std::iterator_traits<iterator>::difference_type difference_type;
+      typedef typename std::iterator_traits<iterator>::value_type value_type;
+    };
+  
+    template <typename T, std::size_t N >
+    struct container_traits<T[N], void>
+    {
+      typedef T* iterator;
+      typedef const T* const_iterator;
+      typedef std::size_t size_type;
+      typedef std::ptrdiff_t difference_type;
+      typedef T value_type;
+    };
   }
 }
