@@ -61,6 +61,8 @@
 		288A6FAA1F91CDDD00783E52 /* LICENSE.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE.txt; sourceTree = "<group>"; };
 		288A6FAB1F91D83C00783E52 /* template_utils.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = template_utils.hpp; sourceTree = "<group>"; };
 		288A6FAD1F91D97B00783E52 /* constants.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = constants.hpp; sourceTree = "<group>"; };
+		D1604BB21F95FED5007ECD3B /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		D1FC096A1F964DEE00320C13 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -115,6 +117,8 @@
 		2883C2381F91BA7F007DDB3C = {
 			isa = PBXGroup;
 			children = (
+				D1FC096A1F964DEE00320C13 /* .gitignore */,
+				D1604BB21F95FED5007ECD3B /* README.md */,
 				2883C25C1F91BCE6007DDB3C /* thirdparty */,
 				2883C2431F91BA7F007DDB3C /* owl */,
 				2883C2541F91BAFA007DDB3C /* test */,
