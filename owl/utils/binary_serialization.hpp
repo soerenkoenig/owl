@@ -48,12 +48,41 @@ namespace owl
       return binary_serialization<T>::read(in, value);
     }
     
-    DEFINE_HAS_SIGNATURE(has_write_binary, T::write_binary, bool (T::*)(std::ostream&) const);
-    DEFINE_HAS_SIGNATURE(has_read_binary, T::read_binary, bool (T::*)(std::istream&));
+    namespace detail
+    {
+      DEFINE_HAS_SIGNATURE(has_size_from_type, T::size, std::size_t (*)());
+      DEFINE_HAS_SIGNATURE(has_size_from_instance_lref, T::size, std::size_t (*)(const typename T::value_type&));
+      DEFINE_HAS_SIGNATURE(has_size_from_instance_rref, T::size, std::size_t (*)(typename T::value_type&&));
+      template <typename T>
+      using has_size_from_instance = std::conditional_t<has_size_from_instance_lref<T>::value || has_size_from_instance_rref<T>::value,std::true_type, std::false_type>;
+    }
     
     template <typename T>
-    struct binary_serialization<T, std::enable_if_t<has_write_binary<T>::value && has_read_binary<T>::value>>
+    std::size_t size_binary(T&& value)
     {
+      static_assert(detail::has_size_from_instance<T>::value);
+      return binary_serialization<T>::size(std::forward<T>(value));
+    }
+    
+    template <typename T>
+    constexpr std::size_t size_binary()
+    {
+      static_assert(detail::has_size_from_type<T>::value);
+      return binary_serialization<T>::size();
+    }
+    
+    
+    namespace detail
+    {
+      DEFINE_HAS_SIGNATURE(has_write_binary, T::write_binary, bool (T::*)(std::ostream&) const);
+      DEFINE_HAS_SIGNATURE(has_read_binary, T::read_binary, bool (T::*)(std::istream&));
+    }
+    
+    template <typename T>
+    struct binary_serialization<T, std::enable_if_t<detail::has_write_binary<T>::value && detail::has_read_binary<T>::value>>
+    {
+      using value_type = T;
+      
       constexpr static bool is_serializable = true;
     
       static bool read(std::istream& in, T& value)
@@ -73,16 +102,21 @@ namespace owl
       using value_type = T;
     
       constexpr static bool is_serializable = true;
+      
+      constexpr static std::size_t size()
+      {
+        return sizeof(value_type);
+      }
     
       static bool read(std::istream& in, value_type& value)
       {
-        in.read(reinterpret_cast<char*>(&value), sizeof(value_type));
+        in.read(reinterpret_cast<char*>(&value), size());
         return in.good();
       }
     
       static bool write(std::ostream& out, const value_type& value)
       {
-        out.write(reinterpret_cast<const char*>(&value), sizeof(value_type));
+        out.write(reinterpret_cast<const char*>(&value), size());
         return out.good();
       }
     };
@@ -91,6 +125,11 @@ namespace owl
     struct binary_serialization<bool, void>
     {
       constexpr static bool is_serializable = true;
+      
+      constexpr static std::size_t size()
+      {
+        return 1;
+      }
     
       static bool read(std::istream& in, bool& value)
       {

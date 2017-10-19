@@ -9,6 +9,7 @@ namespace test
   {
     using namespace owl::math;
   
+    matrix44f::identity();
     auto I = matrix44f::identity();
     auto V = vector4f{1,2,3,4};
     V = I*V;
