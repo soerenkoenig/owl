@@ -4,29 +4,59 @@ namespace owl
 {
   namespace utils
   {
-    stop_watch::stop_watch(bool verbose /* = true */)
-      : _begin(clock_type::now()), _verbose(verbose) {}
-    
-    stop_watch::~stop_watch()
+    stop_watch::stop_watch()
     {
-      stop();
+      reset();
+    }
+    
+    void stop_watch::reset()
+    {
+      _elapsed_time = duration::zero();
+      _running = false;
+    }
+    
+    void stop_watch::restart()
+    {
+      _elapsed_time = duration::zero();
+      start();
+    }
+    
+    double stop_watch::current_elapsed_time() const
+    {
+      return current_elapsed_time(std::ratio<1>{});
+    }
+    
+    double stop_watch::elapsed_time() const
+    {
+      return elapsed_time(std::ratio<1>{});
+    }
+    
+    stop_watch::duration stop_watch::current_elapsed_duration() const
+    {
+      return is_running() ? clock_type::now() - _last_start : duration::zero();
+    }
+    
+    stop_watch::duration stop_watch::elapsed_duration() const
+    {
+      return is_running() ? _elapsed_time + current_elapsed_duration() : _elapsed_time;
     }
     
     void stop_watch::start()
     {
-        _begin = clock_type::now();
+      _running = true;
+      _last_start = clock_type::now();
     }
     
-    double stop_watch::stop(std::ostream& out /* = std::cout */) const
+    void stop_watch::stop()
     {
-      using second_type = std::chrono::duration<double, std::ratio<1>>;
-    
-      double elapsed = std::chrono::duration_cast<second_type>(clock_type::now() - _begin).count();
-  
-      if(_verbose)
-          out << "elapsed time: "<< elapsed << "s" << std::endl;
-        
-      return elapsed;
+      _elapsed_time += clock_type::now() - _last_start;
+      _running = false;
     }
+    
+    bool stop_watch::is_running() const
+    {
+      return _running;
+    }
+
   }
 }
