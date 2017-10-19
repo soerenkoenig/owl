@@ -5,7 +5,7 @@
 namespace test
 {
 
-  TEST_CASE( "matrix", "[]" )
+  TEST_CASE( "matrix", "[math]" )
   {
     using namespace owl::math;
   

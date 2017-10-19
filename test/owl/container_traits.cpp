@@ -5,7 +5,7 @@
 namespace test
 {
 
-  TEST_CASE( "is_range", "[]" )
+  TEST_CASE( "is_range", "[utils]" )
   {
     using namespace owl::utils;
     CHECK(is_container<std::vector<int>>::value);

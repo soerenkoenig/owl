@@ -7,7 +7,7 @@
 namespace test
 {
 
-  TEST_CASE( "stop_watch", "[]" )
+  TEST_CASE( "stop_watch", "[utils]" )
   {
     using namespace owl::utils;
     using namespace std::chrono_literals;

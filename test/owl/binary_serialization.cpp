@@ -26,7 +26,7 @@ namespace test
     }
   };
 
-  TEST_CASE( "binary_serialization", "[]" )
+  TEST_CASE( "binary_serialization", "[utils]" )
   {
     std::stringstream  str;
     using namespace owl::utils;
