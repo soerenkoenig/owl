@@ -23,11 +23,17 @@ namespace owl
     class stop_watch
     {
     public:
-      
+      /*!
+        clock type of internal clock used to do time measurements
+       */
       using clock_type = std::chrono::high_resolution_clock;
-      
+      /*!
+       duration type of internal clock
+       */
       using duration = clock_type::duration;
-      
+      /*!
+       timepoint type of internal clock
+       */
       using time_point = clock_type::time_point;
       
       /**
@@ -46,22 +52,22 @@ namespace owl
       void stop();
       
       /**
-         returns true if time measurement is currently running.
+       returns true if time measurement is currently running.
        */
       bool is_running() const;
       
       /**
-        stops time measurement and set elapsed time to 0.
+       stops time measurement and set elapsed time to 0.
        */
       void reset();
       
       /**
-        equivalent to a call to reset and start
+       equivalent to a call to reset and start
        */
       void restart();
       
       /**
-        returns elapsed time in seconds since last call of start or restart, 0.0 otherwise
+       returns elapsed time in seconds since last call of start or restart, 0.0 otherwise
        */
       double current_elapsed_time() const;
       
@@ -71,8 +77,8 @@ namespace owl
       double elapsed_time() const;
       
       /**
-       returns elapsed measured time in given ratio of seconds since last call of start or restart, 0.0 otherwise
-       e.g. current_elapsed_time(std::milli{}) would return result in milli seconds
+       returns elapsed measured time in given ratio of seconds since last call of start or restart,
+       0.0 otherwise. e.g. current_elapsed_time(std::milli{}) would return result in milli seconds
        */
       template<typename Ratio>
       double current_elapsed_time(Ratio) const
