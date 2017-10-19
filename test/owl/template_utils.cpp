@@ -5,7 +5,7 @@
 
 namespace test
 {
-  TEST_CASE("template_utils", "[]" )
+  TEST_CASE("is_one_of", "[utils]" )
   {
     CHECK((owl::utils::is_one_of<int, float, double, int>()));
     CHECK_FALSE((owl::utils::is_one_of<int, float, double>()));

@@ -54,14 +54,23 @@ namespace owl
 {
   namespace utils
   {
+    /**
+     Helper to disable automatic template type deduction.
+     Having a template function like template <typename T> void func(T x){...} the type T is automatically deduced by the
+     given parameter x. To disable automatic type deduction you can reformulate the signature of the funcktion like that:
+     template <typename T> void func(identity<T>::type x){...}
+     */
     template<typename T>
     struct identity
     {
-      typedef T type;
+      using type = T;
     };
     
-    //check if T is same as one of given type list
-    template<typename T, typename... Rest>
+    /**
+     Helper to check if T is same to one of a given type list (Ts)
+     is_one_of<int, double, int, float>::value returns true because int is same to one of the types in: double, int, float
+    */
+     template<typename T, typename... Ts>
     struct is_one_of : std::false_type {};
 
     template<typename T, typename First>
