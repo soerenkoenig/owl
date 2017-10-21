@@ -18,17 +18,22 @@ namespace owl
   namespace utils
   {
     template <typename Iterator>
-    using is_random_access_iterator = std::conditional_t<std::is_same<typename std::iterator_traits<Iterator>::iterator_category, std::random_access_iterator_tag>::value,
-      std::true_type, std::false_type>;
+    using is_random_access_iterator = std::conditional_t<
+      std::is_same<
+        typename std::iterator_traits<Iterator>::iterator_category,
+        std::random_access_iterator_tag>::value,
+      std::true_type,
+      std::false_type>;
     
     /**
      An iterator adapter class which modifies the step length of its internal iterator.
-     Step is the number of steps applied to the internal iterator
+     StepSize the number of steps applied to the internal iterator
      */
     template<typename Iterator, std::size_t StepSize>
     class step_iterator
     {
-      static_assert(is_random_access_iterator<Iterator>::value, "step_iterator only supports random access iterators");
+      static_assert(is_random_access_iterator<Iterator>::value,
+        "step_iterator only supports random access iterators");
 
     public:
       using base_iterator_type = Iterator;
@@ -46,41 +51,41 @@ namespace owl
     
       step_iterator() = default;
     
-      explicit step_iterator(base_iterator_type it)
-        : _current(it)
+      explicit step_iterator(base_iterator_type base)
+        : _base(base)
       {
       }
   
-      template< typename U, std::size_t Step2>
-      step_iterator( const step_iterator<U, Step2>& other)
-        : _current(other._current)
+      template<typename Iterator2, std::size_t StepSize2>
+      step_iterator(const step_iterator<Iterator2, StepSize2>& other)
+        : _base(other._base)
       {
       }
   
-      template< typename U, std::size_t Step2>
-      step_iterator& operator=(const step_iterator<U, Step2>& other)
+      template<typename Iterator2, std::size_t StepSize2>
+      step_iterator& operator=(const step_iterator<Iterator, StepSize2>& other)
       {
         if(this == &other)
           return *this;
-        _current = other._current;
+        _base = other._base;
         return *this;
       }
     
-      template< typename U, std::size_t Step2>
-      step_iterator& operator=(Iterator it)
+      template<typename Iterator2>
+      step_iterator& operator=(Iterator2 it)
       {
-        _current = it;
+        _base = it;
         return *this;
       }
   
-      Iterator base() const
+      base_iterator_type base() const
       {
-        return _current;
+        return _base;
       }
   
       reference operator*() const
       {
-        return *_current;
+        return *_base;
       }
   
       pointer operator->() const
@@ -97,13 +102,13 @@ namespace owl
   
       step_iterator& operator++()
       {
-        std::advance(_current, step_size());
+        std::advance(_base, step_size());
         return *this;
       }
     
       step_iterator& operator--()
       {
-        std::advance(_current, -step_size());
+        std::advance(_base, -step_size());
         return *this;
       }
   
@@ -123,13 +128,13 @@ namespace owl
     
       step_iterator& operator+=(difference_type n)
       {
-        std::advance(_current, step_size()*n);
+        std::advance(_base, step_size() * n);
         return *this;
       }
   
       step_iterator& operator-=(difference_type n)
       {
-        std::advance(_current, -step_size()*n);
+        std::advance(_base, -step_size() * n);
         return *this;
       }
   
@@ -148,68 +153,96 @@ namespace owl
       }
     
     private:
-      iterator_type _current;
+      base_iterator_type _base;
     };
   
-    template< typename Iterator, std::size_t Step >
-    step_iterator<Iterator,Step> operator+(typename step_iterator<Iterator, Step>::difference_type n,
-      const step_iterator<Iterator, Step>& it)
+    template<std::size_t StepSize, typename Iterator>
+    auto make_step_iterator(Iterator&& base)
+    {
+      return step_iterator<std::remove_reference_t<Iterator>, StepSize>(base);
+    }
+  
+    template<typename Iterator, std::size_t StepSize>
+    step_iterator<Iterator, StepSize> operator+(
+      typename step_iterator<Iterator, StepSize>::difference_type n,
+      const step_iterator<Iterator, StepSize>& it)
     {
       auto ret = it;
       ret += n;
       return ret;
     }
   
-    template< typename Iterator, std::size_t Step >
-    typename step_iterator<Iterator,Step>::difference_type operator-(const step_iterator<Iterator, Step>& lhs,
-       const step_iterator<Iterator,Step>& rhs)
+    template<typename Iterator, std::size_t StepSize>
+    typename step_iterator<Iterator, StepSize>::difference_type operator-(
+       const step_iterator<Iterator, StepSize>& lhs,
+       const step_iterator<Iterator, StepSize>& rhs)
     {
       return std::distance(lhs.base(),rhs.base()) / lhs.stepsize();
     }
   
-    template< typename Iterator1, typename Iterator2, std::size_t Step >
-    bool operator==(const step_iterator<Iterator1,Step>& lhs, const step_iterator<Iterator2,Step>& rhs)
+    template<typename Iterator, std::size_t StepSize>
+    bool operator==(const step_iterator<Iterator, StepSize>& lhs,
+      const Iterator& rhs)
+    {
+      return lhs.base() == rhs;
+    }
+  
+    template<typename Iterator1, typename Iterator2, std::size_t StepSize>
+    bool operator==(const step_iterator<Iterator1, StepSize>& lhs,
+      const step_iterator<Iterator2, StepSize>& rhs)
     {
       return lhs.base() == rhs.base();
     }
   
-    template< typename Iterator1, typename Iterator2, std::size_t Step >
-    bool operator!=(const step_iterator<Iterator1, Step>& lhs, const step_iterator<Iterator2, Step>& rhs)
+    template<typename Iterator1, typename Iterator2, std::size_t StepSize>
+    bool operator!=(const step_iterator<Iterator1, StepSize>& lhs,
+      const step_iterator<Iterator2, StepSize>& rhs)
     {
       return lhs.base() != rhs.base();
     }
   
-    template<typename Iterator1, typename Iterator2, std::size_t Step >
-    bool operator<( const step_iterator<Iterator1, Step>& lhs, const step_iterator<Iterator2, Step>& rhs )
+    template<typename Iterator, std::size_t StepSize>
+    bool operator!=(const step_iterator<Iterator, StepSize>& lhs,
+      const Iterator& rhs)
     {
-      if(Step > 0)
+      return lhs.base() != rhs;
+    }
+  
+    template<typename Iterator1, typename Iterator2, std::size_t StepSize>
+    bool operator<(const step_iterator<Iterator1, StepSize>& lhs,
+      const step_iterator<Iterator2, StepSize>& rhs)
+    {
+      if(StepSize > 0)
         return lhs.base() < rhs.base();
       else
         return lhs.base() > rhs.base();
     }
   
-    template<typename Iterator1, typename Iterator2, std::size_t Step>
-    bool operator<=( const step_iterator<Iterator1,Step>& lhs, const step_iterator<Iterator2,Step>& rhs )
+    template<typename Iterator1, typename Iterator2, std::size_t StepSize>
+    bool operator<=(const step_iterator<Iterator1, StepSize>& lhs,
+      const step_iterator<Iterator2, StepSize>& rhs)
     {
-      if(Step > 0)
+      if(StepSize > 0)
         return lhs.base() <= rhs.base();
       else
         return lhs.base() >= rhs.base();
     }
   
-    template<typename Iterator1, typename Iterator2, std::size_t Step>
-    bool operator>( const step_iterator<Iterator1,Step>& lhs, const step_iterator<Iterator2,Step>& rhs )
+    template<typename Iterator1, typename Iterator2, std::size_t StepSize>
+    bool operator>(const step_iterator<Iterator1, StepSize>& lhs,
+      const step_iterator<Iterator2, StepSize>& rhs)
     {
-      if(Step > 0)
+      if(StepSize > 0)
         return lhs.base() > rhs.base();
       else
         return lhs.base() < rhs.base();
     }
   
-    template<typename Iterator1, typename Iterator2, std::size_t Step>
-    bool operator>=( const step_iterator<Iterator1,Step>& lhs, const step_iterator<Iterator2,Step>& rhs )
+    template<typename Iterator1, typename Iterator2, std::size_t StepSize>
+    bool operator>=(const step_iterator<Iterator1, StepSize>& lhs,
+      const step_iterator<Iterator2, StepSize>& rhs)
     {
-      if(Step > 0)
+      if(StepSize > 0)
         return lhs.base() >= rhs.base();
       else
         return lhs.base() <= rhs.base();
