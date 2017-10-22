@@ -23,7 +23,7 @@ namespace test
     auto it = make_step_iterator<3>(numbers.begin());
     CHECK(it == numbers.begin());
     CHECK(++it == std::next(numbers.begin(),3));
-    CHECK(*it == 2);
+    CHECK(*it == 3);
     CHECK(--it == numbers.begin());
   
   }
