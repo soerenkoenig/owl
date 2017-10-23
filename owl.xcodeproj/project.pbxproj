@@ -72,6 +72,7 @@
 		288A6FAB1F91D83C00783E52 /* template_utils.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = template_utils.hpp; sourceTree = "<group>"; };
 		288A6FAD1F91D97B00783E52 /* constants.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = constants.hpp; sourceTree = "<group>"; };
 		D1604BB21F95FED5007ECD3B /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		D172B6781F9DC7810039A121 /* mapped_iterator.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = mapped_iterator.hpp; sourceTree = "<group>"; };
 		D1FC096A1F964DEE00320C13 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -126,6 +127,7 @@
 				284C09C31F9680AD0062BFF1 /* linear_index.hpp */,
 				284C09C61F9682570062BFF1 /* step_iterator.hpp */,
 				284C09C71F9686E70062BFF1 /* iterator_range.hpp */,
+				D172B6781F9DC7810039A121 /* mapped_iterator.hpp */,
 			);
 			path = utils;
 			sourceTree = "<group>";
