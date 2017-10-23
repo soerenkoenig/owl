@@ -5,7 +5,6 @@
 
 namespace test
 {
-
   TEST_CASE( "is_random_access_iterator", "[utils]" )
   {
     using namespace owl::utils;
@@ -25,7 +24,6 @@ namespace test
     CHECK(++it == std::next(numbers.begin(),3));
     CHECK(*it == 3);
     CHECK(--it == numbers.begin());
-  
   }
 }
 

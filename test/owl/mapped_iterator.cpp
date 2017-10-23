@@ -3,8 +3,6 @@
 
 namespace test
 {
-
-  
   TEST_CASE( "mapped_iterator", "[utils]" )
   {
     using namespace owl::utils;

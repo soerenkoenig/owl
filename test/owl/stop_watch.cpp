@@ -6,7 +6,6 @@
 
 namespace test
 {
-
   TEST_CASE( "stop_watch", "[utils]" )
   {
     using namespace owl::utils;
