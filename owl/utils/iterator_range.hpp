@@ -28,7 +28,7 @@ namespace owl
       typedef typename std::iterator_traits<iterator>::reference reference;
   
       template<typename Iterator2>
-      iterator_range( Iterator2 first, Iterator2 one_past_last )
+      iterator_range(Iterator2 first, Iterator2 one_past_last)
         : _first(first), _one_past_last(one_past_last)
       {
       }

@@ -159,7 +159,7 @@ namespace owl
     template<std::size_t StepSize, typename Iterator>
     auto make_step_iterator(Iterator&& base)
     {
-      return step_iterator<std::remove_reference_t<Iterator>, StepSize>(base);
+      return step_iterator<std::remove_reference_t<Iterator>, StepSize>(std::forward<Iterator>(base));
     }
   
     template<typename Iterator, std::size_t StepSize>
@@ -180,13 +180,6 @@ namespace owl
       return std::distance(lhs.base(),rhs.base()) / lhs.stepsize();
     }
   
-    template<typename Iterator, std::size_t StepSize>
-    bool operator==(const step_iterator<Iterator, StepSize>& lhs,
-      const Iterator& rhs)
-    {
-      return lhs.base() == rhs;
-    }
-  
     template<typename Iterator1, typename Iterator2, std::size_t StepSize>
     bool operator==(const step_iterator<Iterator1, StepSize>& lhs,
       const step_iterator<Iterator2, StepSize>& rhs)
@@ -199,6 +192,25 @@ namespace owl
       const step_iterator<Iterator2, StepSize>& rhs)
     {
       return lhs.base() != rhs.base();
+    }
+ 
+    template<typename Iterator, std::size_t StepSize>
+    bool operator==(const Iterator& lhs, const step_iterator<Iterator, StepSize>& rhs)
+    {
+      return lhs == rhs.base();
+    }
+  
+    template<typename Iterator, std::size_t StepSize>
+    bool operator!=(const Iterator& lhs, const step_iterator<Iterator, StepSize>& rhs)
+    {
+      return lhs != rhs.base();
+    }
+  
+    template<typename Iterator, std::size_t StepSize>
+    bool operator==(const step_iterator<Iterator, StepSize>& lhs,
+      const Iterator& rhs)
+    {
+      return lhs.base() == rhs;
     }
   
     template<typename Iterator, std::size_t StepSize>
