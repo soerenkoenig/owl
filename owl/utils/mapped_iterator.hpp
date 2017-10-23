@@ -9,12 +9,14 @@
 
 #pragma once
 #include <iterator>
+#include <type_traits>
+#include "owl/utils/iterator_range.hpp"
 
 namespace owl
 {
   namespace utils
   {
-    template <typename Iterator, typename Function>
+    template <typename Predicate, typename Iterator>
     class mapped_iterator
     {
     public:
@@ -24,16 +26,23 @@ namespace owl
 
       using difference_type = typename std::iterator_traits<Iterator>::difference_type;
     
-      using value_type = decltype(std::declval<Function>()(*std::declval<Iterator>()));
+      using value_type = decltype(std::declval<Predicate>()(*std::declval<Iterator>()));
       
       using pointer = void;
       
-      using reference = void;
+      using reference = value_type;
     
-      using function_type = Function;
+      using predicate_type = Predicate;
     
-      inline explicit mapped_iterator(const base_iterator_type &base, function_type function)
-        : _base(base), _function(function)
+      mapped_iterator() = default;
+    
+     explicit mapped_iterator( const base_iterator_type &base)
+        : _base(base)
+      {
+      }
+    
+      explicit mapped_iterator(predicate_type predicate, const base_iterator_type &base)
+        : _base(base), _predicate(predicate)
       {
       }
       
@@ -42,14 +51,14 @@ namespace owl
         return _base;
       }
       
-      inline const function_type &function() const
+      inline const predicate_type &predicate() const
       {
-        return _function;
+        return _predicate;
       }
       
       inline value_type operator*() const
       {
-        return _function(*_base);
+        return _predicate(*_base);
       }
       
       mapped_iterator &operator++()
@@ -80,7 +89,7 @@ namespace owl
     
       mapped_iterator operator+(difference_type n) const
       {
-        return mapped_iterator(_base + n, _function);
+        return mapped_iterator(_predicate, _base + n);
       }
     
       mapped_iterator &operator+=(difference_type n)
@@ -91,7 +100,7 @@ namespace owl
     
       mapped_iterator operator-(difference_type n) const
       {
-        return mapped_iterator(_base - n, _function);
+        return mapped_iterator(_predicate, _base - n);
       }
     
       mapped_iterator &operator-=(difference_type n)
@@ -100,7 +109,7 @@ namespace owl
         return *this;
       }
     
-      reference operator[](difference_type n) const
+      value_type operator[](difference_type n) const
       {
         return *(*this + n);
       }
@@ -127,21 +136,53 @@ namespace owl
     
   private:
       base_iterator_type _base;
-      function_type _function;
+      predicate_type _predicate;
     };
 
-    template <typename Iterator, typename Func>
-    inline mapped_iterator<Iterator, Func>
-    operator+(typename mapped_iterator<Iterator, Func>::difference_type n,
-              const mapped_iterator<Iterator, Func> &rhs)
+    template <typename Predicate, typename Iterator>
+    inline mapped_iterator<Predicate, Iterator>
+    operator+(typename mapped_iterator<Predicate, Iterator>::difference_type n,
+              const mapped_iterator<Predicate, Iterator> &rhs)
     {
-      return mapped_iterator<Iterator, Func>(rhs.base() + n, rhs.function());
+      return mapped_iterator<Predicate,Iterator>(rhs.predicate(), rhs.base() + n);
     }
 
-    template <typename Iterator, typename Function>
-    inline mapped_iterator<Iterator, Function> make_mapped_iterator(const Iterator &iter, Function func)
+    template <typename Predicate, typename Iterator>
+    inline mapped_iterator<Predicate,Iterator> make_mapped_iterator(Predicate&& predicate, Iterator&& iter)
     {
-      return mapped_iterator<Iterator, Function>(iter, std::forward<Function>(func));
+      return mapped_iterator<Predicate,Iterator>(std::forward<Predicate>(predicate), std::forward<Iterator>(iter));
+    }
+  
+    template<typename Predicate, typename Iterator>
+    auto map_range(Iterator&& first, Iterator&& one_past_last)
+    {
+      return
+        make_iterator_range(make_mapped_iterator<Predicate>(std::forward<Iterator>(first)),
+        make_mapped_iterator<Predicate>(std::forward<Iterator>(one_past_last)));
+    }
+  
+    template<typename Predicate, typename Iterator>
+    auto map_range(Predicate&& pred, Iterator&& first, Iterator&& one_past_last)
+    {
+      return
+        make_iterator_range(
+          make_mapped_iterator(std::forward<Predicate>(pred), std::forward<Iterator>(first)),
+          make_mapped_iterator(std::forward<Predicate>(pred), std::forward<Iterator>(one_past_last)));
+    }
+  
+    template<typename Predicate, typename Range, typename = std::enable_if_t<is_container<std::decay_t<Range>>::value>>
+    auto map_range(Range&& range)
+    {
+      return map_range<Predicate>(std::begin(std::forward<Range>(range)),
+       std::end(std::forward<Range>(range)));
+    }
+
+    template<typename Predicate, typename Range, typename = std::enable_if_t< is_container<std::decay_t<Range>>::value>>
+    auto map_range(Predicate &&pred, Range&& range)
+    {
+      return  map_range(std::forward<Predicate>(pred),
+        std::begin(std::forward<Range>(range)),
+        std::end(std::forward<Range>(range)));
     }
   }
 }
