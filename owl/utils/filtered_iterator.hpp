@@ -79,12 +79,12 @@ namespace owl
         return filtered_iterator(_predicate, _end, _end);
       }
   
-      reference operator*() const
+      auto operator*() const
       {
         return *_base;
       }
   
-      pointer operator->() const
+      auto operator->() const
       {
         std::addressof(operator*());
       }

@@ -46,17 +46,17 @@ namespace owl
       {
       }
       
-      inline const base_iterator_type &base() const
+      const base_iterator_type &base() const
       {
         return _base;
       }
       
-      inline const predicate_type &predicate() const
+      const predicate_type &predicate() const
       {
         return _predicate;
       }
       
-      inline value_type operator*() const
+      auto operator*() const
       {
         return _predicate(*_base);
       }
@@ -140,7 +140,7 @@ namespace owl
     };
 
     template <typename Predicate, typename Iterator>
-    inline mapped_iterator<Predicate, Iterator>
+    mapped_iterator<Predicate, Iterator>
     operator+(typename mapped_iterator<Predicate, Iterator>::difference_type n,
               const mapped_iterator<Predicate, Iterator> &rhs)
     {
@@ -148,7 +148,7 @@ namespace owl
     }
 
     template <typename Predicate, typename Iterator>
-    inline mapped_iterator<Predicate,Iterator> make_mapped_iterator(Predicate&& predicate, Iterator&& iter)
+    mapped_iterator<Predicate,Iterator> make_mapped_iterator(Predicate&& predicate, Iterator&& iter)
     {
       return mapped_iterator<Predicate,Iterator>(std::forward<Predicate>(predicate), std::forward<Iterator>(iter));
     }

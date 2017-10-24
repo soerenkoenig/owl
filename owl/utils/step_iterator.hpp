@@ -83,17 +83,17 @@ namespace owl
         return _base;
       }
   
-      reference operator*() const
+      auto operator*() const
       {
         return *_base;
       }
   
-      pointer operator->() const
+      auto operator->() const
       {
         std::addressof(operator*());
       }
   
-      reference operator[](difference_type n) const
+      auto operator[](difference_type n) const
       {
         auto it = *this;
         std::advance(it, n);

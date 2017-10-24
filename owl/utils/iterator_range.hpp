@@ -17,15 +17,15 @@ namespace owl
 {
   namespace utils
   {
-    template< typename Iterator >
+    template<typename Iterator>
     class iterator_range
     {
     public:
-      typedef Iterator   iterator;
-      typedef Iterator   const_iterator;
-      typedef typename std::iterator_traits<iterator>::difference_type difference_type;
-      typedef typename std::iterator_traits<iterator>::value_type value_type;
-      typedef typename std::iterator_traits<iterator>::reference reference;
+      using iterator = Iterator;
+      using const_iterator = Iterator;
+      using difference_type = typename std::iterator_traits<iterator>::difference_type;
+      using value_type = typename std::iterator_traits<iterator>::value_type;
+      using reference = typename std::iterator_traits<iterator>::reference;
   
       template<typename Iterator2>
       iterator_range(Iterator2 first, Iterator2 one_past_last)
