@@ -132,15 +132,15 @@ namespace owl
         advance_end(-n);
       }
   
-      reference operator[]( difference_type at ) const
+      reference operator[](difference_type at) const
       {
         return _first[at];
       }
   
-      value_type operator()(difference_type at ) const
+      value_type operator()(difference_type at) const
       {
         auto it = _first;
-        std::advance(it,at);
+        std::advance(it, at);
         return *it;
       }
   
@@ -252,7 +252,7 @@ namespace owl
     {
       auto res = iterator_range<typename container_traits< Range>::const_iterator>(r);
       res.advance_begin(advance_begin);
-      res.advacne_end(advance_end);
+      res.advance_end(advance_end);
       return res;
     }
   

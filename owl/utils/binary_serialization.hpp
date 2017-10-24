@@ -97,7 +97,7 @@ namespace owl
     };
     
     template <typename T>
-    struct binary_serialization<T, std::enable_if_t<std::is_arithmetic<T>::value && !std::is_same<bool,T>::value>>
+    struct binary_serialization<T, std::enable_if_t<std::is_arithmetic<T>::value && !std::is_same<bool, T>::value>>
     {
       using value_type = T;
     
@@ -216,7 +216,7 @@ namespace owl
         return read_impl(in,value, std::index_sequence_for<Args...>());
       }
     
-      static bool write(std::ostream& out,const value_type& value)
+      static bool write(std::ostream& out, const value_type& value)
       {
         return write_impl(out, value, std::index_sequence_for<Args...>());
       }

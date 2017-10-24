@@ -96,6 +96,13 @@ namespace owl
         return _current - other._current;
       }
       
+      counting_iterator operator-(difference_type n) const
+      {
+        auto it = *this;
+        it -= n;
+        return it;
+      }
+      
       bool operator==(const counting_iterator &other) const
       {
         return _current == other._current;
@@ -128,6 +135,22 @@ namespace owl
     private:
       Integer _current;
     };
+    
+    template <typename Integer>
+    counting_iterator<Integer>
+    operator+(typename counting_iterator<Integer>::difference_type n,
+              const counting_iterator<Integer> &rhs)
+    {
+      return rhs + n;
+    }
+    
+    template <typename Integer>
+    counting_iterator<Integer>
+    operator-(typename counting_iterator<Integer>::difference_type n,
+              const counting_iterator<Integer> &rhs)
+    {
+      return counting_iterator<Integer>(n - *rhs);
+    }
     
     template <typename Integer>
     counting_iterator<Integer> make_counting_iterator(Integer integer)

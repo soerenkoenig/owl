@@ -164,5 +164,22 @@ namespace owl
       typedef std::ptrdiff_t difference_type;
       typedef T value_type;
     };
+    
+    namespace detail
+    {
+      template<class Function, std::size_t... Indices>
+      constexpr std::array<typename std::result_of<Function(std::size_t)>::type, sizeof...(Indices)>
+      make_array_helper(Function f, std::index_sequence<Indices...>)
+      {
+        return {{f(Indices)...}};
+      }
+    }
+      
+    template <std::size_t N, class Function>
+    constexpr std::array<typename std::result_of<Function(std::size_t)>::type, N>
+    make_array(Function f)
+    {
+      return detail::make_array_helper(f, std::make_index_sequence<N>{});
+    }
   }
 }

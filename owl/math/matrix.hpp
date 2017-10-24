@@ -18,6 +18,7 @@
 #include "owl/utils/linear_index.hpp"
 #include "owl/utils/iterator_range.hpp"
 #include "owl/utils/step_iterator.hpp"
+#include "owl/utils/container_utils.hpp"
 
 namespace owl
 {
@@ -25,20 +26,7 @@ namespace owl
   {
     namespace detail
     {
-      template<class Function, std::size_t... Indices>
-      constexpr std::array<typename std::result_of<Function(std::size_t)>::type,sizeof...(Indices)>
-      make_array_helper(Function f, std::index_sequence<Indices...>)
-      {
-          return {{f(Indices)...}};
-      }
-
-      template <std::size_t N, class Function>
-      constexpr std::array<typename std::result_of<Function(std::size_t)>::type,N>
-          make_array(Function f)
-      {
-          return make_array_helper(f,std::make_index_sequence<N>{});
-      }
-  
+      
       template <typename T, std::size_t N>
       constexpr T delta(std::size_t i)
       {
@@ -140,7 +128,7 @@ namespace owl
     template <size_t I, typename = std::enable_if_t<(I < size()) && is_vector()> >
     static constexpr matrix ident()
     {
-        return matrix{detail::make_array<size()>(detail::delta<Scalar,I>)};
+      return matrix{owl::utils::make_array<size()>(detail::delta<Scalar,I>)};
     }
     
     template <bool Dummy = true, typename = std::enable_if_t<Dummy && is_vector() && (size() > 0)>  >
@@ -169,19 +157,18 @@ namespace owl
     
     static constexpr matrix zero()
     {
-        return matrix{detail::make_array<size()>(detail::zero<Scalar>)};
+      return matrix{owl::utils::make_array<size()>(detail::zero<Scalar>)};
     }
     
     static constexpr matrix one()
     {
-        return matrix{detail::make_array<size()>(detail::one<Scalar>)};
+        return matrix{owl::utils::make_array<size()>(detail::one<Scalar>)};
     }
     
      static constexpr matrix identity()
     {
-        return matrix{detail::make_array<size()>(detail::eye<Scalar,Rows>)};
+        return matrix{owl::utils::make_array<size()>(detail::eye<Scalar,Rows>)};
     }
-
     
     //iterator interface
     
@@ -402,7 +389,6 @@ namespace owl
     {
         return _data[3];
     }
-
     
     reference operator[](size_type pos)
     {
@@ -1080,10 +1066,10 @@ namespace owl
     {
         T Cos{cos(angle)};
         T Sin{sin(angle)};
-        return square_matrix<T,4>{ 1 , 0, 0, 0,
-                                   0 ,Cos, Sin,0,
-                                  0, -Sin,  Cos, 0,
-                                0,0,0,1};
+        return square_matrix<T,4>{ 1, 0, 0, 0,
+                                   0, Cos, Sin,0,
+                                   0, -Sin, Cos, 0,
+                                   0, 0, 0, 1};
     }
   
     template <typename T>

@@ -90,7 +90,7 @@ namespace owl
   
       auto operator->() const
       {
-        std::addressof(operator*());
+        return std::addressof(operator*());
       }
   
       auto operator[](difference_type n) const
