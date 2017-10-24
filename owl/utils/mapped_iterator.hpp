@@ -30,7 +30,7 @@ namespace owl
       
       using pointer = void;
       
-      using reference = value_type;
+      using reference = void;
     
       using predicate_type = Predicate;
     
@@ -109,7 +109,7 @@ namespace owl
         return *this;
       }
     
-      value_type operator[](difference_type n) const
+      auto operator[](difference_type n) const
       {
         return *(*this + n);
       }

@@ -132,12 +132,12 @@ namespace owl
         advance_end(-n);
       }
   
-      reference operator[](difference_type at) const
+      auto operator[](difference_type at) const
       {
         return _first[at];
       }
   
-      value_type operator()(difference_type at) const
+      auto operator()(difference_type at) const
       {
         auto it = _first;
         std::advance(it, at);
@@ -146,7 +146,7 @@ namespace owl
   
       difference_type size() const
       {
-        return std::distance(_first,_one_past_last);
+        return std::distance(_first, _one_past_last);
       }
     
     private:
@@ -155,19 +155,19 @@ namespace owl
     };
   
     template<typename Iterator, typename Iterator2>
-    bool operator==( const iterator_range<Iterator>& l, const iterator_range<Iterator2>& r)
+    bool operator==(const iterator_range<Iterator>& l, const iterator_range<Iterator2>& r)
     {
       return l.size() != r.size() ? false : std::equal(std::begin(l), std::end(l), std::begin(r));
     }
   
     template<typename Iterator, typename Range>
-    bool operator==( const iterator_range<Iterator>& l, const Range& r)
+    bool operator==(const iterator_range<Iterator>& l, const Range& r)
     {
       return l.size() != r.size() ? false : std::equal(std::begin(l), std::end(l), std::begin(r));
     }
   
     template<typename Iterator, typename Range>
-    bool operator==( const Range& l, const iterator_range<Iterator>& r)
+    bool operator==(const Range& l, const iterator_range<Iterator>& r)
     {
       return l.size() != r.size() ? false : std::equal(std::begin(l), std::end(l), std::begin(r));
     }
