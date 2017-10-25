@@ -81,6 +81,8 @@
 		D172B6781F9DC7810039A121 /* mapped_iterator.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = mapped_iterator.hpp; sourceTree = "<group>"; };
 		D172B6791F9F15650039A121 /* counting_iterator.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = counting_iterator.hpp; sourceTree = "<group>"; };
 		D172B67A1F9F197C0039A121 /* counting_iterator.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = counting_iterator.cpp; sourceTree = "<group>"; };
+		D172B67F1FA0C42C0039A121 /* stb_image.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = stb_image.h; sourceTree = "<group>"; };
+		D172B6801FA0C5F70039A121 /* stb_image_write.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = stb_image_write.h; sourceTree = "<group>"; };
 		D1FC096A1F964DEE00320C13 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -197,6 +199,7 @@
 		2883C25C1F91BCE6007DDB3C /* thirdparty */ = {
 			isa = PBXGroup;
 			children = (
+				D172B67E1FA0C3F20039A121 /* stb */,
 				288A6F9C1F91BE5D00783E52 /* benchpress */,
 				2883C25D1F91BCF6007DDB3C /* catch */,
 			);
@@ -246,6 +249,15 @@
 				284C09C21F96806F0062BFF1 /* matrix.hpp */,
 			);
 			path = math;
+			sourceTree = "<group>";
+		};
+		D172B67E1FA0C3F20039A121 /* stb */ = {
+			isa = PBXGroup;
+			children = (
+				D172B67F1FA0C42C0039A121 /* stb_image.h */,
+				D172B6801FA0C5F70039A121 /* stb_image_write.h */,
+			);
+			path = stb;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
