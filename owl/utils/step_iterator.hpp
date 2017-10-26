@@ -52,13 +52,13 @@ namespace owl
       step_iterator() = default;
     
       explicit step_iterator(base_iterator_type base)
-        : _base(base)
+        : base_(base)
       {
       }
   
       template<typename Iterator2, std::size_t StepSize2>
       step_iterator(const step_iterator<Iterator2, StepSize2>& other)
-        : _base(other._base)
+        : base_(other.base_)
       {
       }
   
@@ -67,25 +67,25 @@ namespace owl
       {
         if(this == &other)
           return *this;
-        _base = other._base;
+        base_ = other.base_;
         return *this;
       }
     
       template<typename Iterator2>
       step_iterator& operator=(Iterator2 it)
       {
-        _base = it;
+        base_ = it;
         return *this;
       }
   
       base_iterator_type base() const
       {
-        return _base;
+        return base_;
       }
   
       auto operator*() const
       {
-        return *_base;
+        return *base_;
       }
   
       auto operator->() const
@@ -102,13 +102,13 @@ namespace owl
   
       step_iterator& operator++()
       {
-        std::advance(_base, step_size());
+        std::advance(base_, step_size());
         return *this;
       }
     
       step_iterator& operator--()
       {
-        std::advance(_base, -step_size());
+        std::advance(base_, -step_size());
         return *this;
       }
   
@@ -128,13 +128,13 @@ namespace owl
     
       step_iterator& operator+=(difference_type n)
       {
-        std::advance(_base, step_size() * n);
+        std::advance(base_, step_size() * n);
         return *this;
       }
   
       step_iterator& operator-=(difference_type n)
       {
-        std::advance(_base, -step_size() * n);
+        std::advance(base_, -step_size() * n);
         return *this;
       }
   
@@ -153,7 +153,7 @@ namespace owl
       }
     
     private:
-      base_iterator_type _base;
+      base_iterator_type base_;
     };
   
     template<std::size_t StepSize, typename Iterator>

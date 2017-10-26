@@ -33,26 +33,28 @@ namespace owl
     DEFINE_HAS_SIGNATURE(has_begin, T::begin, typename T::const_iterator (T::*)() const);
     DEFINE_HAS_SIGNATURE(has_end, T::end, typename T::const_iterator (T::*)() const);
   
+    DEFINE_HAS_SIGNATURE(has_resize, T::resize, void (T::*)(typename T::size_type));
+  
     template <typename T>
-    struct is_basic_string :  std::false_type {};
+    struct is_basic_string : std::false_type {};
 
     template <typename... Ts>
-    struct is_basic_string<std::basic_string<Ts...>> :  std::true_type {};
+    struct is_basic_string<std::basic_string<Ts...>> : std::true_type {};
 
     template <typename T>
-    struct is_array :  std::false_type {};
+    struct is_array : std::false_type {};
 
     template <typename... Ts>
-    struct is_array<std::array<Ts...>> :  std::true_type {};
+    struct is_array<std::array<Ts...>> : std::true_type {};
 
     template <typename T>
-    struct is_vector :  std::false_type {};
+    struct is_vector : std::false_type {};
 
     template <typename... Ts>
-    struct is_vector<std::vector<Ts...>> :  std::true_type {};
+    struct is_vector<std::vector<Ts...>> : std::true_type {};
 
     template <typename T>
-    struct is_list :  std::false_type {};
+    struct is_list : std::false_type {};
 
     template <typename... Ts>
     struct is_list<std::list<Ts...>> : std::true_type {};
@@ -94,25 +96,25 @@ namespace owl
     struct is_unordered_multimap<std::unordered_multimap<Ts...>> : public std::true_type {};
 
     template <typename T>
-    struct is_set :  std::false_type {};
+    struct is_set : std::false_type {};
 
     template <typename... Ts>
-    struct is_set<std::set<Ts...>> :  std::true_type {};
+    struct is_set<std::set<Ts...>> : std::true_type {};
 
     template <typename T>
-    struct is_multiset :  std::false_type {};
+    struct is_multiset : std::false_type {};
 
     template <typename... Ts>
-    struct is_multiset<std::multiset<Ts...>> :  std::true_type {};
+    struct is_multiset<std::multiset<Ts...>> : std::true_type {};
 
     template <typename T>
-    struct is_unordered_set :  std::false_type {};
+    struct is_unordered_set : std::false_type {};
 
     template <typename... Ts>
-    struct is_unordered_set<std::unordered_set<Ts...>> :  std::true_type {};
+    struct is_unordered_set<std::unordered_set<Ts...>> : std::true_type {};
 
     template <typename T>
-    struct is_unordered_multiset :  std::false_type {};
+    struct is_unordered_multiset : std::false_type {};
 
     template <typename... Ts>
     struct is_unordered_multiset<std::unordered_multiset<Ts...>> : std::true_type {};

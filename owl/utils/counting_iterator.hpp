@@ -32,29 +32,29 @@ namespace owl
       counting_iterator() = default;
       
       counting_iterator(Integer integer)
-        : _current{integer}
+        : current_{integer}
       {
       }
       
       auto operator*() const
       {
-        return _current;
+        return current_;
       }
       
       auto operator[](difference_type n) const
       {
-        return _current + n;
+        return current_ + n;
       }
       
       counting_iterator& operator++()
       {
-        ++_current;
+        ++current_;
         return *this;
       }
       
       counting_iterator& operator--()
       {
-        --_current;
+        --current_;
         return *this;
       }
       
@@ -74,13 +74,13 @@ namespace owl
       
       counting_iterator& operator+=(difference_type n)
       {
-        _current += n;
+        current_ += n;
         return *this;
       }
       
       counting_iterator& operator-=(difference_type n)
       {
-        _current -= n;
+        current_ -= n;
         return *this;
       }
       
@@ -93,7 +93,7 @@ namespace owl
       
       difference_type operator-(const counting_iterator &other) const
       {
-        return _current - other._current;
+        return current_ - other.current_;
       }
       
       counting_iterator operator-(difference_type n) const
@@ -105,7 +105,7 @@ namespace owl
       
       bool operator==(const counting_iterator &other) const
       {
-        return _current == other._current;
+        return current_ == other.current_;
       }
       
       bool operator!=(const counting_iterator &other) const
@@ -115,25 +115,25 @@ namespace owl
       
       bool operator<(const counting_iterator &other) const
       {
-        return _current < other._current;
+        return current_ < other.current_;
       }
       
       bool operator>(const counting_iterator &other) const
       {
-        return _current > other._current;
+        return current_ > other.current_;
       }
       
       bool operator<=(const counting_iterator &other) const
       {
-        return _current <= other._current;
+        return current_ <= other.current_;
       }
       
       bool operator>=(const counting_iterator &other) const
       {
-        return _current >= other._current;
+        return current_ >= other.current_;
       }
     private:
-      Integer _current;
+      Integer current_;
     };
     
     template <typename Integer>

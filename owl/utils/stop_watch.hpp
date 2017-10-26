@@ -101,11 +101,11 @@ namespace owl
       
       duration elapsed_duration() const;
       
-      time_point _last_start;
+      time_point last_start_;
      
-      duration _elapsed_time;
+      duration elapsed_time_;
       
-      bool _running;
+      bool running_;
     };
   }
 }

@@ -29,19 +29,19 @@ namespace owl
   
       template<typename Iterator2>
       iterator_range(Iterator2 first, Iterator2 one_past_last)
-        : _first(first), _one_past_last(one_past_last)
+        : begin_(first), end_(one_past_last)
       {
       }
   
       template<typename Range>
       iterator_range(Range& r)
-        : _first(std::begin(r)), _one_past_last(std::end(r))
+        : begin_(std::begin(r)), end_(std::end(r))
       {
       }
   
       template<typename Range>
       iterator_range(const Range& r)
-        : _first(std::begin(r)), _one_past_last(std::end(r))
+        : begin_(std::begin(r)), end_(std::end(r))
       {
       }
   
@@ -50,8 +50,8 @@ namespace owl
       {
         if(this == &r)
           return *this;
-        _first = std::begin(r);
-        _one_past_last = std::end(r);
+        begin_ = std::begin(r);
+        end_ = std::end(r);
         return *this;
       }
   
@@ -60,19 +60,19 @@ namespace owl
       {
         if(this == &r)
           return *this;
-        _first = std::begin(r);
-        _one_past_last = std::end(r);
+        begin_ = std::begin(r);
+        end_ = std::end(r);
         return *this;
       }
   
       iterator begin() const
       {
-        return _first;
+        return begin_;
       }
   
       iterator end() const
       {
-        return _one_past_last;
+        return end_;
       }
   
       explicit operator bool() const
@@ -87,12 +87,12 @@ namespace owl
   
       auto front() const
       {
-        return *_first;
+        return *begin_;
       }
   
       void drop_front()
       {
-        ++_first;
+        ++begin_;
       }
   
       void drop_front(difference_type n)
@@ -102,18 +102,18 @@ namespace owl
   
       bool empty() const
       {
-        return _first == _one_past_last;
+        return begin_ == end_;
       }
   
       iterator_range& advance_begin(difference_type n)
       {
-        std::advance(_first, n);
+        std::advance(begin_, n);
         return *this;
       }
   
       iterator_range& advance_end(difference_type n)
       {
-        std::advance(_one_past_last, n);
+        std::advance(end_, n);
         return *this;
       }
   
@@ -124,7 +124,7 @@ namespace owl
   
       void drop_back()
       {
-        --_one_past_last;
+        --end_;
       }
   
       void drop_back(difference_type n)
@@ -134,24 +134,24 @@ namespace owl
   
       auto operator[](difference_type at) const
       {
-        return _first[at];
+        return begin_[at];
       }
   
       auto operator()(difference_type at) const
       {
-        auto it = _first;
+        auto it = begin_;
         std::advance(it, at);
         return *it;
       }
   
       difference_type size() const
       {
-        return std::distance(_first, _one_past_last);
+        return std::distance(begin_, end_);
       }
     
     private:
-      iterator _first;
-      iterator _one_past_last;
+      iterator begin_;
+      iterator end_;
     };
   
     template<typename Iterator, typename Iterator2>

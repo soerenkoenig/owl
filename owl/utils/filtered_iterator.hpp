@@ -36,20 +36,20 @@ namespace owl
     
       explicit filtered_iterator(predicate_type predicate,
         const base_iterator_type &iter, const base_iterator_type& end)
-        : _base(iter), _end(end), _predicate(predicate)
+        : current_(iter), end_(end), predicate_(predicate)
       {
         ensure_predicate();
       }
     
       filtered_iterator(base_iterator_type base, base_iterator_type end)
-        : _base(base), _end(end)
+        : current_(base), end_(end)
       {
         ensure_predicate();
       }
   
       template<typename Predicate2, typename Iterator2>
       filtered_iterator(const filtered_iterator<Predicate2, Iterator2>& other)
-        : _base(other._base), _end(other._end), _predicate(other._predicate)
+        : current_(other.current_), end_(other.end_), predicate_(other.predicate_)
       {
       }
   
@@ -58,30 +58,30 @@ namespace owl
       {
         if(this == &other)
           return *this;
-        _base = other._base;
-        _end = other._end;
-        _predicate = other._predicate;
+        current_ = other.current_;
+        end_ = other.end_;
+        predicate_ = other.predicate_;
         return *this;
       }
     
       inline const predicate_type& predicate() const
       {
-        return _predicate;
+        return predicate_;
       }
   
       inline const base_iterator_type& base() const
       {
-        return _base;
+        return current_;
       }
     
       filtered_iterator end() const
       {
-        return filtered_iterator(_predicate, _end, _end);
+        return filtered_iterator(predicate_, end_, end_);
       }
   
       auto operator*() const
       {
-        return *_base;
+        return *current_;
       }
   
       auto operator->() const
@@ -91,9 +91,9 @@ namespace owl
     
       filtered_iterator& operator++()
       {
-        if (_base == _end)
+        if (current_ == end_)
           return *this;
-        ++_base;
+        ++current_;
         ensure_predicate();
         return *this;
       }
@@ -107,24 +107,24 @@ namespace owl
 
       bool operator==(const filtered_iterator& rhs) const
       {
-        return _base == rhs._base;
+        return current_ == rhs._current;
       }
 
       bool operator!=(const filtered_iterator& rhs) const
       {
-        return _base != rhs._base;
+        return current_ != rhs.current_;
       }
   
     private:
       void ensure_predicate()
       {
-        while (_base != _end && !_predicate(*_base))
-          ++_base;
+        while (current_ != end_ && !predicate_(*current_))
+          ++current_;
       }
     
-      predicate_type _predicate;
-      base_iterator_type _base;
-      base_iterator_type _end;
+      predicate_type predicate_;
+      base_iterator_type current_;
+      base_iterator_type end_;
     };
   
   

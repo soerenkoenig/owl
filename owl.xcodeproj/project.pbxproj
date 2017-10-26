@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2816E6A31FA12F8600CCE00A /* image.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 2816E6A11FA12F8600CCE00A /* image.hpp */; };
+		2816E6A61FA133EF00CCE00A /* image.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2816E6A51FA133EF00CCE00A /* image.cpp */; };
+		2816E6A91FA139AB00CCE00A /* file_utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2816E6A81FA139AB00CCE00A /* file_utils.cpp */; };
 		28175DB41F91FD0B004ECB87 /* template_utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28175DB21F91FD0B004ECB87 /* template_utils.cpp */; };
 		28175DB51F91FD0B004ECB87 /* binary_serialization.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28175DB31F91FD0B004ECB87 /* binary_serialization.cpp */; };
 		28175DB91F95BD14004ECB87 /* stop_watch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28175DB71F95BD14004ECB87 /* stop_watch.cpp */; };
@@ -47,6 +50,11 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		2816E6A11FA12F8600CCE00A /* image.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = image.hpp; sourceTree = "<group>"; };
+		2816E6A41FA1338700CCE00A /* stb_image_resize.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = stb_image_resize.h; sourceTree = "<group>"; };
+		2816E6A51FA133EF00CCE00A /* image.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = image.cpp; sourceTree = "<group>"; };
+		2816E6A71FA136CF00CCE00A /* file_utils.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = file_utils.hpp; sourceTree = "<group>"; };
+		2816E6A81FA139AB00CCE00A /* file_utils.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = file_utils.cpp; sourceTree = "<group>"; };
 		28175DB21F91FD0B004ECB87 /* template_utils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = template_utils.cpp; sourceTree = "<group>"; };
 		28175DB31F91FD0B004ECB87 /* binary_serialization.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = binary_serialization.cpp; sourceTree = "<group>"; };
 		28175DB71F95BD14004ECB87 /* stop_watch.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = stop_watch.cpp; sourceTree = "<group>"; };
@@ -113,6 +121,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		2816E69F1FA12F4B00CCE00A /* graphics */ = {
+			isa = PBXGroup;
+			children = (
+				2816E6A11FA12F8600CCE00A /* image.hpp */,
+			);
+			path = graphics;
+			sourceTree = "<group>";
+		};
 		28175DAD1F91FC83004ECB87 /* owl */ = {
 			isa = PBXGroup;
 			children = (
@@ -125,6 +141,7 @@
 				286F1DF01F9E67A500FCC209 /* mapped_iterator.cpp */,
 				286F1DF21F9E6C4E00FCC209 /* filtered_iterator.cpp */,
 				D172B67A1F9F197C0039A121 /* counting_iterator.cpp */,
+				2816E6A51FA133EF00CCE00A /* image.cpp */,
 			);
 			path = owl;
 			sourceTree = "<group>";
@@ -143,6 +160,8 @@
 				D172B6781F9DC7810039A121 /* mapped_iterator.hpp */,
 				284C09CC1F9E54220062BFF1 /* filtered_iterator.hpp */,
 				D172B6791F9F15650039A121 /* counting_iterator.hpp */,
+				2816E6A71FA136CF00CCE00A /* file_utils.hpp */,
+				2816E6A81FA139AB00CCE00A /* file_utils.cpp */,
 			);
 			path = utils;
 			sourceTree = "<group>";
@@ -174,6 +193,7 @@
 		2883C2431F91BA7F007DDB3C /* owl */ = {
 			isa = PBXGroup;
 			children = (
+				2816E69F1FA12F4B00CCE00A /* graphics */,
 				28175DB61F95BCE1004ECB87 /* utils */,
 				288A6FAC1F91D96200783E52 /* math */,
 			);
@@ -256,6 +276,7 @@
 			children = (
 				D172B67F1FA0C42C0039A121 /* stb_image.h */,
 				D172B6801FA0C5F70039A121 /* stb_image_write.h */,
+				2816E6A41FA1338700CCE00A /* stb_image_resize.h */,
 			);
 			path = stb;
 			sourceTree = "<group>";
@@ -267,6 +288,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2816E6A31FA12F8600CCE00A /* image.hpp in Headers */,
 				28175DBA1F95BD14004ECB87 /* stop_watch.hpp in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -373,6 +395,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				28175DB91F95BD14004ECB87 /* stop_watch.cpp in Sources */,
+				2816E6A91FA139AB00CCE00A /* file_utils.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -386,6 +409,7 @@
 				286F1DF31F9E6C4E00FCC209 /* filtered_iterator.cpp in Sources */,
 				2883C2561F91BAFA007DDB3C /* main.cpp in Sources */,
 				28175DB41F91FD0B004ECB87 /* template_utils.cpp in Sources */,
+				2816E6A61FA133EF00CCE00A /* image.cpp in Sources */,
 				286F1DF11F9E67A500FCC209 /* mapped_iterator.cpp in Sources */,
 				28175DB51F91FD0B004ECB87 /* binary_serialization.cpp in Sources */,
 				28175DBC1F95BEF0004ECB87 /* stop_watch.cpp in Sources */,

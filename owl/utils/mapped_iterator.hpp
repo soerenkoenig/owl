@@ -32,80 +32,80 @@ namespace owl
       
       using reference = void;
     
-      using predicate_type = Predicate;
+      using function_type = Predicate;
     
       mapped_iterator() = default;
     
      explicit mapped_iterator( const base_iterator_type &base)
-        : _base(base)
+        : base_(base)
       {
       }
     
-      explicit mapped_iterator(predicate_type predicate, const base_iterator_type &base)
-        : _base(base), _predicate(predicate)
+      explicit mapped_iterator(function_type predicate, const base_iterator_type &base)
+        : base_(base), function_(predicate)
       {
       }
       
       const base_iterator_type &base() const
       {
-        return _base;
+        return base_;
       }
       
-      const predicate_type &predicate() const
+      const function_type &predicate() const
       {
-        return _predicate;
+        return function_;
       }
       
       auto operator*() const
       {
-        return _predicate(*_base);
+        return function_(*base_);
       }
       
       mapped_iterator &operator++()
       {
-        ++_base;
+        ++base_;
         return *this;
       }
     
       mapped_iterator &operator--()
       {
-        --_base;
+        --base_;
         return *this;
       }
     
       mapped_iterator operator++(int)
       {
         mapped_iterator tmp = *this;
-        ++_base;
+        ++base_;
         return tmp;
       }
     
       mapped_iterator operator--(int)
       {
         mapped_iterator tmp = *this;
-        --_base;
+        --base_;
         return tmp;
       }
     
       mapped_iterator operator+(difference_type n) const
       {
-        return mapped_iterator(_predicate, _base + n);
+        return mapped_iterator(function_, base_ + n);
       }
     
       mapped_iterator &operator+=(difference_type n)
       {
-        _base += n;
+        base_ += n;
         return *this;
       }
     
       mapped_iterator operator-(difference_type n) const
       {
-        return mapped_iterator(_predicate, _base - n);
+        return mapped_iterator(function_, base_ - n);
       }
     
       mapped_iterator &operator-=(difference_type n)
       {
-        _base -= n;
+        base_ -= n;
         return *this;
       }
     
@@ -116,7 +116,7 @@ namespace owl
       
       bool operator==(const mapped_iterator &other) const
       {
-        return _base == other._base;
+        return base_ == other._base;
       }
     
       bool operator!=(const mapped_iterator &other) const
@@ -126,17 +126,17 @@ namespace owl
     
       bool operator<(const mapped_iterator &other) const
       {
-        return _base < other._base;
+        return base_ < other._base;
       }
       
       difference_type operator-(const mapped_iterator &other) const
       {
-        return _base - other.base;
+        return base_ - other.base;
       }
     
   private:
-      base_iterator_type _base;
-      predicate_type _predicate;
+      base_iterator_type base_;
+      function_type function_;
     };
 
     template <typename Predicate, typename Iterator>

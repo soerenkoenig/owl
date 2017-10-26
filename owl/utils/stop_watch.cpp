@@ -11,13 +11,13 @@ namespace owl
     
     void stop_watch::reset()
     {
-      _elapsed_time = duration::zero();
-      _running = false;
+      elapsed_time_ = duration::zero();
+      running_ = false;
     }
     
     void stop_watch::restart()
     {
-      _elapsed_time = duration::zero();
+      elapsed_time_ = duration::zero();
       start();
     }
     
@@ -33,29 +33,29 @@ namespace owl
     
     stop_watch::duration stop_watch::current_elapsed_duration() const
     {
-      return is_running() ? clock_type::now() - _last_start : duration::zero();
+      return is_running() ? clock_type::now() - last_start_ : duration::zero();
     }
     
     stop_watch::duration stop_watch::elapsed_duration() const
     {
-      return is_running() ? _elapsed_time + current_elapsed_duration() : _elapsed_time;
+      return is_running() ? elapsed_time_ + current_elapsed_duration() : elapsed_time_;
     }
     
     void stop_watch::start()
     {
-      _running = true;
-      _last_start = clock_type::now();
+      running_ = true;
+      last_start_ = clock_type::now();
     }
     
     void stop_watch::stop()
     {
-      _elapsed_time += clock_type::now() - _last_start;
-      _running = false;
+      elapsed_time_ += clock_type::now() - last_start_;
+      running_ = false;
     }
     
     bool stop_watch::is_running() const
     {
-      return _running;
+      return running_;
     }
 
   }

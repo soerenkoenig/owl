@@ -172,23 +172,23 @@ namespace owl
     
     //iterator interface
     
-    iterator begin() { return _data.begin(); }
-    iterator end() { return _data.end(); }
+    iterator begin() { return data_.begin(); }
+    iterator end() { return data_.end(); }
     
-    const_iterator begin() const { return _data.begin(); }
-    const_iterator end() const { return _data.end(); }
+    const_iterator begin() const { return data_.begin(); }
+    const_iterator end() const { return data_.end(); }
     
-    const_iterator cbegin() const { return _data.cbegin(); }
-    const_iterator cend() const { return _data.cend(); }
+    const_iterator cbegin() const { return data_.cbegin(); }
+    const_iterator cend() const { return data_.cend(); }
     
-    reverse_iterator rbegin() { return _data.rbegin(); }
-    reverse_iterator rend() { return _data.rend(); }
+    reverse_iterator rbegin() { return data_.rbegin(); }
+    reverse_iterator rend() { return data_.rend(); }
     
-    const_reverse_iterator rbegin() const { return _data.crbegin(); }
-    const_reverse_iterator rend() const { return _data.crend(); }
+    const_reverse_iterator rbegin() const { return data_.crbegin(); }
+    const_reverse_iterator rend() const { return data_.crend(); }
     
-    const_reverse_iterator crbegin() const { return _data.crbegin(); }
-    const_reverse_iterator crend() const { return _data.crend(); }
+    const_reverse_iterator crbegin() const { return data_.crbegin(); }
+    const_reverse_iterator crend() const { return data_.crend(); }
     
 
     iterator iterator_at(size_type row_index, size_type column_index)
@@ -288,18 +288,18 @@ namespace owl
     
     matrix(std::initializer_list<Scalar> list)
     {
-        std::copy(list.begin(),list.end(),_data.begin());
+        std::copy(list.begin(),list.end(),data_.begin());
     }
 
     
     constexpr matrix(std::array<Scalar,Rows*Cols> arr)
-        : _data{arr}
+        : data_{arr}
     {
     }
     
     template<typename S, typename... Args>
     explicit matrix(S&& a, Args&&... args)
-        : _data{static_cast<value_type>(std::forward<S>(a)),static_cast<value_type>(std::forward<Args>(args))...}
+        : data_{static_cast<value_type>(std::forward<S>(a)),static_cast<value_type>(std::forward<Args>(args))...}
     {
         static_assert(sizeof...(Args) == 0 || sizeof...(Args)+1 == size(), "incorrect number of arguments");
     }
@@ -338,86 +338,86 @@ namespace owl
         typename = std::enable_if_t<M::is_vector() && (size() > 0) > >
     value_type& x()
     {
-        return _data[0];
+        return data_[0];
     }
     
     template<typename M = matrix,
         typename = std::enable_if_t<M::is_vector() && (size() > 0) > >
     const value_type& x() const
     {
-    return _data[0];
+    return data_[0];
     }
     
     template<typename M = matrix,
         typename = std::enable_if_t<M::is_vector() && (size() > 1) > >
     value_type& y()
     {
-        return _data[1];
+        return data_[1];
     }
     
     template<typename M = matrix,
         typename = std::enable_if_t<M::is_vector() && (size() > 1) > >
     const value_type& y() const
     {
-        return _data[1];
+        return data_[1];
     }
     
     template<typename M = matrix,
     typename = std::enable_if_t<M::is_vector() && (size() > 2) > >
     value_type& z()
     {
-        return _data[2];
+        return data_[2];
     }
     
     template<typename M = matrix,
     typename = std::enable_if_t<M::is_vector() && (size() > 2) > >
     const value_type& z() const
     {
-        return _data[2];
+        return data_[2];
     }
     
     template<typename M = matrix,
     typename = std::enable_if_t<M::is_vector() && (size() > 3) > >
     value_type& w()
     {
-        return _data[3];
+        return data_[3];
     }
     
     template<typename M = matrix,
     typename = std::enable_if_t<M::is_vector() && (size() > 3) > >
     const value_type& w() const
     {
-        return _data[3];
+        return data_[3];
     }
     
     reference operator[](size_type pos)
     {
-        return _data[pos];
+        return data_[pos];
     }
     
     const_reference operator[](size_type pos) const
     {
-        return _data[pos];
+        return data_[pos];
     }
     
     reference operator()(size_type pos)
     {
-    return _data[pos];
+    return data_[pos];
     }
     
     const_reference operator()(size_type pos) const
     {
-    return _data[pos];
+    return data_[pos];
     }
     
     reference operator()(size_type r, size_type c)
     {
-        return _data[linear_index(r,c)];
+        return data_[linear_index(r,c)];
     }
     
     const_reference operator()(size_type r, size_type c) const
     {
-        return _data[linear_index(r,c)];
+        return data_[linear_index(r,c)];
     }
     
     //comparison operators
@@ -425,37 +425,37 @@ namespace owl
     template< typename  S, std::size_t N, std::size_t M>
     friend bool operator==( const matrix<S,N,M>& lhs, const matrix<S,N,M>& rhs )
     {
-        return lhs._data == rhs._data;
+        return lhs.data_ == rhs.data_;
     }
     
     template< typename  S, std::size_t N, std::size_t M>
     friend bool operator!=( const matrix<S,N,M>& lhs, const matrix<S,N,M>& rhs )
     {
-        return lhs._data != rhs._data;
+        return lhs.data_ != rhs.data_;
     }
     
     template< typename  S, std::size_t N, std::size_t M>
     friend bool operator<( const matrix<S,N,M>& lhs, const matrix<S,N,M>& rhs )
     {
-        return lhs._data < rhs._data;
+        return lhs.data_ < rhs.data_;
     }
     
     template< typename  S, std::size_t N, std::size_t M>
     friend bool operator<=( const matrix<S,N,M>& lhs, const matrix<S,N,M>& rhs )
     {
-        return lhs._data <= rhs._data;
+        return lhs.data_ <= rhs.data_;
     }
     
     template< typename  S, std::size_t N, std::size_t M>
     friend bool operator>( const matrix<S,N,M>& lhs, const matrix<S,N,M>& rhs )
     {
-        return lhs._data > rhs._data;
+        return lhs.data_ > rhs.data_;
     }
     
     template< typename  S, std::size_t N, std::size_t M, typename T>
     friend bool operator>=( const matrix<S,N,M>& lhs, const matrix<S,N,M>& rhs )
     {
-        return lhs._data >= rhs._data;
+        return lhs.data_ >= rhs.data_;
     }
     
     constexpr static bool empty()
@@ -465,18 +465,18 @@ namespace owl
     
     pointer data()
     {
-        return _data.data();
+        return data_.data();
     }
     
     const_pointer data() const
     {
-        return _data.data();
+        return data_.data();
     }
     
     template <typename S, typename = enable_if_scalar_t<S> >
     matrix& operator*=(S&& s)
     {
-        for(auto& elem : _data)
+        for(auto& elem : data_)
             elem *= s;
         return *this;
     }
@@ -551,7 +551,7 @@ namespace owl
     template <typename S, typename = enable_if_scalar_t<S> >
     matrix& operator/=(S&& s)
     {
-        for(auto& elem: _data)
+        for(auto& elem: data_)
             elem /= s;
         return *this;
     }
@@ -608,7 +608,7 @@ namespace owl
     }
     
     private:
-        container_type _data;
+        container_type data_;
     
     };
   
