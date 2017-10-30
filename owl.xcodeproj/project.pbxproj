@@ -22,6 +22,10 @@
 		286F1DF31F9E6C4E00FCC209 /* filtered_iterator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 286F1DF21F9E6C4E00FCC209 /* filtered_iterator.cpp */; };
 		2883C2561F91BAFA007DDB3C /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2883C2551F91BAFA007DDB3C /* main.cpp */; };
 		2883C25B1F91BB33007DDB3C /* libowl.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2883C2411F91BA7F007DDB3C /* libowl.dylib */; };
+		288410B81FA600E800CE68DA /* obj.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 288410B71FA600E800CE68DA /* obj.cpp */; };
+		288410BE1FA63F9700CE68DA /* owl.png in CopyFiles */ = {isa = PBXBuildFile; fileRef = 288410BD1FA63F1F00CE68DA /* owl.png */; };
+		288410C01FA63FDF00CE68DA /* cube.mtl in CopyFiles */ = {isa = PBXBuildFile; fileRef = 288410BB1FA6071F00CE68DA /* cube.mtl */; };
+		288410C11FA63FE200CE68DA /* cube.obj in CopyFiles */ = {isa = PBXBuildFile; fileRef = 288410BA1FA606BE00CE68DA /* cube.obj */; };
 		288A6F971F91BE4400783E52 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 288A6F961F91BE4400783E52 /* main.cpp */; };
 		288A6F9B1F91BE5400783E52 /* libowl.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2883C2411F91BA7F007DDB3C /* libowl.dylib */; };
 		288A6FA81F91CA9E00783E52 /* binary_serialization.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 288A6FA61F91CA9E00783E52 /* binary_serialization.cpp */; };
@@ -29,14 +33,44 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		2883C2511F91BAFA007DDB3C /* CopyFiles */ = {
+		2816E6AF1FA266E700CCE00A /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
+			dstPath = images;
+			dstSubfolderSpec = 16;
+			files = (
+				288410BE1FA63F9700CE68DA /* owl.png in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2816E6B11FA2671800CCE00A /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = data;
+			dstSubfolderSpec = 16;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2883C2511F91BAFA007DDB3C /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 12;
 			dstPath = /usr/share/man/man1/;
 			dstSubfolderSpec = 0;
 			files = (
 			);
-			runOnlyForDeploymentPostprocessing = 1;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		288410BF1FA63FA500CE68DA /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = meshes;
+			dstSubfolderSpec = 16;
+			files = (
+				288410C01FA63FDF00CE68DA /* cube.mtl in CopyFiles */,
+				288410C11FA63FE200CE68DA /* cube.obj in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 		288A6F921F91BE4400783E52 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
@@ -71,9 +105,14 @@
 		286F1DF01F9E67A500FCC209 /* mapped_iterator.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = mapped_iterator.cpp; sourceTree = "<group>"; };
 		286F1DF21F9E6C4E00FCC209 /* filtered_iterator.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = filtered_iterator.cpp; sourceTree = "<group>"; };
 		2883C2411F91BA7F007DDB3C /* libowl.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libowl.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
-		2883C2531F91BAFA007DDB3C /* test */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = test; sourceTree = BUILT_PRODUCTS_DIR; };
+		2883C2531F91BAFA007DDB3C /* test */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = text; path = test; sourceTree = BUILT_PRODUCTS_DIR; };
 		2883C2551F91BAFA007DDB3C /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		2883C25E1F91BD38007DDB3C /* catch.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = catch.hpp; sourceTree = "<group>"; };
+		288410B61FA6006A00CE68DA /* obj.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = obj.hpp; sourceTree = "<group>"; };
+		288410B71FA600E800CE68DA /* obj.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = obj.cpp; sourceTree = "<group>"; };
+		288410BA1FA606BE00CE68DA /* cube.obj */ = {isa = PBXFileReference; lastKnownFileType = text; path = cube.obj; sourceTree = "<group>"; };
+		288410BB1FA6071F00CE68DA /* cube.mtl */ = {isa = PBXFileReference; lastKnownFileType = text; path = cube.mtl; sourceTree = "<group>"; };
+		288410BD1FA63F1F00CE68DA /* owl.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = owl.png; sourceTree = "<group>"; };
 		288A6F941F91BE4400783E52 /* bench */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = bench; sourceTree = BUILT_PRODUCTS_DIR; };
 		288A6F961F91BE4400783E52 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		288A6F9D1F91BEAE00783E52 /* benchpress.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = benchpress.hpp; sourceTree = "<group>"; };
@@ -125,8 +164,18 @@
 			isa = PBXGroup;
 			children = (
 				2816E6A11FA12F8600CCE00A /* image.hpp */,
+				288410B61FA6006A00CE68DA /* obj.hpp */,
 			);
 			path = graphics;
+			sourceTree = "<group>";
+		};
+		2816E6AA1FA2619600CCE00A /* data */ = {
+			isa = PBXGroup;
+			children = (
+				288410BC1FA63EE300CE68DA /* images */,
+				288410B91FA6069500CE68DA /* meshes */,
+			);
+			path = data;
 			sourceTree = "<group>";
 		};
 		28175DAD1F91FC83004ECB87 /* owl */ = {
@@ -142,6 +191,7 @@
 				286F1DF21F9E6C4E00FCC209 /* filtered_iterator.cpp */,
 				D172B67A1F9F197C0039A121 /* counting_iterator.cpp */,
 				2816E6A51FA133EF00CCE00A /* image.cpp */,
+				288410B71FA600E800CE68DA /* obj.cpp */,
 			);
 			path = owl;
 			sourceTree = "<group>";
@@ -203,6 +253,7 @@
 		2883C2541F91BAFA007DDB3C /* test */ = {
 			isa = PBXGroup;
 			children = (
+				2816E6AA1FA2619600CCE00A /* data */,
 				28175DAD1F91FC83004ECB87 /* owl */,
 				2883C2551F91BAFA007DDB3C /* main.cpp */,
 			);
@@ -233,6 +284,23 @@
 				288A6FAA1F91CDDD00783E52 /* LICENSE.txt */,
 			);
 			path = catch;
+			sourceTree = "<group>";
+		};
+		288410B91FA6069500CE68DA /* meshes */ = {
+			isa = PBXGroup;
+			children = (
+				288410BA1FA606BE00CE68DA /* cube.obj */,
+				288410BB1FA6071F00CE68DA /* cube.mtl */,
+			);
+			path = meshes;
+			sourceTree = "<group>";
+		};
+		288410BC1FA63EE300CE68DA /* images */ = {
+			isa = PBXGroup;
+			children = (
+				288410BD1FA63F1F00CE68DA /* owl.png */,
+			);
+			path = images;
 			sourceTree = "<group>";
 		};
 		288A6F951F91BE4400783E52 /* bench */ = {
@@ -320,6 +388,8 @@
 				2883C24F1F91BAFA007DDB3C /* Sources */,
 				2883C2501F91BAFA007DDB3C /* Frameworks */,
 				2883C2511F91BAFA007DDB3C /* CopyFiles */,
+				2816E6AF1FA266E700CCE00A /* CopyFiles */,
+				288410BF1FA63FA500CE68DA /* CopyFiles */,
 			);
 			buildRules = (
 			);
@@ -337,6 +407,7 @@
 				288A6F901F91BE4400783E52 /* Sources */,
 				288A6F911F91BE4400783E52 /* Frameworks */,
 				288A6F921F91BE4400783E52 /* CopyFiles */,
+				2816E6B11FA2671800CCE00A /* CopyFiles */,
 			);
 			buildRules = (
 			);
@@ -406,6 +477,7 @@
 				284C09C51F9681D40062BFF1 /* matrix.cpp in Sources */,
 				D172B67B1F9F197C0039A121 /* counting_iterator.cpp in Sources */,
 				284C09C91F968F5C0062BFF1 /* container_traits.cpp in Sources */,
+				288410B81FA600E800CE68DA /* obj.cpp in Sources */,
 				286F1DF31F9E6C4E00FCC209 /* filtered_iterator.cpp in Sources */,
 				2883C2561F91BAFA007DDB3C /* main.cpp in Sources */,
 				28175DB41F91FD0B004ECB87 /* template_utils.cpp in Sources */,

@@ -22,12 +22,14 @@ namespace owl
   
     std::streamsize file_size(const std::string& path);
   
+    std::string file_extension(const std::string& path);
+  
     template<typename Container>
     bool read_file(const std::string& path, Container& container)
     {
       static_assert(is_continuous_container<Container>::value, "container is not continous");
-      static_assert(sizeof(container_traits<Container>::value_type) == 1,  "size of value type is not 1 byte");
-      static_assert(has_resize<Container>::value,  "container is not resizeable");
+      static_assert(sizeof(typename container_traits<Container>::value_type) == 1, "size of value type is not 1 byte");
+      static_assert(has_resize<Container>::value, "container is not resizeable");
       std::streampos size;
       std::ifstream file(path, std::ios::binary);
 
@@ -43,7 +45,7 @@ namespace owl
     bool write_file(const std::string& path, Container& container)
     {
       static_assert(is_continuous_container<Container>::value, "container is not continous");
-      static_assert(sizeof(container_traits<Container>::value_type) == 1,  "size of value type is not 1 byte");
+      static_assert(sizeof(typename container_traits<Container>::value_type) == 1, "size of value type is not 1 byte");
       std::ofstream file(path, std::ios::out | std::ios::binary);
       return (bool)file.write((char*) container.data(), container.size());
     }

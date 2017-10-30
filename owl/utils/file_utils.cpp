@@ -10,6 +10,14 @@ namespace owl
       return static_cast<bool>(file);
     }
   
+    std::string file_extension(const std::string& path)
+    {
+      std::size_t i = path.rfind('.', path.length());
+      if (i != std::string::npos)
+        return(path.substr(i+1, path.length() - i));
+      return("");
+    }
+  
     std::streamsize file_size(const std::string& path)
     {
       std::ifstream file(path, std::ios::binary | std::ios::ate);
