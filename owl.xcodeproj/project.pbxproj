@@ -134,6 +134,7 @@
 		D172B67A1F9F197C0039A121 /* counting_iterator.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = counting_iterator.cpp; sourceTree = "<group>"; };
 		D172B67F1FA0C42C0039A121 /* stb_image.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = stb_image.h; sourceTree = "<group>"; };
 		D172B6801FA0C5F70039A121 /* stb_image_write.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = stb_image_write.h; sourceTree = "<group>"; };
+		D1F621601FAA13350078436C /* hash_utils.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = hash_utils.hpp; sourceTree = "<group>"; };
 		D1FC096A1F964DEE00320C13 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -218,6 +219,7 @@
 				2816E6A81FA139AB00CCE00A /* file_utils.cpp */,
 				D1536A3A1FA7649B004B7905 /* uuid.cpp */,
 				D1536A3B1FA7649B004B7905 /* uuid.hpp */,
+				D1F621601FAA13350078436C /* hash_utils.hpp */,
 			);
 			path = utils;
 			sourceTree = "<group>";
