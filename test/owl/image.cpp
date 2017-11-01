@@ -18,7 +18,7 @@ void writer(void *context, void *data, int size)
   {
     using namespace owl::graphics;
     using namespace owl::utils;
-    std::string path = "data/images/owl.png";
+    std::string path = "images/owl.png";
     REQUIRE(file_exists(path));
   
     std::vector<unsigned char> buffer;
@@ -36,7 +36,7 @@ void writer(void *context, void *data, int size)
     CHECK(comp == 3);
     std::vector<unsigned char> buffer2;
     stbi_write_jpg_to_func(&writer,&buffer2,w,h,comp,image,96);
-    CHECK(write_file("data/images/owl.jpg",buffer2));
+    CHECK(write_file("images/owl.jpg",buffer2));
     stbi_image_free(image);
   
   }

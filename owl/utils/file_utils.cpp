@@ -24,5 +24,14 @@ namespace owl
       std::streamsize size = file.tellg();
       return size;
     }
+  
+    std::string parent_path(const std::string& path)
+    {
+      size_t found = path.find_last_of("/\\");
+      if(found == std::string::npos)
+        return "";
+  
+      return path.substr(0,found);
+    }
   }
 }

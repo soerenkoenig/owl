@@ -7,6 +7,8 @@
 #include <sstream>
 #include <iostream>
 
+#include "owl/utils/file_utils.hpp"
+
 
 
 namespace owl
@@ -62,10 +64,10 @@ namespace owl
 
     struct obj
     {
-      std::vector<std::array<double,4> > colors;
+      std::vector<std::array<double,3> > colors;
       std::vector<std::array<double,4> > vertices;
-      std::vector<std::array<double,4> > normals;
-      std::vector<std::array<double,4> > texcoords;
+      std::vector<std::array<double,3> > normals;
+      std::vector<std::array<double,3> > texcoords;
       std::vector<polygon> faces;
 
       std::vector<mtl_info> materials;
@@ -73,6 +75,9 @@ namespace owl
 
       std::vector<group> groups;
       std::map<std::string, std::size_t> group_index_lut;
+    
+      std::string object_name;
+      std::string parent_path;
 
       std::size_t current_material_index;
       std::vector<std::size_t> current_group_indices;
@@ -116,7 +121,7 @@ namespace owl
 
       bool read_obj(const std::string& filename)
       {
-
+        this->parent_path = owl::utils::parent_path(filename);
         std::fstream in(filename.c_str(), std::ios::in);
 
         if (in.is_open())
@@ -180,6 +185,13 @@ namespace owl
               read_group(line);
               continue;
             }
+          
+            pos = line.find("o ");
+            if(std::string::npos != pos)
+            {
+              read_object_name(line);
+              continue;
+            }
 
             pos = line.find("usemtl ");
             if (std::string::npos != pos)
@@ -209,12 +221,13 @@ namespace owl
         tokenize(line, " ", tokens);
         for (std::size_t i = 1; i < tokens.size(); i++)
           read_mtl(tokens[i]);
-
       }
 
       void read_mtl(const std::string& filename)
       {
         std::fstream in(filename.c_str(), std::ios::in);
+        if(!in.is_open())
+          in.open(parent_path + "/" + filename, std::ios::in);
         if (in.is_open())
         {
           std::string line;
@@ -332,8 +345,6 @@ namespace owl
         mtl.ambient[3] = d;
         mtl.diffuse[3] = d;
         mtl.specular[3] = d;
-
-
       }
 
       void read_diffuse(mtl_info& mtl, const std::string& line)
@@ -402,29 +413,47 @@ namespace owl
       {
         std::vector<std::string> tokens;
         tokenize(line, " ", tokens);
-
-      
+        switch(tokens.size())
+        {
+        case 4:
+          vertices.push_back({stod(tokens[1]), stod(tokens[2]), stod(tokens[3]), 1.0});
+        break;
+        case 5:
+          vertices.push_back({stod(tokens[1]), stod(tokens[2]), stod(tokens[3]), stod(tokens[4])});
+        break;
+        };
       }
 
       void read_normal(const std::string& line)
       {
         std::vector<std::string> tokens;
         tokenize(line, " ", tokens);
-      
+        normals.push_back({stod(tokens[1]), stod(tokens[2]), stod(tokens[3])});
       }
 
       void read_color(const std::string& line)
       {
         std::vector<std::string> tokens;
         tokenize(line, " ", tokens);
-        colors.emplace_back(stod(tokens[1]), stod(tokens[2]), stod(tokens[3]));
+        colors.push_back({stod(tokens[1]), stod(tokens[2]), stod(tokens[3])});
       }
 
       void read_texcoord(const std::string& line)
       {
         std::vector<std::string> tokens;
         tokenize(line, " ", tokens);
-        texcoords.emplace_back(stod(tokens[1]), stod(tokens[2]));
+        switch(tokens.size())
+        {
+         case 2:
+          texcoords.push_back({stod(tokens[1]), 0.0, 1.0});
+          break;
+        case 3:
+          texcoords.push_back({stod(tokens[1]), stod(tokens[2]), 1.0});
+          break;
+        case 4:
+          texcoords.push_back({stod(tokens[1]), stod(tokens[2]), stod(tokens[3])});
+          break;
+        }
       }
 
       void read_mtl_info(const std::string& line)
@@ -460,7 +489,11 @@ namespace owl
             current_group_indices.push_back(groups.size() - 1);
           }
         }
-
+      }
+    
+      void read_object_name(const std::string& line)
+      {
+        object_name = line;
       }
 
       void read_polygon(const std::string& line)

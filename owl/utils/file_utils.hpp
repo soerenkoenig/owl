@@ -22,6 +22,8 @@ namespace owl
   
     std::streamsize file_size(const std::string& path);
   
+    std::string parent_path(const std::string& path);
+  
     std::string file_extension(const std::string& path);
   
     template<typename Container>
