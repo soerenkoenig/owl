@@ -13,6 +13,7 @@
 #include <cstdint>
 #include <random>
 #include <limits>
+#include <algorithm>
 
 #include "owl/utils/hash_utils.hpp"
 
@@ -37,7 +38,10 @@ namespace owl
       iterator end() noexcept;
       const_iterator end() const noexcept;
       
-      constexpr size_type size() noexcept;
+      constexpr size_type size() noexcept
+      {
+        return 16;
+      }
     
       bool operator==(uuid const& other) noexcept;
       
@@ -203,7 +207,7 @@ namespace owl
           char szdigits[] = "0123456789ABCDEF";
           ctype.widen(szdigits, szdigits + 16, xdigits);
         }
-        const ch* xdigits_end = xdigits + 16;
+        ch* xdigits_end = xdigits + 16;
         
         ch c;
         for (std::size_t i=0; i < u.size() && is; ++i)
@@ -254,6 +258,110 @@ namespace owl
     std::wstring to_wstring(const uuid& u);
    
     uuid random_uuid();
+  
+    namespace detail
+    {
+    
+      template <typename CharIterator>
+      typename std::iterator_traits<CharIterator>::value_type
+      get_next_char(CharIterator& begin, CharIterator end)
+      {
+        if (begin == end)
+        {
+            throw std::runtime_error("invalid uuid string");
+        }
+        return *begin++;
+      }
+
+      unsigned char get_value(char c);
+
+      unsigned char get_value(wchar_t c);
+
+      bool is_dash(char c);
+    
+      bool is_dash(wchar_t c);
+    
+      // return closing brace
+      bool is_open_brace(char c);
+    
+      bool is_open_brace(wchar_t c);
+    
+      void check_close_brace(char c, char open_brace);
+    
+      void check_close_brace(wchar_t c, wchar_t open_brace);
+
+      template <typename CharIterator>
+      uuid parse_uuid(CharIterator begin, CharIterator end)
+      {
+        typedef typename std::iterator_traits<CharIterator>::value_type char_type;
+
+        // check open brace
+        char_type c = get_next_char(begin, end);
+        bool has_open_brace = is_open_brace(c);
+        char_type open_brace_char = c;
+        if (has_open_brace)
+        {
+            c = get_next_char(begin, end);
+        }
+
+        bool has_dashes = false;
+
+        uuid u;
+        int i=0;
+        for (uuid::iterator it_byte=u.begin(); it_byte!=u.end(); ++it_byte, ++i) {
+            if (it_byte != u.begin()) {
+                c = get_next_char(begin, end);
+            }
+          
+            if (i == 4)
+            {
+                has_dashes = is_dash(c);
+                if (has_dashes)
+                {
+                    c = get_next_char(begin, end);
+                }
+            }
+          
+            if (has_dashes)
+            {
+                if (i == 6 || i == 8 || i == 10) {
+                    if (is_dash(c)) {
+                        c = get_next_char(begin, end);
+                    } else
+                     {
+                        throw std::runtime_error("invalid uuid string");
+                    }
+                }
+            }
+
+            *it_byte = get_value(c);
+
+            c = get_next_char(begin, end);
+            *it_byte <<= 4;
+            *it_byte |= get_value(c);
+        }
+
+        // check close brace
+        if (has_open_brace) {
+            c = get_next_char(begin, end);
+            check_close_brace(c, open_brace_char);
+        }
+    
+        return u;
+      }
+    }
+  
+    uuid parse_uuid(const char* const s);
+
+    uuid parse_uuid(const wchar_t* const s);
+  
+    template <typename ch, typename char_traits, typename alloc>
+    uuid parse_uuid(const std::basic_string<ch, char_traits, alloc>& s)
+    {
+        return detail::parse_uuid(s.begin(), s.end());
+    }
+  
+  
   }
 }
 

@@ -24,11 +24,6 @@ namespace owl
     {
       return data.cend();
     }
-      
-    constexpr uuid::size_type uuid::size() noexcept
-    {
-      return data.size();
-    }
   
     bool uuid::operator==(uuid const& other) noexcept
     {
@@ -216,7 +211,89 @@ namespace owl
       return u;
     }
     
+    namespace detail
+    {
+      unsigned char get_value(char c)
+      {
+         static char const*const digits_begin = "0123456789abcdefABCDEF";
+         static char const*const digits_end = digits_begin + 22;
+
+         static unsigned char const values[] =
+             { 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,10,11,12,13,14,15
+             , static_cast<unsigned char>(-1) };
+
+         char const* d = std::find(digits_begin, digits_end, c);
+         return values[d - digits_begin];
+      }
+
+      unsigned char get_value(wchar_t c)
+      {
+        static wchar_t const*const digits_begin = L"0123456789abcdefABCDEF";
+        static wchar_t const*const digits_end = digits_begin + 22;
+     
+        static unsigned char const values[] =
+            { 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,10,11,12,13,14,15
+            , static_cast<unsigned char>(-1) };
+
+        wchar_t const* d = std::find(digits_begin, digits_end, c);
+        return values[d - digits_begin];
+      }
+
+      bool is_dash(char c)
+      {
+        return c == '-';
+      }
     
+      bool is_dash(wchar_t c)
+      {
+        return c == L'-';
+      }
+    
+      // return closing brace
+      bool is_open_brace(char c)
+      {
+        return (c == '{') || (c == '(');
+      }
+    
+      bool is_open_brace(wchar_t c)
+      {
+        return (c == L'{') || (c == L'(');
+      }
+    
+      void check_close_brace(char c, char open_brace)
+      {
+        if ((open_brace == '{' && c == '}') || (open_brace == '(' && c == ')'))
+        {
+            //great
+        }
+        else
+        {
+          throw std::runtime_error("invalid uuid string");
+        }
+      }
+    
+      void check_close_brace(wchar_t c, wchar_t open_brace)
+      {
+        if ((open_brace == L'{' && c == L'}')|| (open_brace == L'(' && c == L')'))
+        {
+         //great
+        }
+        else
+        {
+            throw std::runtime_error("invalid uuid string");
+        }
+      }
+    }
+
+    uuid parse_uuid(const char* const s)
+    {
+      return detail::parse_uuid(s, s+std::strlen(s));
+    }
+
+    uuid parse_uuid(const wchar_t* const s)
+    {
+      return detail::parse_uuid(s, s+std::wcslen(s));
+    }
     
   }
 }
