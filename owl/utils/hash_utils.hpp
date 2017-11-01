@@ -29,7 +29,7 @@ namespace owl
     
     //helper function to combine multiple hash values into a single one (see e.g. implementation of hash_value for ranges)
     template<typename T>
-    inline void hash_combine(std::size_t & seed, T const& value)
+    inline void hash_combine(std::size_t & seed, const T& value)
     {
       seed ^= hash_value(value) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
     }
@@ -38,12 +38,9 @@ namespace owl
     template<typename Iterator>
     std::size_t hash_value(Iterator first, Iterator last, std::size_t seed = 0)
     {
-      using const_reference = const typename std::iterator_traits<Iterator>::reference;
-      std::for_each(first, last,
-                    [&seed](const_reference x) { hash_combine(seed, x); });
+      std::for_each(first, last, [&seed](auto&& x) { hash_combine(seed, x); });
       return seed;
     }
-  
   }
 }
 

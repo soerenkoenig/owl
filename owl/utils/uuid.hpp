@@ -78,10 +78,7 @@ namespace owl
       std::array<std::uint8_t,16> data;
     };
     
-    inline std::size_t hash_value(const uuid& u) noexcept
-    {
-      return hash_value(u.begin(),u.end());
-    }
+    
    
     class ios_flags_saver
     {
@@ -233,13 +230,24 @@ namespace owl
       return is;
     }
     
-   
-    
     std::string to_string(uuid const& u);
     
     std::wstring to_wstring(uuid const& u);
    
-    
     uuid random_uuid();
   }
+}
+
+namespace std
+{
+  
+  //provide std::hash specialication for std::pair types by combining hashes of first and second
+ template<>
+  struct hash<owl::utils::uuid>
+  {
+    std::size_t operator()(const owl::utils::uuid& value) const
+    {
+      return owl::utils::hash_value(value.begin(), value.end());
+    }
+  };
 }
