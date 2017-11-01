@@ -38,9 +38,7 @@ namespace owl
       const_iterator end() const noexcept;
       
       constexpr size_type size() noexcept;
-      
-      bool is_nil() const noexcept;
-      
+    
       bool operator==(uuid const& other) noexcept;
       
       bool operator!=( uuid const& other) noexcept;
@@ -74,8 +72,10 @@ namespace owl
       };
       
       version_type version() const noexcept;
-      
-      std::array<std::uint8_t,16> data;
+    
+      static constexpr uuid zero() { return {}; };
+    
+      std::array<std::uint8_t,16> data = {};
     };
     
     class ios_flags_saver
