@@ -128,6 +128,7 @@
 		288A6FAB1F91D83C00783E52 /* template_utils.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = template_utils.hpp; sourceTree = "<group>"; };
 		288A6FAD1F91D97B00783E52 /* constants.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = constants.hpp; sourceTree = "<group>"; };
 		28CA4D3D1FAA6F4E00C753D6 /* uuid.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = uuid.cpp; sourceTree = "<group>"; };
+		28CA4D3F1FAAF95A00C753D6 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		D1536A3A1FA7649B004B7905 /* uuid.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = uuid.cpp; sourceTree = "<group>"; };
 		D1536A3B1FA7649B004B7905 /* uuid.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = uuid.hpp; sourceTree = "<group>"; };
 		D1604BB21F95FED5007ECD3B /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
@@ -181,6 +182,7 @@
 			children = (
 				288410BC1FA63EE300CE68DA /* images */,
 				288410B91FA6069500CE68DA /* meshes */,
+				28CA4D3F1FAAF95A00C753D6 /* .gitignore */,
 			);
 			path = data;
 			sourceTree = "<group>";
