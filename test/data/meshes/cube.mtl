@@ -9,5 +9,5 @@ newmtl cube
   Kd 0.5880 0.5880 0.5880
   Ks 0.0000 0.0000 0.0000
   Ke 0.0000 0.0000 0.0000
-  map_Ka owl.png
-  map_Kd owl.png
+  map_Ka ../images/owl.png
+  map_Kd ../images/owl.png
