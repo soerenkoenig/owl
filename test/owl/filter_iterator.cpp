@@ -1,9 +1,9 @@
-#include "owl/utils/filtered_iterator.hpp"
+#include "owl/utils/filter_iterator.hpp"
 #include "catch/catch.hpp"
 
 namespace test
 {
-  TEST_CASE( "filtered_iterator", "[utils]" )
+  TEST_CASE( "filter_iterator", "[utils]" )
   {
     using namespace owl::utils;
     std::vector<int> numbers = {0, 1, 2, 3, 4, 5, 6, 7};

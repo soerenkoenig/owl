@@ -20,7 +20,7 @@ namespace owl
   namespace utils
   {
     template <typename Predicate, typename Iterator>
-    class filtered_iterator
+    class filter_iterator
     {
     public:
       using base_iterator_type = Iterator;
@@ -32,29 +32,29 @@ namespace owl
       using reference = typename std::iterator_traits<Iterator>::reference;
       using size_type = std::size_t;
     
-      filtered_iterator() = default;
+      filter_iterator() = default;
     
-      explicit filtered_iterator(predicate_type predicate,
+      explicit filter_iterator(predicate_type predicate,
         const base_iterator_type &iter, const base_iterator_type& end)
         : current_(iter), end_(end), predicate_(predicate)
       {
         ensure_predicate();
       }
     
-      filtered_iterator(base_iterator_type base, base_iterator_type end)
+      filter_iterator(base_iterator_type base, base_iterator_type end)
         : current_(base), end_(end)
       {
         ensure_predicate();
       }
   
       template<typename Predicate2, typename Iterator2>
-      filtered_iterator(const filtered_iterator<Predicate2, Iterator2>& other)
+      filter_iterator(const filter_iterator<Predicate2, Iterator2>& other)
         : current_(other.current_), end_(other.end_), predicate_(other.predicate_)
       {
       }
   
       template<typename Predicate2, typename Iterator2>
-      filtered_iterator& operator=(const filtered_iterator<Predicate2, Iterator2>& other)
+      filter_iterator& operator=(const filter_iterator<Predicate2, Iterator2>& other)
       {
         if(this == &other)
           return *this;
@@ -74,9 +74,9 @@ namespace owl
         return current_;
       }
     
-      filtered_iterator end() const
+      filter_iterator end() const
       {
-        return filtered_iterator(predicate_, end_, end_);
+        return filter_iterator(predicate_, end_, end_);
       }
   
       auto operator*() const
@@ -89,7 +89,7 @@ namespace owl
         std::addressof(operator*());
       }
     
-      filtered_iterator& operator++()
+      filter_iterator& operator++()
       {
         if (current_ == end_)
           return *this;
@@ -98,19 +98,19 @@ namespace owl
         return *this;
       }
 
-      filtered_iterator operator++(int)
+      filter_iterator operator++(int)
       {
-        filtered_iterator temp(*this);
+        filter_iterator temp(*this);
         this->operator++();
         return temp;
       }
 
-      bool operator==(const filtered_iterator& rhs) const
+      bool operator==(const filter_iterator& rhs) const
       {
         return current_ == rhs._current;
       }
 
-      bool operator!=(const filtered_iterator& rhs) const
+      bool operator!=(const filter_iterator& rhs) const
       {
         return current_ != rhs.current_;
       }
@@ -129,17 +129,17 @@ namespace owl
   
   
     template <class Predicate, class Iterator>
-    filtered_iterator<Predicate, Iterator>
-    make_filtered_iterator(Predicate&& f, Iterator&& x, Iterator&& end)
+    filter_iterator<Predicate, Iterator>
+    make_filter_iterator(Predicate&& f, Iterator&& x, Iterator&& end)
     {
-      return filtered_iterator<Predicate, Iterator>(std::forward<Predicate>(f),
+      return filter_iterator<Predicate, Iterator>(std::forward<Predicate>(f),
         std::forward<Iterator>(x),std::forward<Iterator>(end));
     }
 
     template<typename Predicate, typename Iterator>
     auto filter(Iterator&& first, Iterator&& one_past_last)
     {
-      auto f = make_filtered_iterator<Predicate>(std::forward<Iterator>(first),
+      auto f = make_filter_iterator<Predicate>(std::forward<Iterator>(first),
         std::forward<Iterator>(one_past_last));
       return make_iterator_range(f,f.end());
     }
@@ -147,21 +147,21 @@ namespace owl
     template<typename Predicate, typename Range, typename = std::enable_if_t<is_container<std::decay_t<Range>>::value>>
     auto filter(Range&& range)
     {
-      auto f = make_filtered_iterator<Predicate>(std::begin(range), std::end(range));
+      auto f = make_filter_iterator<Predicate>(std::begin(range), std::end(range));
       return make_iterator_range(f, f.end());
     }
 
     template<typename Predicate, typename Range, typename = std::enable_if_t< is_container<std::decay_t<Range>>::value>>
     auto filter(Predicate &&pred, Range&& range)
     {
-      auto f = make_filtered_iterator(std::forward<Predicate>(pred),
+      auto f = make_filter_iterator(std::forward<Predicate>(pred),
         std::begin(range), std::end(range));
       return make_iterator_range(f, f.end());
     }
 
   /*
     template<typename Iterator1, typename Iterator2, std::size_t StepSize>
-    bool operator==(const filtered_iterator<Iterator1, StepSize>& lhs,
+    bool operator==(const filter_iterator<Iterator1, StepSize>& lhs,
       const step_iterator<Iterator2, StepSize>& rhs)
     {
       return lhs.base() == rhs.base();

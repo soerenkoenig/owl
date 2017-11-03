@@ -19,7 +19,7 @@ namespace owl
   namespace utils
   {
     template <typename Integer>
-    class counting_iterator
+    class count_iterator
     {
     public:
       using iterator_category = typename std::random_access_iterator_tag;
@@ -29,9 +29,9 @@ namespace owl
       using reference = void;
       using size_type = std::size_t;
       
-      counting_iterator() = default;
+      count_iterator() = default;
       
-      counting_iterator(Integer integer)
+      count_iterator(Integer integer)
         : current_{integer}
       {
       }
@@ -46,89 +46,89 @@ namespace owl
         return current_ + n;
       }
       
-      counting_iterator& operator++()
+      count_iterator& operator++()
       {
         ++current_;
         return *this;
       }
       
-      counting_iterator& operator--()
+      count_iterator& operator--()
       {
         --current_;
         return *this;
       }
       
-      counting_iterator operator++(int)
+      count_iterator operator++(int)
       {
         auto tmp = *this;
         operator++();
         return tmp;
       }
       
-      counting_iterator operator--(int)
+      count_iterator operator--(int)
       {
         auto tmp = *this;
         operator--();
         return tmp;
       }
       
-      counting_iterator& operator+=(difference_type n)
+      count_iterator& operator+=(difference_type n)
       {
         current_ += n;
         return *this;
       }
       
-      counting_iterator& operator-=(difference_type n)
+      count_iterator& operator-=(difference_type n)
       {
         current_ -= n;
         return *this;
       }
       
-      counting_iterator operator+(difference_type n) const
+      count_iterator operator+(difference_type n) const
       {
         auto it = *this;
         it += n;
         return it;
       }
       
-      difference_type operator-(const counting_iterator &other) const
+      difference_type operator-(const count_iterator &other) const
       {
         return current_ - other.current_;
       }
       
-      counting_iterator operator-(difference_type n) const
+      count_iterator operator-(difference_type n) const
       {
         auto it = *this;
         it -= n;
         return it;
       }
       
-      bool operator==(const counting_iterator &other) const
+      bool operator==(const count_iterator &other) const
       {
         return current_ == other.current_;
       }
       
-      bool operator!=(const counting_iterator &other) const
+      bool operator!=(const count_iterator &other) const
       {
         return !operator==(other);
       }
       
-      bool operator<(const counting_iterator &other) const
+      bool operator<(const count_iterator &other) const
       {
         return current_ < other.current_;
       }
       
-      bool operator>(const counting_iterator &other) const
+      bool operator>(const count_iterator &other) const
       {
         return current_ > other.current_;
       }
       
-      bool operator<=(const counting_iterator &other) const
+      bool operator<=(const count_iterator &other) const
       {
         return current_ <= other.current_;
       }
       
-      bool operator>=(const counting_iterator &other) const
+      bool operator>=(const count_iterator &other) const
       {
         return current_ >= other.current_;
       }
@@ -137,31 +137,31 @@ namespace owl
     };
     
     template <typename Integer>
-    counting_iterator<Integer>
-    operator+(typename counting_iterator<Integer>::difference_type n,
-              const counting_iterator<Integer> &rhs)
+    count_iterator<Integer>
+    operator+(typename count_iterator<Integer>::difference_type n,
+              const count_iterator<Integer> &rhs)
     {
       return rhs + n;
     }
     
     template <typename Integer>
-    counting_iterator<Integer>
-    operator-(typename counting_iterator<Integer>::difference_type n,
-              const counting_iterator<Integer> &rhs)
+    count_iterator<Integer>
+    operator-(typename count_iterator<Integer>::difference_type n,
+              const count_iterator<Integer> &rhs)
     {
-      return counting_iterator<Integer>(n - *rhs);
+      return count_iterator<Integer>(n - *rhs);
     }
     
     template <typename Integer>
-    counting_iterator<Integer> make_counting_iterator(Integer integer)
+    count_iterator<Integer> make_count_iterator(Integer integer)
     {
-      return counting_iterator<Integer>(integer);
+      return count_iterator<Integer>(integer);
     }
     
     template <typename Integer>
     auto make_counting_range(Integer first, Integer last)
     {
-      return make_iterator_range(make_counting_iterator(first), make_counting_iterator(last));
+      return make_iterator_range(make_count_iterator(first), make_count_iterator(last));
     }
   }
 }

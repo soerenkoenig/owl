@@ -17,7 +17,7 @@ namespace owl
   namespace utils
   {
     template <typename Predicate, typename Iterator>
-    class mapped_iterator
+    class map_iterator
     {
     public:
       using base_iterator_type = Iterator;
@@ -34,14 +34,14 @@ namespace owl
     
       using function_type = Predicate;
     
-      mapped_iterator() = default;
+      map_iterator() = default;
     
-     explicit mapped_iterator( const base_iterator_type &base)
+     explicit map_iterator( const base_iterator_type &base)
         : base_(base)
       {
       }
     
-      explicit mapped_iterator(function_type predicate, const base_iterator_type &base)
+      explicit map_iterator(function_type predicate, const base_iterator_type &base)
         : base_(base), function_(predicate)
       {
       }
@@ -61,49 +61,49 @@ namespace owl
         return function_(*base_);
       }
       
-      mapped_iterator &operator++()
+      map_iterator &operator++()
       {
         ++base_;
         return *this;
       }
     
-      mapped_iterator &operator--()
+      map_iterator &operator--()
       {
         --base_;
         return *this;
       }
     
-      mapped_iterator operator++(int)
+      map_iterator operator++(int)
       {
-        mapped_iterator tmp = *this;
+        map_iterator tmp = *this;
         ++base_;
         return tmp;
       }
     
-      mapped_iterator operator--(int)
+      map_iterator operator--(int)
       {
-        mapped_iterator tmp = *this;
+        map_iterator tmp = *this;
         --base_;
         return tmp;
       }
     
-      mapped_iterator operator+(difference_type n) const
+      map_iterator operator+(difference_type n) const
       {
-        return mapped_iterator(function_, base_ + n);
+        return map_iterator(function_, base_ + n);
       }
     
-      mapped_iterator &operator+=(difference_type n)
+      map_iterator &operator+=(difference_type n)
       {
         base_ += n;
         return *this;
       }
     
-      mapped_iterator operator-(difference_type n) const
+      map_iterator operator-(difference_type n) const
       {
-        return mapped_iterator(function_, base_ - n);
+        return map_iterator(function_, base_ - n);
       }
     
-      mapped_iterator &operator-=(difference_type n)
+      map_iterator &operator-=(difference_type n)
       {
         base_ -= n;
         return *this;
@@ -114,22 +114,22 @@ namespace owl
         return *(*this + n);
       }
       
-      bool operator==(const mapped_iterator &other) const
+      bool operator==(const map_iterator &other) const
       {
         return base_ == other._base;
       }
     
-      bool operator!=(const mapped_iterator &other) const
+      bool operator!=(const map_iterator &other) const
       {
         return !operator==(other);
       }
     
-      bool operator<(const mapped_iterator &other) const
+      bool operator<(const map_iterator &other) const
       {
         return base_ < other._base;
       }
       
-      difference_type operator-(const mapped_iterator &other) const
+      difference_type operator-(const map_iterator &other) const
       {
         return base_ - other.base;
       }
@@ -140,25 +140,25 @@ namespace owl
     };
 
     template <typename Predicate, typename Iterator>
-    mapped_iterator<Predicate, Iterator>
-    operator+(typename mapped_iterator<Predicate, Iterator>::difference_type n,
-              const mapped_iterator<Predicate, Iterator> &rhs)
+    map_iterator<Predicate, Iterator>
+    operator+(typename map_iterator<Predicate, Iterator>::difference_type n,
+              const map_iterator<Predicate, Iterator> &rhs)
     {
-      return mapped_iterator<Predicate,Iterator>(rhs.predicate(), rhs.base() + n);
+      return map_iterator<Predicate,Iterator>(rhs.predicate(), rhs.base() + n);
     }
 
     template <typename Predicate, typename Iterator>
-    mapped_iterator<Predicate,Iterator> make_mapped_iterator(Predicate&& predicate, Iterator&& iter)
+    map_iterator<Predicate,Iterator> make_map_iterator(Predicate&& predicate, Iterator&& iter)
     {
-      return mapped_iterator<Predicate,Iterator>(std::forward<Predicate>(predicate), std::forward<Iterator>(iter));
+      return map_iterator<Predicate,Iterator>(std::forward<Predicate>(predicate), std::forward<Iterator>(iter));
     }
   
     template<typename Predicate, typename Iterator>
     auto map_range(Iterator&& first, Iterator&& one_past_last)
     {
       return
-        make_iterator_range(make_mapped_iterator<Predicate>(std::forward<Iterator>(first)),
-        make_mapped_iterator<Predicate>(std::forward<Iterator>(one_past_last)));
+        make_iterator_range(make_map_iterator<Predicate>(std::forward<Iterator>(first)),
+        make_map_iterator<Predicate>(std::forward<Iterator>(one_past_last)));
     }
   
     template<typename Predicate, typename Iterator>
@@ -166,8 +166,8 @@ namespace owl
     {
       return
         make_iterator_range(
-          make_mapped_iterator(std::forward<Predicate>(pred), std::forward<Iterator>(first)),
-          make_mapped_iterator(std::forward<Predicate>(pred), std::forward<Iterator>(one_past_last)));
+          make_map_iterator(std::forward<Predicate>(pred), std::forward<Iterator>(first)),
+          make_map_iterator(std::forward<Predicate>(pred), std::forward<Iterator>(one_past_last)));
     }
   
     template<typename Predicate, typename Range, typename = std::enable_if_t<is_container<std::decay_t<Range>>::value>>

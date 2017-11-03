@@ -1,16 +1,16 @@
-#include "owl/utils/counting_iterator.hpp"
+#include "owl/utils/count_iterator.hpp"
 #include "catch/catch.hpp"
 
 namespace test
 {
-  TEST_CASE( "counting_iterator", "[utils]" )
+  TEST_CASE( "count_iterator", "[utils]" )
   {
     using namespace owl::utils;
     
-    counting_iterator<int> Iter1;
-    counting_iterator<int> Iter2(42);
+    count_iterator<int> Iter1;
+    count_iterator<int> Iter2(42);
     CHECK(*Iter2 == 42);
-    counting_iterator<int> Iter3(Iter2);
+    count_iterator<int> Iter3(Iter2);
     CHECK(*Iter3 == 42);
     Iter1 = Iter2;
     CHECK(*Iter1 == 42);
@@ -30,10 +30,10 @@ namespace test
     CHECK(*Iter1 == 42);
     CHECK(Iter1[1] == 43);
     
-    CHECK(Iter5 + 3 == counting_iterator<int>(46));
-    CHECK(3 + Iter5 == counting_iterator<int>(46));
-    CHECK(Iter5 - 4 == counting_iterator<int>(39));
-    CHECK(50 - Iter5 == counting_iterator<int>(7));
+    CHECK(Iter5 + 3 == count_iterator<int>(46));
+    CHECK(3 + Iter5 == count_iterator<int>(46));
+    CHECK(Iter5 - 4 == count_iterator<int>(39));
+    CHECK(50 - Iter5 == count_iterator<int>(7));
    
     CHECK(Iter1 < Iter5);
     CHECK(Iter1 <= Iter5);
