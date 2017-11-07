@@ -30,6 +30,7 @@
 		288A6F9B1F91BE5400783E52 /* libowl.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2883C2411F91BA7F007DDB3C /* libowl.dylib */; };
 		288A6FA81F91CA9E00783E52 /* binary_serialization.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 288A6FA61F91CA9E00783E52 /* binary_serialization.cpp */; };
 		28CA4D3E1FAA6F4E00C753D6 /* uuid.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28CA4D3D1FAA6F4E00C753D6 /* uuid.cpp */; };
+		D15138B01FB196E9009D3414 /* non_copyable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D15138AF1FB196E9009D3414 /* non_copyable.cpp */; };
 		D1536A3C1FA7649B004B7905 /* uuid.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1536A3A1FA7649B004B7905 /* uuid.cpp */; };
 		D1536A3D1FA7649B004B7905 /* uuid.hpp in Headers */ = {isa = PBXBuildFile; fileRef = D1536A3B1FA7649B004B7905 /* uuid.hpp */; };
 		D172B67B1F9F197C0039A121 /* count_iterator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D172B67A1F9F197C0039A121 /* count_iterator.cpp */; };
@@ -130,6 +131,7 @@
 		28BB75661FB0F254009A6290 /* non_copyable.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = non_copyable.hpp; sourceTree = "<group>"; };
 		28CA4D3D1FAA6F4E00C753D6 /* uuid.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = uuid.cpp; sourceTree = "<group>"; };
 		28CA4D3F1FAAF95A00C753D6 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
+		D15138AF1FB196E9009D3414 /* non_copyable.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = non_copyable.cpp; sourceTree = "<group>"; };
 		D1536A3A1FA7649B004B7905 /* uuid.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = uuid.cpp; sourceTree = "<group>"; };
 		D1536A3B1FA7649B004B7905 /* uuid.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = uuid.hpp; sourceTree = "<group>"; };
 		D1604BB21F95FED5007ECD3B /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
@@ -203,6 +205,7 @@
 				2816E6A51FA133EF00CCE00A /* image.cpp */,
 				288410B71FA600E800CE68DA /* obj.cpp */,
 				28CA4D3D1FAA6F4E00C753D6 /* uuid.cpp */,
+				D15138AF1FB196E9009D3414 /* non_copyable.cpp */,
 			);
 			path = owl;
 			sourceTree = "<group>";
@@ -491,6 +494,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D15138B01FB196E9009D3414 /* non_copyable.cpp in Sources */,
 				284C09C51F9681D40062BFF1 /* matrix.cpp in Sources */,
 				28CA4D3E1FAA6F4E00C753D6 /* uuid.cpp in Sources */,
 				D172B67B1F9F197C0039A121 /* count_iterator.cpp in Sources */,
