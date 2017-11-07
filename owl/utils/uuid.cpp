@@ -78,7 +78,6 @@ namespace owl
       }
     }
       
-      
     uuid::version_type uuid::version() const noexcept
     {
       // version is stored in octet 9
@@ -174,6 +173,17 @@ namespace owl
       }
       return result;
     }
+      
+   template<class T = std::mt19937, std::size_t N = T::state_size>
+   auto create_seeded_engine() -> typename std::enable_if<!!N, T>::type
+   {
+     typename T::result_type random_data[N];
+     std::random_device source;
+     std::generate(std::begin(random_data), std::end(random_data), std::ref(source));
+     std::seed_seq seeds(std::begin(random_data), std::end(random_data));
+     T seededEngine (seeds);
+     return seededEngine;
+   }
     
     uuid random_uuid()
     {
@@ -183,18 +193,18 @@ namespace owl
       using Engine = std::mt19937;
       using Distribution = std::uniform_int_distribution<unsigned int>;
       
+     
+      static auto generator = std::bind(Distribution(std::numeric_limits<unsigned int>::min(),
+        std::numeric_limits<unsigned int>::max()), create_seeded_engine<Engine>());
     
-      static auto generator = std::bind(Distribution(std::numeric_limits<unsigned int>::min()
-                                                     , std::numeric_limits<unsigned int>::max()),
-                                        Engine((unsigned int)time(NULL)));
       unsigned int random_value = generator();
-      for (uuid::iterator it=u.begin(); it!=u.end(); ++it, ++i) {
+      for (uuid::iterator it=u.begin(); it!=u.end(); ++it, ++i)
+      {
         if (i==sizeof(unsigned int)) {
           random_value = generator();
           i = 0;
         }
         
-        // static_cast gets rid of warnings of converting unsigned long to boost::uint8_t
         *it = static_cast<uuid::value_type>((random_value >> (i*8)) & 0xFF);
       }
       

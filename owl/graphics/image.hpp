@@ -16,6 +16,7 @@
 #include <string>
 #include <vector>
 #include <exception>
+#include "owl/utils/file_utils.hpp"
 
 
 #define STBI_NO_STDIO
@@ -95,7 +96,8 @@ inline void resize_image_core(const float *src,
 
 }  // namespace detail*/
 
-enum class image_type {
+enum class image_type
+    {
   grayscale,  ///< load image and convert automatically to 8-bit grayscale
   rgb,        ///< load image and keep original color channels
   bgr
@@ -116,7 +118,7 @@ class image {
   /**
    * create image from raw pointer
    */
-  image(const T *data, size_t width, size_t height, image_type type)
+  image(const intensity_t *data, size_t width, size_t height, image_type type = image_type::rgb)
     : width_(width),
       height_(height),
       depth_(type == image_type::grayscale ? 1 : 3),
@@ -139,13 +141,22 @@ class image {
   }
 
   
-  image(const std::string &filename, image_type type)
+  image(const std::string &path, image_type type = image_type::rgb)
   {
-  /*
-    int w, h, d;
-    stbi_uc *input_pixels = stbi_load(filename.c_str(), &w, &h, &d,
-                                      type == image_type::grayscale ? 1 : 3);
-    if (input_pixels == nullptr)
+    std::vector<unsigned char> buffer;
+    if(!owl::utils::file_exists(path))
+      throw image_error("image file does not exist: " + path);
+    
+    if(!owl::utils::read_file(path, buffer))
+      throw image_error("failed to load image from file: " + path);
+    
+    int w;
+    int h;
+    int d;
+    
+    stbi_uc *input_pixels = stbi_load_from_memory(buffer.data(),(int)buffer.size(), &w, &h, &d, STBI_rgb);
+   
+    if(input_pixels == nullptr)
     {
       throw image_error("failed to open image:" +
                      std::string(stbi_failure_reason()));
@@ -161,28 +172,34 @@ class image {
     // reorder to HxWxD -> DxHxW
     from_rgb(input_pixels, input_pixels + data_.size());
 
-    stbi_image_free(input_pixels);*/
+    stbi_image_free(input_pixels);
   }
 
   void save(const std::string &path) const
   {
-   // int ret;
+  /*  int ret;
     std::vector<uint8_t> buf = to_rgb<uint8_t>();
-/*
-    if (file_extension(path, "png")) {
+    std::string extension = owl::utils::file_extension(path);
+    if (extension == "png")
+    {
       ret = stbi_write_png(path.c_str(), static_cast<int>(width_),
                            static_cast<int>(height_), static_cast<int>(depth_),
                            (const void *)&buf[0], 0);
-    } else {
+    }
+    else if(extension =="bmp")
+    {
       ret = stbi_write_bmp(path.c_str(), static_cast<int>(width_),
                            static_cast<int>(height_), static_cast<int>(depth_),
                            (const void *)&buf[0]);
     }
+    
     if (ret == 0)
      {
       throw image_error("failed to save image:" + path);
     }*/
   }
+  
+  
 
   void resize(size_t width, size_t height)
   {

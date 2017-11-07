@@ -26,6 +26,7 @@ namespace owl
   
     std::string file_extension(const std::string& path);
   
+    
     template<typename Container>
     bool read_file(const std::string& path, Container& container)
     {

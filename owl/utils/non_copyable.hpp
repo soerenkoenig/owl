@@ -16,7 +16,7 @@ namespace owl
   {
     struct non_copyable
     {
-      protected:
+    protected:
       non_copyable() = default;
       ~non_copyable() = default;
 

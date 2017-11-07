@@ -9,7 +9,6 @@ namespace test
 {
   class test : owl::utils::non_copyable
   {
-    
   };
   
   TEST_CASE( "non_copyable", "[utils]" )
