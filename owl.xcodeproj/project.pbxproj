@@ -29,6 +29,8 @@
 		288A6F971F91BE4400783E52 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 288A6F961F91BE4400783E52 /* main.cpp */; };
 		288A6F9B1F91BE5400783E52 /* libowl.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2883C2411F91BA7F007DDB3C /* libowl.dylib */; };
 		288A6FA81F91CA9E00783E52 /* binary_serialization.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 288A6FA61F91CA9E00783E52 /* binary_serialization.cpp */; };
+		28BB756A1FB0F6CC009A6290 /* signal.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28BB75691FB0F6CC009A6290 /* signal.cpp */; };
+		28BB756C1FB3D030009A6290 /* signal.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28BB756B1FB3D030009A6290 /* signal.cpp */; };
 		28CA4D3E1FAA6F4E00C753D6 /* uuid.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28CA4D3D1FAA6F4E00C753D6 /* uuid.cpp */; };
 		D15138B01FB196E9009D3414 /* non_copyable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D15138AF1FB196E9009D3414 /* non_copyable.cpp */; };
 		D1536A3C1FA7649B004B7905 /* uuid.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1536A3A1FA7649B004B7905 /* uuid.cpp */; };
@@ -129,6 +131,11 @@
 		288A6FAB1F91D83C00783E52 /* template_utils.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = template_utils.hpp; sourceTree = "<group>"; };
 		288A6FAD1F91D97B00783E52 /* constants.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = constants.hpp; sourceTree = "<group>"; };
 		28BB75661FB0F254009A6290 /* non_copyable.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = non_copyable.hpp; sourceTree = "<group>"; };
+		28BB75671FB0F393009A6290 /* export.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = export.hpp; sourceTree = "<group>"; };
+		28BB75681FB0F541009A6290 /* signal.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = signal.hpp; sourceTree = "<group>"; };
+		28BB75691FB0F6CC009A6290 /* signal.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = signal.cpp; sourceTree = "<group>"; };
+		28BB756B1FB3D030009A6290 /* signal.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = signal.cpp; sourceTree = "<group>"; };
+		28BB756D1FB6391C009A6290 /* approx.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = approx.hpp; sourceTree = "<group>"; };
 		28CA4D3D1FAA6F4E00C753D6 /* uuid.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = uuid.cpp; sourceTree = "<group>"; };
 		28CA4D3F1FAAF95A00C753D6 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		D15138AF1FB196E9009D3414 /* non_copyable.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = non_copyable.cpp; sourceTree = "<group>"; };
@@ -206,6 +213,7 @@
 				288410B71FA600E800CE68DA /* obj.cpp */,
 				28CA4D3D1FAA6F4E00C753D6 /* uuid.cpp */,
 				D15138AF1FB196E9009D3414 /* non_copyable.cpp */,
+				28BB756B1FB3D030009A6290 /* signal.cpp */,
 			);
 			path = owl;
 			sourceTree = "<group>";
@@ -230,6 +238,8 @@
 				D1536A3B1FA7649B004B7905 /* uuid.hpp */,
 				D1F621601FAA13350078436C /* hash_utils.hpp */,
 				28BB75661FB0F254009A6290 /* non_copyable.hpp */,
+				28BB75681FB0F541009A6290 /* signal.hpp */,
+				28BB75691FB0F6CC009A6290 /* signal.cpp */,
 			);
 			path = utils;
 			sourceTree = "<group>";
@@ -264,6 +274,7 @@
 				2816E69F1FA12F4B00CCE00A /* graphics */,
 				28175DB61F95BCE1004ECB87 /* utils */,
 				288A6FAC1F91D96200783E52 /* math */,
+				28BB75671FB0F393009A6290 /* export.hpp */,
 			);
 			path = owl;
 			sourceTree = "<group>";
@@ -353,6 +364,7 @@
 			children = (
 				288A6FAD1F91D97B00783E52 /* constants.hpp */,
 				284C09C21F96806F0062BFF1 /* matrix.hpp */,
+				28BB756D1FB6391C009A6290 /* approx.hpp */,
 			);
 			path = math;
 			sourceTree = "<group>";
@@ -484,6 +496,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				28BB756A1FB0F6CC009A6290 /* signal.cpp in Sources */,
 				28175DB91F95BD14004ECB87 /* stop_watch.cpp in Sources */,
 				2816E6A91FA139AB00CCE00A /* file_utils.cpp in Sources */,
 				D1536A3C1FA7649B004B7905 /* uuid.cpp in Sources */,
@@ -498,6 +511,7 @@
 				284C09C51F9681D40062BFF1 /* matrix.cpp in Sources */,
 				28CA4D3E1FAA6F4E00C753D6 /* uuid.cpp in Sources */,
 				D172B67B1F9F197C0039A121 /* count_iterator.cpp in Sources */,
+				28BB756C1FB3D030009A6290 /* signal.cpp in Sources */,
 				284C09C91F968F5C0062BFF1 /* container_traits.cpp in Sources */,
 				288410B81FA600E800CE68DA /* obj.cpp in Sources */,
 				286F1DF31F9E6C4E00FCC209 /* filter_iterator.cpp in Sources */,
