@@ -147,6 +147,7 @@
 		D172B67A1F9F197C0039A121 /* count_iterator.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = count_iterator.cpp; sourceTree = "<group>"; };
 		D172B67F1FA0C42C0039A121 /* stb_image.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = stb_image.h; sourceTree = "<group>"; };
 		D172B6801FA0C5F70039A121 /* stb_image_write.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = stb_image_write.h; sourceTree = "<group>"; };
+		D1993BC71FB9B27F005737F9 /* random_utils.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = random_utils.hpp; sourceTree = "<group>"; };
 		D1F621601FAA13350078436C /* hash_utils.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = hash_utils.hpp; sourceTree = "<group>"; };
 		D1FC096A1F964DEE00320C13 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -240,6 +241,7 @@
 				28BB75661FB0F254009A6290 /* non_copyable.hpp */,
 				28BB75681FB0F541009A6290 /* signal.hpp */,
 				28BB75691FB0F6CC009A6290 /* signal.cpp */,
+				D1993BC71FB9B27F005737F9 /* random_utils.hpp */,
 			);
 			path = utils;
 			sourceTree = "<group>";

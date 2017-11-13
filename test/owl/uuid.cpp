@@ -7,7 +7,6 @@ namespace test
   {
     using namespace owl::utils;
     uuid uid1 = random_uuid();
-    std::cout << uid1 << std::endl;
     uuid uid2 = random_uuid();
     uuid zero = uuid::zero();
     CHECK(to_string(zero) == "00000000-0000-0000-0000-000000000000");

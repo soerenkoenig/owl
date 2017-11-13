@@ -14,11 +14,13 @@
 #include <numeric>
 #include <iostream>
 #include <algorithm>
+#include <random>
 
 #include "owl/utils/linear_index.hpp"
 #include "owl/utils/iterator_range.hpp"
 #include "owl/utils/step_iterator.hpp"
 #include "owl/utils/container_utils.hpp"
+#include "owl/utils/random_utils.hpp"
 
 namespace owl
 {
@@ -1102,6 +1104,23 @@ namespace owl
             0,static_cast<T>(2) / tb,0,0,
             0,0,- static_cast<T>(2) / zfn,0,
             - (right + left) / rl,- (top + bottom) / tb,- (zFar + zNear) / zfn,1};
+    }
+    
+    template <typename T, std::size_t M, std::size_t N,
+      typename Engine = std::mt19937, typename Distribution = std::normal_distribution<T>>
+    matrix<T,M,N> random_matrix()
+    {
+      static auto generator = std::bind(Distribution(), owl::utils::create_seeded_engine<Engine>());
+      matrix<T,M,N> m;
+      std::generate(m.begin(),m.end(),generator);
+      return m;
+    }
+    
+    template <typename T, std::size_t M,
+    typename Engine = std::mt19937, typename Distribution = std::normal_distribution<T>>
+    square_matrix<T,M> random_square_matrix()
+    {
+      return random_matrix<T,M,M,Engine,Distribution>();
     }
   
     /*

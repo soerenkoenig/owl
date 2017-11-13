@@ -55,27 +55,7 @@ namespace owl
           , value_(std::forward<T>(value))
         {}
     
-        static approximately custom()
-        {
-          return approximately(0);
-        }
-
-        template <typename T2, typename = typename std::enable_if<std::is_constructible<T, T2>::value>::type>
-        approximately operator()(const T2& value)
-        {
-            approximately approximately(static_cast<T>(value));
-            approximately.epsilon(epsilon_);
-            approximately.margin(margin_);
-            approximately.scale(scale_);
-            return approximately;
-        }
-
-        template <typename T2, typename = typename std::enable_if<std::is_constructible<T, T2>::value>::type>
-        explicit approximately(const T2& value)
-          : approximately(static_cast<T>(value))
-        {
-        }
-
+        
         template <typename T2, typename = typename std::enable_if<std::is_constructible<T, T2>::value>::type>
         friend bool operator==(const T2& lhs, const approximately& rhs)
         {
@@ -111,19 +91,19 @@ namespace owl
         template <typename T2, typename = typename std::enable_if<std::is_constructible<T, T2>::value>::type>
         friend bool operator<=(const approximately& lhs, const T2& rhs)
         {
-          return lhs.value_ < static_cast<T>(rhs) || lhs == rhs;
+          return lhs.value_ < static_cast<std::decay_t<T>>(rhs) || lhs == rhs;
         }
 
         template <typename T2, typename = typename std::enable_if<std::is_constructible<T, T2>::value>::type>
         friend bool operator>=(const T2& lhs, const approximately& rhs)
         {
-          return static_cast<T>(lhs) > rhs.value_ || lhs == rhs;
+          return static_cast<std::decay_t<T>>(lhs) > rhs.value_ || lhs == rhs;
         }
 
         template <typename T2, typename = typename std::enable_if<std::is_constructible<T, T2>::value>::type>
         friend bool operator>=(const approximately& lhs, const T2& rhs)
         {
-          return lhs.value_ > static_cast<T>(rhs) || lhs == rhs;
+          return lhs.value_ > static_cast<std::decay_t<T>>(rhs) || lhs == rhs;
         }
 
         template <typename Scalar,
@@ -156,8 +136,8 @@ namespace owl
           typename = typename std::enable_if<std::is_constructible<double, Scalar>::value>::type>
         approximately& scale(const Scalar& newScale)
         {
-            scale_ = static_cast<double>(newScale);
-            return *this;
+          scale_ = static_cast<double>(newScale);
+          return *this;
         }
     
       const std::decay_t<T>& value() const { return value_; }
@@ -170,21 +150,17 @@ namespace owl
     };
   
     
-    
-    
-    
     template <typename T>
     approximately<T&&> approx(T&& val)
     {
-     return approximately<T&&>(std::forward<T>(val));
+      return approximately<T&&>(std::forward<T>(val));
     }
   
     template <typename T>
     std::ostream& operator<<(std::ostream& out, const approximately<T>& a)
     {
-        return out << a.value();
+      return out << a.value();
     }
-  
   }
 }
 
