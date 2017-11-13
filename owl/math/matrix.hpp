@@ -315,7 +315,7 @@ namespace owl
     {
         for(size_type i = 0; i < Rows;++i)
             for(size_type j = 0; j < Cols; ++j)
-                operator()(i,j) = other(i,j);
+                operator()(i, j) = other(i, j);
     }
     
     //assignment operators
@@ -329,7 +329,7 @@ namespace owl
     {
         for(size_type i = 0; i < Rows;++i)
             for(size_type j = 0; j < Cols; ++j)
-                operator()(i,j) = other(i,j);
+                operator()(i, j) = other(i, j);
         return *this;
     }
     

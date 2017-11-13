@@ -44,12 +44,15 @@ namespace owl
     template <typename T>
     class approximately
     {
+      static_assert(std::is_lvalue_reference<T>::value || std::is_rvalue_reference<T>::value,
+                    "must be an r or l value reference");
     public:
+      
         explicit approximately(T value)
-          : epsilon_(std::numeric_limits<float>::epsilon() * 100 )
+          : epsilon_(std::numeric_limits<float>::epsilon() * 100)
           , margin_(0.0)
           , scale_(0.0)
-          , value_(value)
+          , value_(std::forward<T>(value))
         {}
     
         static approximately custom()
@@ -76,7 +79,7 @@ namespace owl
         template <typename T2, typename = typename std::enable_if<std::is_constructible<T, T2>::value>::type>
         friend bool operator==(const T2& lhs, const approximately& rhs)
         {
-          auto lhs_v = static_cast<T>(lhs);
+          auto lhs_v = static_cast<std::decay_t<T>>(lhs);
           auto rhs_v = rhs.value_;
           return compare_equal(rhs_v, lhs_v, rhs.margin_, rhs.epsilon_ ,rhs.scale_);
         }
@@ -125,27 +128,27 @@ namespace owl
 
         template <typename Scalar,
           typename = typename std::enable_if<std::is_constructible<double, Scalar>::value>::type>
-        approximately& epsilon(const Scalar& newEpsilon)
+        approximately& epsilon(const Scalar& s)
         {
-          double epsilonAsDouble = static_cast<double>(newEpsilon);
-          if(epsilonAsDouble < 0 || epsilonAsDouble > 1.0)
+          double eps_as_double = static_cast<double>(s);
+          if(eps_as_double < 0 || eps_as_double > 1.0)
           {
             throw std::domain_error("Invalid parameter, epsilon has to be between 0 and 1" );
           }
-          epsilon_ = epsilonAsDouble;
+          epsilon_ = eps_as_double;
           return *this;
         }
 
         template <typename Scalar,
           typename = typename std::enable_if<std::is_constructible<double, Scalar>::value>::type>
-        approximately& margin(const Scalar& newMargin)
+        approximately& margin(const Scalar& s)
         {
-          double marginAsDouble = static_cast<double>(newMargin);
-          if(marginAsDouble < 0)
+          double margin_as_double = static_cast<double>(s);
+          if(margin_as_double < 0)
           {
             throw std::domain_error("Invalid parameter, margin has to be non-negative." );
           }
-          margin_ = marginAsDouble;
+          margin_ = margin_as_double;
           return *this;
         }
 
@@ -157,7 +160,7 @@ namespace owl
             return *this;
         }
     
-        const T& value() const { return value_; }
+      const std::decay_t<T>& value() const { return value_; }
     
      private:
         double epsilon_;
@@ -166,10 +169,14 @@ namespace owl
         T value_;
     };
   
+    
+    
+    
+    
     template <typename T>
-    auto approx(T&& val)
+    approximately<T&&> approx(T&& val)
     {
-     return approximately<std::decay_t<T>>(std::forward<T>(val));
+     return approximately<T&&>(std::forward<T>(val));
     }
   
     template <typename T>
