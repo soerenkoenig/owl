@@ -5,13 +5,17 @@
 
 namespace test
 {
+    
+   
 
   TEST_CASE( "matrix", "[math]" )
   {
     using namespace owl::math;
-    CHECK(approx(0.01).margin(0.1) == 0.0);
+    auto tr = translate<float>(vector3f(0,0,0),vector3f(1,2,3));
+    CHECK(approx(tr * vector4f(0,0,0,1)) == vector4f(1,2,3,1));
     CHECK(approx(rotateX<float>(0)) == matrix44f::identity());
     CHECK(approx(det(rotateY<double>(4.9))) == 1);
+    CHECK(approx(det(rotateZ<double>(4.9))) == 1);
   
     auto I = matrix44f::identity();
     auto V = vector4f{1,2,3,4};

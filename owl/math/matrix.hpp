@@ -686,7 +686,7 @@ namespace owl
       matrix<S,M,N> ans;
       for(size_type i = 0; i < N;++i)
         for(size_type j = 0; j < M; ++j)
-          ans(j,i) = operator()(i,j);
+          ans(j,i) = rhs(i,j);
     
       return ans;
     }
@@ -1023,15 +1023,36 @@ namespace owl
     template <typename S, typename T>
     square_matrix<S,4> translate(const T& tx, const T& ty, const T& tz)
     {
-        return square_matrix<S,4>{1,0,0,0,0,1,0,0,0,0,1,0, tx, ty,tz,1};
+      return square_matrix<S,4>{1,0,0,0,0,1,0,0,0,0,1,0, tx, ty,tz,1};
+    }
+      
+    template <typename S, typename T>
+    square_matrix<S,4> translate(const vector<T, 3>& t)
+    {
+        return square_matrix<S,4>{1,0,0,0,0,1,0,0,0,0,1,0, t.x(), t.y(), t.z(),1};
+    }
+      
+    template <typename S, typename T>
+    square_matrix<S,4> translate(const vector<T, 3>& source, const vector<T,3>& dest)
+    {
+        return translate<S>(dest - source);
     }
   
     template <typename S, typename T>
-    square_matrix<S,3> scale(const T& sx,const T& sy,const T& sz)
+    square_matrix<S,3> scale(const T& sx,const T& sy, const T& sz)
     {
         return square_matrix<S,4>{sx,0,0,0,
             0,sy,0,0,
             0,0,sz,0,
+            0,0,0,1};
+    }
+      
+    template <typename S, typename T>
+    square_matrix<S,4> scale(const vector<T, 3>& s)
+    {
+        return square_matrix<S,4>{s.x(),0,0,0,
+            0,s.y(),0,0,
+            0,0,s.z(),0,
             0,0,0,1};
     }
   
