@@ -12,6 +12,8 @@
 
 #include <vector>
 #include <string>
+#include <initializer_list>
+#include <algorithm>
 
 namespace owl
 {
@@ -19,16 +21,44 @@ namespace owl
   {
     class buffer
     {
-     
+     public:
+    
+      using value_type = std::uint8_t;
+      using reference = std::uint8_t&;
+      using const_reference = const std::uint8_t&;
+      using iterator = std::uint8_t*;
+      using const_iterator = const std::uint8_t*;
+      using size_type = std::size_t;
+      using pointer = std::uint8_t*;
+      using const_pointer = const std::uint8_t*;
+    
       buffer();
+    
+      buffer(std::initializer_list<std::uint8_t> il);
      
-      buffer(size_t size);
+      buffer(size_type size);
      
-      buffer(void *data, size_t size);
+      buffer(void *data, size_t size, bool copy = false);
   
       buffer(const buffer &other);
   
       buffer(buffer &&other);
+    
+      template <typename Iterator>
+      buffer(Iterator first, Iterator one_past_last)
+      {
+        size_type elem_size = sizeof(decltype(*first));
+        size_ = std::distance(first, one_past_last) * elem_size;
+        data_ = static_cast<std::uint8_t*>(malloc(size_));
+        is_owner_ = true;
+        auto it = begin();
+        while(first != one_past_last)
+        {
+         memcpy(it, first, elem_size);
+         it += elem_size;
+         ++first;
+        }
+      }
 
       buffer& operator=(const buffer &rhs);
 
@@ -36,28 +66,51 @@ namespace owl
 
       ~buffer();
       
-      size_t  size() const { return size_; }
+      size_type size() const;
       
-      void* data() { return data_; }
+      pointer data();
    
-      const void* data() const { return data_; }
+      const_pointer data() const;
 
-      void resize(std::size_t new_size);
+      void resize(size_type new_size);
+    
+      iterator begin();
+    
+      const_iterator begin() const;
+    
+      const_iterator cbegin() const;
+    
+      iterator end();
+    
+      const_iterator end() const;
+    
+      const_iterator cend() const;
+    
+      buffer sub_buffer(size_type offset, size_type length);
       
-      buffer sub_buffer(size_t offset, size_t length)
-      {
-        return buffer(data_ + offset, length);
-      }
-      
-      bool is_owner() const
-      {
-        return is_owner_;
-      }
+      bool is_owner() const;
   
+      reference operator[](size_type i);
+      
+      const_reference operator[](size_type i) const;
+    
+      bool operator==(const buffer& other) const;
+    
+      bool operator!=(const buffer& other) const;
+    
+      bool operator<(const buffer& other) const;
+    
+      bool operator<=(const buffer& other) const;
+    
+      bool operator>(const buffer& other) const;
+    
+      bool operator>=(const buffer& other) const;
+    
+    
    private:
     
-      std::uint8_t*  data_;
-      size_t size_;
+      pointer  data_;
+      size_type size_;
       bool   is_owner_;
     };
   }

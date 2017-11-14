@@ -33,5 +33,25 @@ namespace owl
   
       return path.substr(0,found);
     }
+  
+    bool read_file(const std::string& path, buffer& buf)
+    {
+      std::streampos size;
+      std::ifstream file(path, std::ios::binary);
+
+      file.seekg(0, std::ios::end);
+      size = file.tellg();
+      file.seekg(0, std::ios::beg);
+    
+      buf.resize(size);
+      return (bool)file.read((char*) buf.data(), size);
+    }
+  
+  
+    bool write_file(const std::string& path, buffer& buf)
+    {
+      std::ofstream file(path, std::ios::out | std::ios::binary);
+      return (bool)file.write((const char*) buf.data(), buf.size());
+    }
   }
 }

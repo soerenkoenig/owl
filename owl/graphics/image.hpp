@@ -17,6 +17,7 @@
 #include <vector>
 #include <exception>
 #include "owl/utils/file_utils.hpp"
+#include "owl/utils/buffer.hpp"
 
 
 #define STBI_NO_STDIO
@@ -143,18 +144,18 @@ class image {
   
   image(const std::string &path, image_type type = image_type::rgb)
   {
-    std::vector<unsigned char> buffer;
+    utils::buffer buf;
     if(!owl::utils::file_exists(path))
       throw image_error("image file does not exist: " + path);
     
-    if(!owl::utils::read_file(path, buffer))
+    if(!owl::utils::read_file(path, buf))
       throw image_error("failed to load image from file: " + path);
     
     int w;
     int h;
     int d;
     
-    stbi_uc *input_pixels = stbi_load_from_memory(buffer.data(),(int)buffer.size(), &w, &h, &d, STBI_rgb);
+    stbi_uc *input_pixels = stbi_load_from_memory(buf.data(),(int)buf.size(), &w, &h, &d, STBI_rgb);
    
     if(input_pixels == nullptr)
     {
