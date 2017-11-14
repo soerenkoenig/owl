@@ -484,7 +484,7 @@ namespace owl
     }
     
     template <typename S,typename = enable_if_scalar_t<S>>
-    matrix operator*(S&& s)
+    matrix operator*(S&& s) const
     {
       auto ans = *this;
       ans *= s;
@@ -494,7 +494,7 @@ namespace owl
     template <typename S2>
     matrix& operator+=(const matrix<S2,Rows,Cols>& other)
     {
-      std::transform (begin(), end(), other.begin(), begin(), std::plus<value_type>());
+      std::transform(begin(), end(), other.begin(), begin(), std::plus<value_type>());
       return *this;
     }
     
@@ -688,7 +688,7 @@ namespace owl
       matrix<S,M,N> ans;
       for(size_type i = 0; i < N;++i)
         for(size_type j = 0; j < M; ++j)
-          ans(j,i) = operator()(i,j);
+          ans(j,i) = rhs(i,j);
     
       return ans;
     }
@@ -733,24 +733,31 @@ namespace owl
     template <typename S>
     S det(const square_matrix<S,3>& m)
     {
-      return m(0,0)*m(1,1)*m(2,2)
-        +m(0,1)*m(1,2)*m(2,0)
-        +m(0,2)*m(1,0)*m(2,1)
-        -m(0,0)*m(1,2)*m(2,1)
-        -m(0,1)*m(1,0)*m(2,2)
-        -m(0,2)*m(1,1)*m(2,0);
+      return m(0,0) * m(1,1) * m(2,2)
+        +m(0,1) * m(1,2) * m(2,0)
+        +m(0,2) * m(1,0) * m(2,1)
+        -m(0,0) * m(1,2) * m(2,1)
+        -m(0,1) * m(1,0) * m(2,2)
+        -m(0,2) * m(1,1) * m(2,0);
     }
   
     ///determinant of 4x4 matrix
     template <typename S>
     S det(const square_matrix<S,4>& m)
     {
-      return m(0,0)*m(1,1)*m(2,2)*m(3,3) - m(0,0)*m(1,1)*m(3,2)*m(2,3) - m(0,0)*m(1,2)*m(2,1)*m(3,3) + m(0,0)*m(1,2)*m(2,3)*m(3,1) +
-        m(0,0)*m(1,3)*m(2,1)*m(3,2) + m(0,0)*m(1,3)*m(3,1)*m(2,2) - m(0,1)*m(1,0)*m(2,2)*m(3,3) + m(0,1)*m(1,0)*m(3,2)*m(2,3) +
-        m(0,1)*m(1,2)*m(2,0)*m(3,3) - m(0,1)*m(1,2)*m(3,0)*m(2,3) - m(0,1)*m(1,3)*m(2,0)*m(3,2) + m(0,1)*m(1,3)*m(3,0)*m(2,2) +
-        m(0,2)*m(1,0)*m(2,1)*m(3,3) - m(0,2)*m(1,0)*m(3,1)*m(2,3) - m(0,2)*m(1,1)*m(2,0)*m(3,2) + m(0,2)*m(1,1)*m(3,0)*m(2,2) +
-        m(0,2)*m(1,3)*m(2,0)*m(3,1) - m(0,2)*m(1,3)*m(3,0)*m(2,1) - m(0,3)*m(1,0)*m(2,1)*m(3,2) + m(0,3)*m(1,0)*m(3,1)*m(2,2) +
-        m(0,3)*m(1,1)*m(2,0)*m(3,2) - m(0,3)*m(1,1)*m(3,0)*m(2,2) - m(0,3)*m(1,2)*m(2,0)*m(3,1) + m(0,3)*m(1,2)*m(3,0)*m(2,1);
+      return
+        m(0,3) * m(1,2) * m(2,1) * m(3,0) - m(0,2) * m(1,3) * m(2,1) * m(3,0) -
+        m(0,3) * m(1,1) * m(2,2) * m(3,0) + m(0,1) * m(1,3) * m(2,2) * m(3,0) +
+        m(0,2) * m(1,1) * m(2,3) * m(3,0) - m(0,1) * m(1,2) * m(2,3) * m(3,0) -
+        m(0,3) * m(1,2) * m(2,0) * m(3,1) + m(0,2) * m(1,3) * m(2,0) * m(3,1) +
+        m(0,3) * m(1,0) * m(2,2) * m(3,1) - m(0,0) * m(1,3) * m(2,2) * m(3,1) -
+        m(0,2) * m(1,0) * m(2,3) * m(3,1) + m(0,0) * m(1,2) * m(2,3) * m(3,1) +
+        m(0,3) * m(1,1) * m(2,0) * m(3,2) - m(0,1) * m(1,3) * m(2,0) * m(3,2) -
+        m(0,3) * m(1,0) * m(2,1) * m(3,2) + m(0,0) * m(1,3) * m(2,1) * m(3,2) +
+        m(0,1) * m(1,0) * m(2,3) * m(3,2) - m(0,0) * m(1,1) * m(2,3) * m(3,2) -
+        m(0,2) * m(1,1) * m(2,0) * m(3,3) + m(0,1) * m(1,2) * m(2,0) * m(3,3) +
+        m(0,2) * m(1,0) * m(2,1) * m(3,3) - m(0,0) * m(1,2) * m(2,1) * m(3,3) -
+        m(0,1) * m(1,0) * m(2,2) * m(3,3) + m(0,0) * m(1,1) * m(2,2) * m(3,3);
     }
   
   
@@ -913,8 +920,8 @@ namespace owl
     template <typename T, std::size_t M, std::size_t N>
     matrix<T,M,N> eye()
     {
-        matrix<T,M,N> r;
-        r = (T)0;
+        matrix<T,M,N> r{};
+     //   r = (T)0;
         std::size_t o = (std::min)(M,N);
         for(std::size_t i = 0; i < o; i++)
             r(i,i) = (T)1;
@@ -924,8 +931,8 @@ namespace owl
     template <typename T, std::size_t M>
     matrix<T,M,M> eye()
     {
-        matrix<T,M,M> r;
-        r = (T)0;
+        matrix<T,M,M> r{};
+       // r = (T)0;
     
         for(std::size_t i = 0; i < M; i++)
             r(i,i) = (T)1;
@@ -1018,15 +1025,36 @@ namespace owl
     template <typename S, typename T>
     square_matrix<S,4> translate(const T& tx, const T& ty, const T& tz)
     {
-        return square_matrix<S,4>{1,0,0,0,0,1,0,0,0,0,1,0, tx, ty,tz,1};
+      return square_matrix<S,4>{1,0,0,0,0,1,0,0,0,0,1,0, tx, ty,tz,1};
+    }
+      
+    template <typename S, typename T>
+    square_matrix<S,4> translate(const vector<T, 3>& t)
+    {
+        return square_matrix<S,4>{1,0,0,0,0,1,0,0,0,0,1,0, t.x(), t.y(), t.z(),1};
+    }
+      
+    template <typename T>
+    square_matrix<T,4> translate(const vector<T, 3>& source, const vector<T,3>& dest)
+    {
+        return translate<T>(dest - source);
     }
   
     template <typename S, typename T>
-    square_matrix<S,3> scale(const T& sx,const T& sy,const T& sz)
+    square_matrix<S,3> scale(const T& sx,const T& sy, const T& sz)
     {
         return square_matrix<S,4>{sx,0,0,0,
             0,sy,0,0,
             0,0,sz,0,
+            0,0,0,1};
+    }
+      
+    template <typename T>
+    square_matrix<T,4> scale(const vector<T, 3>& s)
+    {
+        return square_matrix<T,4>{s.x(),0,0,0,
+            0,s.y(),0,0,
+            0,0,s.z(),0,
             0,0,0,1};
     }
   
@@ -1042,7 +1070,6 @@ namespace owl
     template<typename T>
     square_matrix<T,4> rotate(const vector<T, 3> axis, const T& angle)
     {
-    
         if(angle == 0)
             return eye<T,4>();
         square_matrix<T,3> R = eye<T,3>();
@@ -1052,12 +1079,19 @@ namespace owl
         T theta = angle;
     
         R += sin(theta)*omega + (1.0f-cos(theta))*(omega*omega);
-    return square_matrix<T,3> {R(0,0),R(1,0),R(2,0),0,
+    return square_matrix<T,4> {R(0,0),R(1,0),R(2,0),0,
         R(0,1),R(1,1),R(2,1),0,
         R(0,2),R(1,2),R(2,2),0,
         0,0,0,1};
-    
     }
+      
+    template<typename T>
+    square_matrix<T,4> rotate(const vector<T, 3>& axis_start, const vector<T, 3>& axis_end, const T& angle)
+    {
+      vector<T,3> axis = axis_end - axis_start;
+        return translate<T>(axis_start) * rotate<T>(axis,angle) * translate<T>(-axis_start);
+    }
+      
   
     template <typename T>
     square_matrix<T,4> rotateX(const T& angle)
@@ -1092,15 +1126,15 @@ namespace owl
         0,0,0,1};
     }
   
-    template <typename S,typename T>
-    square_matrix<T,4> ortho(T left, T right, T bottom, T top, T zNear, T zFar)
+    template <typename S, typename T>
+    square_matrix<S,4> ortho(T left, T right, T bottom, T top, T zNear, T zFar)
     {
     
         T rl = right -  left;
         T tb = top - bottom;
         T zfn = zFar - zNear;
     
-        return square_matrix<T,4> {static_cast<T>(2) / rl,0,0,0,
+        return square_matrix<S,4> {static_cast<T>(2) / rl,0,0,0,
             0,static_cast<T>(2) / tb,0,0,
             0,0,- static_cast<T>(2) / zfn,0,
             - (right + left) / rl,- (top + bottom) / tb,- (zFar + zNear) / zfn,1};
