@@ -112,7 +112,6 @@ namespace owl
     }
       
      
-  
     namespace detail
     {
        char to_char(size_t i) {
@@ -134,22 +133,22 @@ namespace owl
     } // namespace detail
  
   
-    std::string to_string(uuid const& u)
+    std::string to_string(const uuid& u)
     {
       std::string result;
       result.reserve(36);
       
       std::size_t i=0;
-      for (uuid::const_iterator it_data = u.begin(); it_data!=u.end(); ++it_data, ++i) {
+      for (uuid::const_iterator it_data = u.begin(); it_data!=u.end(); ++it_data, ++i)
+      {
         const size_t hi = ((*it_data) >> 4) & 0x0F;
         result += detail::to_char(hi);
         
         const size_t lo = (*it_data) & 0x0F;
         result += detail::to_char(lo);
         
-        if (i == 3 || i == 5 || i == 7 || i == 9) {
+        if (i == 3 || i == 5 || i == 7 || i == 9)
           result += '-';
-        }
       }
       return result;
     }
@@ -169,9 +168,8 @@ namespace owl
         const size_t lo = (*it_data) & 0x0F;
         result += detail::to_wchar(lo);
         
-        if (i == 3 || i == 5 || i == 7 || i == 9) {
+        if (i == 3 || i == 5 || i == 7 || i == 9)
           result += L'-';
-        }
       }
       return result;
     }
@@ -185,30 +183,30 @@ namespace owl
       using Engine = std::mt19937;
       using Distribution = std::uniform_int_distribution<unsigned int>;
       
-     
       static auto generator = std::bind(Distribution(std::numeric_limits<unsigned int>::min(),
         std::numeric_limits<unsigned int>::max()), create_seeded_engine<Engine>());
     
       unsigned int random_value = generator();
       for (uuid::iterator it=u.begin(); it!=u.end(); ++it, ++i)
       {
-        if (i==sizeof(unsigned int)) {
+        if (i == sizeof(unsigned int))
+        {
           random_value = generator();
           i = 0;
         }
         
-        *it = static_cast<uuid::value_type>((random_value >> (i*8)) & 0xFF);
+        *it = static_cast<uuid::value_type>((random_value >> (i * 8)) & 0xFF);
       }
       
       // set variant
       // must be 0b10xxxxxx
-      *(u.begin()+8) &= 0xBF;
-      *(u.begin()+8) |= 0x80;
+      *(u.begin() + 8) &= 0xBF;
+      *(u.begin() + 8) |= 0x80;
       
       // set version
       // must be 0b0100xxxx
-      *(u.begin()+6) &= 0x4F; //0b01001111
-      *(u.begin()+6) |= 0x40; //0b01000000
+      *(u.begin() + 6) &= 0x4F; //0b01001111
+      *(u.begin() + 6) |= 0x40; //0b01000000
       
       return u;
     }
@@ -282,7 +280,7 @@ namespace owl
         }
         else
         {
-            throw std::runtime_error("invalid uuid string");
+          throw std::runtime_error("invalid uuid string");
         }
       }
     }

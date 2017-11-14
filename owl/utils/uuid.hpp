@@ -82,90 +82,24 @@ namespace owl
       std::array<std::uint8_t,16> data = {};
     };
     
-    class ios_flags_saver
-    {
-    public:
-      typedef ::std::ios_base            state_type;
-      typedef ::std::ios_base::fmtflags  aspect_type;
-      
-      explicit  ios_flags_saver(state_type &s)
-        : s_save_( s ), a_save_( s.flags() )
-      {
-      }
-      
-      ios_flags_saver(state_type &s,const aspect_type &a)
-        : s_save_(s), a_save_(s.flags(a))
-      {
-      }
-      
-      ~ios_flags_saver()
-      {
-        this->restore();
-      }
-      
-      void restore()
-      {
-        s_save_.flags(a_save_);
-      }
-      
-    private:
-      state_type &       s_save_;
-      const aspect_type  a_save_;
-      
-      ios_flags_saver& operator=(const ios_flags_saver&);
-    };
-    
-    template <typename Ch, class Tr>
-    class basic_ios_fill_saver
-    {
-    public:
-      typedef ::std::basic_ios<Ch, Tr>        state_type;
-      typedef typename state_type::char_type  aspect_type;
-      
-      explicit basic_ios_fill_saver(state_type &s)
-        : s_save_(s), a_save_(s.fill())
-      {
-      }
-      
-      basic_ios_fill_saver(state_type &s,const aspect_type &a)
-        : s_save_(s), a_save_(s.fill(a))
-      {
-      }
-      
-      ~basic_ios_fill_saver()
-      {
-        this->restore();
-      }
-      
-      void  restore()
-      {
-        s_save_.fill(a_save_);
-      }
-      
-    private:
-      state_type &       s_save_;
-      aspect_type const  a_save_;
-      basic_ios_fill_saver& operator=(const basic_ios_fill_saver&);
-    };
     
     template <typename ch, typename char_traits>
     std::basic_ostream<ch, char_traits>& operator<<(std::basic_ostream<ch, char_traits> &os, const uuid& u)
     {
-      ios_flags_saver flags_saver(os);
-      basic_ios_fill_saver<ch, char_traits> fill_saver(os);
+      auto flags = os.flags();
+      auto fillstate = os.fill();
       
       const typename std::basic_ostream<ch, char_traits>::sentry ok(os);
-      if (ok) {
+      if (ok)
+      {
         const std::streamsize width = os.width(0);
         const std::streamsize uuid_width = 36;
         const std::ios_base::fmtflags flags = os.flags();
         const typename std::basic_ios<ch, char_traits>::char_type fill = os.fill();
         if (flags & (std::ios_base::right | std::ios_base::internal))
         {
-          for (std::streamsize i=uuid_width; i<width; i++)
-          {
+          for (std::streamsize i = uuid_width; i<width; i++)
             os << fill;
-          }
         }
         
         os << std::hex;
@@ -188,6 +122,8 @@ namespace owl
         
         os.width(0); //used the width so reset it
       }
+      os.flags(flags);
+      os.fill(fillstate);
       return os;
     }
     
@@ -308,45 +244,44 @@ namespace owl
 
         uuid u;
         int i=0;
-        for (uuid::iterator it_byte=u.begin(); it_byte!=u.end(); ++it_byte, ++i) {
-            if (it_byte != u.begin()) {
-                c = get_next_char(begin, end);
-            }
-          
-            if (i == 4)
-            {
-                has_dashes = is_dash(c);
-                if (has_dashes)
-                {
-                    c = get_next_char(begin, end);
-                }
-            }
-          
-            if (has_dashes)
-            {
-                if (i == 6 || i == 8 || i == 10) {
-                    if (is_dash(c)) {
-                        c = get_next_char(begin, end);
-                    } else
-                     {
-                        throw std::runtime_error("invalid uuid string");
-                    }
-                }
-            }
-
-            *it_byte = get_value(c);
-
+        for(uuid::iterator it_byte=u.begin(); it_byte!=u.end(); ++it_byte, ++i)
+        {
+          if(it_byte != u.begin())
+          {
             c = get_next_char(begin, end);
-            *it_byte <<= 4;
-            *it_byte |= get_value(c);
+          }
+        
+          if(i == 4)
+          {
+            has_dashes = is_dash(c);
+            if (has_dashes)
+              c = get_next_char(begin, end);
+          }
+        
+          if(has_dashes)
+          {
+            if (i == 6 || i == 8 || i == 10)
+            {
+              if (is_dash(c))
+                c = get_next_char(begin, end);
+              else
+                throw std::runtime_error("invalid uuid string");
+            }
+          }
+
+          *it_byte = get_value(c);
+
+          c = get_next_char(begin, end);
+          *it_byte <<= 4;
+          *it_byte |= get_value(c);
         }
 
         // check close brace
-        if (has_open_brace) {
-            c = get_next_char(begin, end);
-            check_close_brace(c, open_brace_char);
+        if (has_open_brace)
+        {
+          c = get_next_char(begin, end);
+          check_close_brace(c, open_brace_char);
         }
-    
         return u;
       }
     }
@@ -358,7 +293,7 @@ namespace owl
     template <typename ch, typename char_traits, typename alloc>
     uuid parse_uuid(const std::basic_string<ch, char_traits, alloc>& s)
     {
-        return detail::parse_uuid(s.begin(), s.end());
+      return detail::parse_uuid(s.begin(), s.end());
     }
   
   
