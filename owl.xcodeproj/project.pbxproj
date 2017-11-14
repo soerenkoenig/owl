@@ -38,6 +38,8 @@
 		D172B67B1F9F197C0039A121 /* count_iterator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D172B67A1F9F197C0039A121 /* count_iterator.cpp */; };
 		D1993BCA1FBAD8B0005737F9 /* base64.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1993BC91FBAD8B0005737F9 /* base64.cpp */; };
 		D1993BCC1FBADB1E005737F9 /* base64.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1993BCB1FBADB1E005737F9 /* base64.cpp */; };
+		D1993BCF1FBB1D94005737F9 /* buffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1993BCD1FBB1D94005737F9 /* buffer.cpp */; };
+		D1993BD01FBB1D94005737F9 /* buffer.hpp in Headers */ = {isa = PBXBuildFile; fileRef = D1993BCE1FBB1D94005737F9 /* buffer.hpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -153,6 +155,8 @@
 		D1993BC81FBAD730005737F9 /* base64.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = base64.hpp; sourceTree = "<group>"; };
 		D1993BC91FBAD8B0005737F9 /* base64.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = base64.cpp; sourceTree = "<group>"; };
 		D1993BCB1FBADB1E005737F9 /* base64.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = base64.cpp; sourceTree = "<group>"; };
+		D1993BCD1FBB1D94005737F9 /* buffer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = buffer.cpp; sourceTree = "<group>"; };
+		D1993BCE1FBB1D94005737F9 /* buffer.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = buffer.hpp; sourceTree = "<group>"; };
 		D1F621601FAA13350078436C /* hash_utils.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = hash_utils.hpp; sourceTree = "<group>"; };
 		D1FC096A1F964DEE00320C13 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -250,6 +254,8 @@
 				D1993BC71FB9B27F005737F9 /* random_utils.hpp */,
 				D1993BC81FBAD730005737F9 /* base64.hpp */,
 				D1993BC91FBAD8B0005737F9 /* base64.cpp */,
+				D1993BCD1FBB1D94005737F9 /* buffer.cpp */,
+				D1993BCE1FBB1D94005737F9 /* buffer.hpp */,
 			);
 			path = utils;
 			sourceTree = "<group>";
@@ -398,6 +404,7 @@
 			files = (
 				D1536A3D1FA7649B004B7905 /* uuid.hpp in Headers */,
 				2816E6A31FA12F8600CCE00A /* image.hpp in Headers */,
+				D1993BD01FBB1D94005737F9 /* buffer.hpp in Headers */,
 				28175DBA1F95BD14004ECB87 /* stop_watch.hpp in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -509,6 +516,7 @@
 				28BB756A1FB0F6CC009A6290 /* signal.cpp in Sources */,
 				28175DB91F95BD14004ECB87 /* stop_watch.cpp in Sources */,
 				2816E6A91FA139AB00CCE00A /* file_utils.cpp in Sources */,
+				D1993BCF1FBB1D94005737F9 /* buffer.cpp in Sources */,
 				D1993BCA1FBAD8B0005737F9 /* base64.cpp in Sources */,
 				D1536A3C1FA7649B004B7905 /* uuid.cpp in Sources */,
 			);
