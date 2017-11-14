@@ -20,7 +20,6 @@ namespace owl
 {
   namespace utils
   {
-    std::string base64_encode(const unsigned char* buf, std::size_t bufLen);
   
     std::string base64_encode(const buffer& buf);
   
