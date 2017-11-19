@@ -46,35 +46,60 @@ namespace owl
       {
         index_ = invalid();
       }
+      handle& operator++()
+      {
+        ++index_;
+        return *this;
+      }
+      
+      handle& operator--()
+      {
+        --index_;
+        return *this;
+      }
+      
+      handle operator++(int)
+      {
+        auto tmp = *this;
+        operator++();
+        return tmp;
+      }
+      
+      handle operator--(int)
+      {
+        auto tmp = *this;
+        operator--();
+        return tmp;
+      }
       
       bool operator==(const handle& other) const
       {
-        return index_ == other._index;
+        return index_ == other.index_;
       }
       
       bool operator!=(const handle& other) const
       {
-        return index_ != other._index;
+        return index_ != other.index_;
       }
       
       bool operator<(const handle& other) const
       {
-        return index_ < other._index;
+        return index_ < other.index_;
       }
       
       bool operator>(const handle& other) const
       {
-        return  index_ > other._index;
+        return  index_ > other.index_;
       }
       
       bool operator<=(const handle& other) const
       {
-        return index_ <= other._index;
+        return index_ <= other.index_;
       }
       
       bool operator>=(const handle& other) const
       {
-        return  index_ >= other._index ;
+        return  index_ >= other.index_;
       }
       
     private:

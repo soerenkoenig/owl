@@ -4,30 +4,7 @@
 
 namespace test
 {
-/*  class button
-  {
-  public:
-    void press()
-    {
-        pressed(*this);
-    }
-  
-    owl::utils::signal<void(const button& b)> pressed;
-  
-  };
-  
-  void logbutton(const button& b)
-  {
-  
-  }
-  TEST_CASE("signal", "[utils]")
-  {
-   button b;
- //  b.pressed.connect(logbutton);
-  
-  }
 
-  */
   TEST_CASE( "combiner", "[utils]" )
   {
     using namespace owl::utils;
@@ -48,6 +25,15 @@ namespace test
       CHECK(c.get().size() == 2);
       CHECK(c.get()[1] == 4);
     }
+    
+    signal<int(int x, int y)> sig;
+    {
+      scoped_connection con = sig.connect([](int x, int y){ std::cout << "xy" << std::endl; return x;});
+      CHECK(sig(1,2) == 1);
+      CHECK(sig(2,2) == 2);
+    }
+    sig(3,4);
+    
   }
 }
 
