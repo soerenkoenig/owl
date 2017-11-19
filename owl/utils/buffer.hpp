@@ -59,10 +59,11 @@ namespace owl
          ++first;
         }
       }
+        
 
       buffer& operator=(const buffer &rhs);
 
-      buffer&  operator=(buffer &&rhs);
+      buffer& operator=(buffer &&rhs);
 
       ~buffer();
       
@@ -73,6 +74,8 @@ namespace owl
       const_pointer data() const;
 
       void resize(size_type new_size);
+        
+      void append(const buffer& buf); 
     
       iterator begin();
     
@@ -105,6 +108,7 @@ namespace owl
       bool operator>(const buffer& other) const;
     
       bool operator>=(const buffer& other) const;
+        
     
     
    private:

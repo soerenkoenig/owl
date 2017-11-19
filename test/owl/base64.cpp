@@ -5,7 +5,7 @@
 namespace test
 {
   
-  TEST_CASE( "utils", "[base64]" )
+  TEST_CASE( "base64", "[utils]" )
   {
     using namespace owl::utils;
     

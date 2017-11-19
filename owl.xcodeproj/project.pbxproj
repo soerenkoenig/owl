@@ -31,6 +31,7 @@
 		288A6FA81F91CA9E00783E52 /* binary_serialization.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 288A6FA61F91CA9E00783E52 /* binary_serialization.cpp */; };
 		28BB756A1FB0F6CC009A6290 /* signal.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28BB75691FB0F6CC009A6290 /* signal.cpp */; };
 		28BB756C1FB3D030009A6290 /* signal.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28BB756B1FB3D030009A6290 /* signal.cpp */; };
+		28C66FA71FC1BF1D00F9C0D1 /* handle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28C66FA61FC1BF1D00F9C0D1 /* handle.cpp */; };
 		28CA4D3E1FAA6F4E00C753D6 /* uuid.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28CA4D3D1FAA6F4E00C753D6 /* uuid.cpp */; };
 		D15138B01FB196E9009D3414 /* non_copyable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D15138AF1FB196E9009D3414 /* non_copyable.cpp */; };
 		D1536A3C1FA7649B004B7905 /* uuid.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1536A3A1FA7649B004B7905 /* uuid.cpp */; };
@@ -140,6 +141,8 @@
 		28BB75691FB0F6CC009A6290 /* signal.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = signal.cpp; sourceTree = "<group>"; };
 		28BB756B1FB3D030009A6290 /* signal.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = signal.cpp; sourceTree = "<group>"; };
 		28BB756D1FB6391C009A6290 /* approx.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = approx.hpp; sourceTree = "<group>"; };
+		28C66FA51FC1BA5600F9C0D1 /* handle.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = handle.hpp; sourceTree = "<group>"; };
+		28C66FA61FC1BF1D00F9C0D1 /* handle.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = handle.cpp; sourceTree = "<group>"; };
 		28CA4D3D1FAA6F4E00C753D6 /* uuid.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = uuid.cpp; sourceTree = "<group>"; };
 		28CA4D3F1FAAF95A00C753D6 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		D15138AF1FB196E9009D3414 /* non_copyable.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = non_copyable.cpp; sourceTree = "<group>"; };
@@ -225,6 +228,7 @@
 				D15138AF1FB196E9009D3414 /* non_copyable.cpp */,
 				28BB756B1FB3D030009A6290 /* signal.cpp */,
 				D1993BCB1FBADB1E005737F9 /* base64.cpp */,
+				28C66FA61FC1BF1D00F9C0D1 /* handle.cpp */,
 			);
 			path = owl;
 			sourceTree = "<group>";
@@ -256,6 +260,7 @@
 				D1993BC91FBAD8B0005737F9 /* base64.cpp */,
 				D1993BCD1FBB1D94005737F9 /* buffer.cpp */,
 				D1993BCE1FBB1D94005737F9 /* buffer.hpp */,
+				28C66FA51FC1BA5600F9C0D1 /* handle.hpp */,
 			);
 			path = utils;
 			sourceTree = "<group>";
@@ -536,6 +541,7 @@
 				288410B81FA600E800CE68DA /* obj.cpp in Sources */,
 				286F1DF31F9E6C4E00FCC209 /* filter_iterator.cpp in Sources */,
 				2883C2561F91BAFA007DDB3C /* main.cpp in Sources */,
+				28C66FA71FC1BF1D00F9C0D1 /* handle.cpp in Sources */,
 				28175DB41F91FD0B004ECB87 /* template_utils.cpp in Sources */,
 				2816E6A61FA133EF00CCE00A /* image.cpp in Sources */,
 				286F1DF11F9E67A500FCC209 /* map_iterator.cpp in Sources */,

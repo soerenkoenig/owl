@@ -1,23 +1,25 @@
 
 #pragma once
 
-#include "owl/utils/non_copyable.hpp"
 #include <functional>
 #include <memory>
 #include <map>
 #include <vector>
 #include <iostream>
 
+#include "owl/utils/non_copyable.hpp"
+#include "owl/utils/handle.hpp"
+
 namespace owl
 {
  namespace utils
  {
- ////combiners
+
     template<typename Result>
     struct combiner_last
     {
-      using  result_type = Result;
-      using  combined_result_type = Result;
+      using result_type = Result;
+      using combined_result_type = Result;
 
       explicit combiner_last() : result_()
       {
@@ -31,8 +33,9 @@ namespace owl
 
       combined_result_type get() const
       {
-       return result_;
+        return result_;
       }
+      
     private:
       combined_result_type result_;
     };
@@ -102,8 +105,11 @@ namespace owl
 
       explicit combiner_or() {}
 
-      const combined_result_type& get() const  { return result_; }
-
+      const combined_result_type& get() const
+      {
+        return result_;
+      }
+        
       combined_result_type operator()(result_type r)
       {
         result_ = ( result_ || r );
@@ -182,77 +188,108 @@ namespace owl
     private:
       combined_result_type result_;
     };
- /*
+     
+    class callback_handle : public handle<> { using handle<>::handle; };
  
     namespace detail
     {
       class signal_base : non_copyable
       {
-        virtual bool disconnect(int entry, int priority) = 0;
+        virtual bool disconnect(callback_handle handle, int priority) = 0;
 
         friend struct disconnector;
       };
   
       struct disconnector : private non_copyable
       {
-        disconnector( signal_base *signal);
+        disconnector(signal_base *signal);
     
-        bool disconnect( int entry, std::int32_t priority)
+        bool disconnect(callback_handle handle, std::int32_t priority)
         {
-          return signal_->disconnect(entry, priority);
+          return owning_signal_->disconnect(handle, priority);
         }
 
       private:
-        signal_base*  signal_;
+        signal_base*  owning_signal_;
       };
     }
  
+   
     class connection : private non_copyable
     {
-     private:
-      std::weak_ptr<detail::disconnector>    disconnector_;
+    public:
+     
+      connection(const std::shared_ptr<detail::disconnector>& discon, callback_handle handle = {}, int priority = 0)
+        : handle_(handle)
+        , priority_(priority)
+        , disconnector_(discon)
+      {
+      }
+      
+      ~connection()
+      {
+        disconnect();
+      }
+      
+      bool disconnect()
+      {
+        if(!handle_.is_valid())
+          return true;
+        
+        const auto discon = disconnector_.lock();
+        if(!discon)
+          return true;
+        
+        if(!discon->disconnect(handle_, priority_))
+          return false;
+        handle_.invalidate();
+        return true;
+      }
+      
+    private:
+      std::weak_ptr<detail::disconnector> disconnector_;
+      callback_handle handle_;
+      int priority_;
     };
- 
+   
     namespace detail
     {
-      template<typename, typename> struct  invoke;
+      template<typename, typename> struct  signal_invoker;
     
-       template<class Collector, class R, class... Args>
-      struct invoke<Collector, R ( Args... )> {
+      template<class Combiner, class Result, class... Args>
+      struct signal_invoker<Combiner, Result ( Args... )> : public signal_base
+      {
+        bool invoke(Combiner &combiner, const std::function<Result (Args...)> &callback, Args... args)
+        {
+          return combiner( callback( args... ) );
+        }
+      };
 
-  bool operator()( Collector &collector, const std::function<R ( Args... )> &callback, Args... args )
-  {
-    return collector( callback( args... ) );
-  }
-};
-
-//! CollectorInvocation specialisation for signals with void return type.
-template<class Collector, class... Args>
-struct invoke<Collector, void( Args... )>  {
-
-  bool operator()( Collector &collector, const std::function<void( Args... )> &callback, Args... args )
-  {
-    callback( args... );
-    return collector();
-  }
-};
+      template<class Combiner, class... Args>
+      struct signal_invoker<Combiner, void(Args...)> : public signal_base
+      {
+        bool invoke(Combiner &combiner, const std::function<void(Args...)> &callback, Args... args)
+        {
+          callback(args...);
+          return combiner();
+        }
+      };
     
-      template <typename, typename>
-      class signal_proto;
+      template <typename, typename> class signal_proto;
  
-      template <typename R, typename... Args, typename Combiner>
-      class signal_proto<R(Args...), Combiner> : signal_base
+      template <typename Result, typename... Args, typename Combiner>
+      class signal_proto<Result(Args...), Combiner> : signal_invoker<Combiner, Result(Args...)>
       {
       public:
-        using callback_type = std::function<R(Args...)>;
-        using result_type = R ;
+        using callback_type = std::function<Result(Args...)>;
+        using result_type = Result;
         using combined_result_type = typename Combiner::combined_result_type;
     
     
         template <typename... ArgsIn>
         combined_result_type operator()( ArgsIn&&... args )
         {
-          Combiner c;
+          Combiner combiner;
           for(auto&& pair : callbacks_)
           {
             callback_entry& callback = pair.second;
@@ -261,48 +298,52 @@ struct invoke<Collector, void( Args... )>  {
               continue;
           
             callback.enabled_ = false;
-          continueEmission = this->invoke( collector, link->mCallbackFn, args... );
-            bool continue_emit = detail::invoke(<c(callback.func_(std::forward<ArgsIn>(args)...));
-         
+            bool continue_emit = this->invoke( combiner, callback.func_, std::forward<ArgsIn>(args)... );
             callback.enabled_ = true;
           
             if(!continue_emit)
               break;
           }
-          return c.get();
+          return combiner.get();
         }
       
-      
-  
-        connection connect(const callback_type &callback , std::int32_t priority = 0)
+        
+        connection connect(callback_type fn)
         {
-          callbacks_.insert(priority, {callback, true});
+          const auto handle = next_handle_++;
+          callbacks_[handle] = callback_entry{std::move(fn), true};
+          return connection{disconnector_, handle};
+        }
+        
+        bool disconnect(callback_handle handle ,int priority) override
+        { return true;
+          
         }
     
-      
-    
+
       private:
-      struct callback_entry
-      {
-        callback_type func_;
-        bool enabled_;
-      };
+        struct callback_entry
+        {
+          callback_type func_;
+          bool enabled_;
+        };
     
-      std::multimap<std::int32_t, callback_entry, std::greater<std::int32_t>> callbacks_;
-      std::shared_ptr<disconnector> disconnector_;
-    };
-  }
+        callback_handle next_handle_{0};
+        std::multimap<std::int32_t, callback_entry, std::greater<std::int32_t>> callbacks_;
+        std::shared_ptr<disconnector> disconnector_;
+      };
+    }
  
     template <typename Signature, typename Combiner = combiner_default<typename std::function<Signature>::result_type>>
     class signal : public detail::signal_proto<Signature, Combiner>
     {
-      bool disconnect(int entr int priority) override { return true; }
+      
     };
  
   }
 }
  
- 
+ /*
 
  
     template <typename Signature, typename Combiner>
@@ -783,6 +824,4 @@ std::function<R ( Args... )> slot( Class *object, R ( Class::*method )( Args... 
 
 */
 
-}
-}
 

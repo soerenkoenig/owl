@@ -103,6 +103,13 @@ enum class image_type
   rgb,        ///< load image and keep original color channels
   bgr
 };
+      
+      void writer(void *context, void *data, int size)
+      {
+          utils::buffer& buf = *reinterpret_cast<utils::buffer*>(context);
+         
+          buf.append(utils::buffer(data,size,false));
+      }
 
 /**
  * Simple image utility class
@@ -176,12 +183,45 @@ class image {
     stbi_image_free(input_pixels);
   }
 
-  void save(const std::string &path) const
+  bool save_jpg(const std::string &path, int quality = 96) const
   {
-  /*  int ret;
-    std::vector<uint8_t> buf = to_rgb<uint8_t>();
-    std::string extension = owl::utils::file_extension(path);
-    if (extension == "png")
+   // std::string extension = owl::utils::file_extension(path);
+    utils::buffer buf;
+    int ret = stbi_write_jpg_to_func(&writer, &buf, static_cast<int>(width_),
+                             static_cast<int>(height_), 3, data(), quality);
+    if(ret == 0)
+          return false;
+      return utils::write_file(path, buf);
+  }
+    
+  bool save_bmp(const std::string &path) const
+  {
+      utils::buffer buf;
+      int ret = stbi_write_bmp_to_func(&writer,&buf, static_cast<int>(width_),
+                           static_cast<int>(height_),3, data());
+      if(ret == 0)
+          return false;
+       return utils::write_file(path, buf);
+  }
+    
+  bool save_png(const std::string &path) const
+  {
+      utils::buffer buf;
+      int ret = stbi_write_png_to_func(&writer, static_cast<int>(width_),
+                           static_cast<int>(height_), 3,
+                           data(), 0);
+      if(ret == 0)
+          return false;
+       return utils::write_file(path, buf);
+  }
+    
+
+    
+    
+   // stbi_image_free(image);
+
+      
+  /*  if (extension == "png")
     {
       ret = stbi_write_png(path.c_str(), static_cast<int>(width_),
                            static_cast<int>(height_), static_cast<int>(depth_),
@@ -193,12 +233,8 @@ class image {
                            static_cast<int>(height_), static_cast<int>(depth_),
                            (const void *)&buf[0]);
     }
-    
-    if (ret == 0)
-     {
-      throw image_error("failed to save image:" + path);
-    }*/
-  }
+    */
+  
   
   
 
@@ -247,7 +283,8 @@ class image {
   image_type type() const { return type_; }
   size_t size() const { return width_ * height_ *depth_; }
  
-  const std::vector<intensity_t> &data() const { return data_; }
+  const auto* data() const { return data_.data(); }
+  auto* data() { return data_.data(); }
 
   template <typename U>
   std::vector<U> to_rgb() const

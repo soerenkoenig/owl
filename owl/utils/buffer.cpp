@@ -161,6 +161,13 @@ namespace owl
       
       size_ = new_size;
     }
+      
+    void buffer::append(const buffer& buf)
+    {
+        auto size_old = size_;
+        resize(size_ + buf.size());
+        memcpy(data_ + size_old, buf.data(), buf.size());
+    }
   
     bool buffer::operator==(const buffer& other) const
     {
