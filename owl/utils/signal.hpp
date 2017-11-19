@@ -466,31 +466,19 @@ namespace owl
     class signal : public detail::signal_proto<Signature, Combiner>
     {
     };
+   
+    template<class Instance, class Class, class Result, class... Args>
+    std::function<Result ( Args... )> slot(Instance &object, Result (Class::*method)(Args...))
+    {
+      return [&object, method] (Args... args)  { return ( object .* method )( args... ); };
+    }
+
+    //! Creates a std::function by binding \a object to the member function pointer \a method.
+    template<class Class, class Result, class... Args>
+    std::function<Result ( Args... )> slot(Class *object, Result ( Class::*method )(Args...))
+    {
+      return [object, method] (Args... args)  { return ( object ->* method )( args... ); };
+    }
   }
 }
- 
- /*
-
-// ----------------------------------------------------------------------------------------------------
-// slot
-// ----------------------------------------------------------------------------------------------------
-
-//! Creates a std::function by binding \a object to the member function pointer \a method.
-template<class Instance, class Class, class R, class... Args>
-std::function<R ( Args... )> slot( Instance &object, R (Class::*method)( Args... ) )
-{
-  return [&object, method] ( Args... args )  { return ( object .* method )( args... ); };
-}
-
-//! Creates a std::function by binding \a object to the member function pointer \a method.
-template<class Class, class R, class... Args>
-std::function<R ( Args... )> slot( Class *object, R ( Class::*method )( Args... ) )
-{
-  return [object, method] ( Args... args )  { return ( object ->* method )( args... ); };
-}
-
-
-
-*/
-
 
