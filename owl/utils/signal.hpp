@@ -188,8 +188,9 @@ namespace owl
     private:
       combined_result_type result_;
     };
-     
-    class callback_handle : public handle<> { using handle<>::handle; };
+   
+    struct callback_tag{};
+    using callback_handle = owl::utils::handle<callback_tag>;
  
     namespace detail
     {
@@ -219,7 +220,7 @@ namespace owl
     {
     public:
      
-      connection(const std::shared_ptr<detail::disconnector>& discon, callback_handle handle = {}, int priority = 0)
+      connection(const std::shared_ptr<detail::disconnector>& discon, callback_handle handle, int priority = 0)
         : handle_(handle)
         , priority_(priority)
         , disconnector_(discon)

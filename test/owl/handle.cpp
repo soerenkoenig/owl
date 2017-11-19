@@ -6,7 +6,8 @@
 
 namespace test
 {
-  class test_handle : public owl::utils::handle<> { using handle<>::handle; };
+  struct test_tag{};
+  using test_handle = owl::utils::handle<test_tag>;
   
   TEST_CASE( "handle", "[utils]" )
   {
@@ -16,7 +17,6 @@ namespace test
     CHECK_FALSE(h.is_valid());
     std::hash<test_handle> hasher;
     
-   // std::unordered_map<test_handle,int> mymap;
     
   }
 }

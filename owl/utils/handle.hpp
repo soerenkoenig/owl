@@ -15,7 +15,7 @@ namespace owl
 {
   namespace utils
   {
-    template <typename Index = std::size_t>
+    template <typename Tag, typename Index = std::size_t>
     class handle
     {
     public:
@@ -92,10 +92,10 @@ namespace owl
 
 namespace std
 {
-  template<typename Index>
-  struct hash<owl::utils::handle<Index>>
+  template<typename Tag, typename Index>
+  struct hash<owl::utils::handle<Tag,Index>>
   {
-    std::size_t operator()(const owl::utils::handle<Index>& value) const
+    std::size_t operator()(const owl::utils::handle<Tag, Index>& value) const
     {
       static hash<Index> hasher;
       return hasher(value.index());
