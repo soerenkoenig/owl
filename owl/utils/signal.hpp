@@ -445,7 +445,17 @@ namespace owl
           if( it == git->second.end())
             return false;
           git->second.erase(it);
+          if(git->second.size() == 0)
+            callbacks_.erase(git);
           return true;
+        }
+        
+        std::size_t num_connections() const
+        {
+          std::size_t count = 0;
+          for(auto&& cg: callbacks_)
+            count += cg.second.size();
+          return count;
         }
     
       private:
@@ -473,7 +483,6 @@ namespace owl
       return [&object, method] (Args... args)  { return ( object .* method )( args... ); };
     }
 
-    //! Creates a std::function by binding \a object to the member function pointer \a method.
     template<class Class, class Result, class... Args>
     std::function<Result ( Args... )> slot(Class *object, Result ( Class::*method )(Args...))
     {
