@@ -143,6 +143,9 @@
 		28BB756D1FB6391C009A6290 /* approx.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = approx.hpp; sourceTree = "<group>"; };
 		28C66FA51FC1BA5600F9C0D1 /* handle.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = handle.hpp; sourceTree = "<group>"; };
 		28C66FA61FC1BF1D00F9C0D1 /* handle.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = handle.cpp; sourceTree = "<group>"; };
+		28C66FA81FC48B2200F9C0D1 /* optional.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = optional.hpp; sourceTree = "<group>"; };
+		28C66FAB1FC48D1C00F9C0D1 /* variant.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = variant.hpp; sourceTree = "<group>"; };
+		28C66FAD1FC5643A00F9C0D1 /* variant.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = variant.hpp; sourceTree = "<group>"; };
 		28CA4D3D1FAA6F4E00C753D6 /* uuid.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = uuid.cpp; sourceTree = "<group>"; };
 		28CA4D3F1FAAF95A00C753D6 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		D15138AF1FB196E9009D3414 /* non_copyable.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = non_copyable.cpp; sourceTree = "<group>"; };
@@ -296,6 +299,8 @@
 				28175DB61F95BCE1004ECB87 /* utils */,
 				288A6FAC1F91D96200783E52 /* math */,
 				28BB75671FB0F393009A6290 /* export.hpp */,
+				28C66FA81FC48B2200F9C0D1 /* optional.hpp */,
+				28C66FAB1FC48D1C00F9C0D1 /* variant.hpp */,
 			);
 			path = owl;
 			sourceTree = "<group>";
@@ -320,6 +325,7 @@
 		2883C25C1F91BCE6007DDB3C /* thirdparty */ = {
 			isa = PBXGroup;
 			children = (
+				28C66FAC1FC5641B00F9C0D1 /* variant */,
 				D172B67E1FA0C3F20039A121 /* stb */,
 				288A6F9C1F91BE5D00783E52 /* benchpress */,
 				2883C25D1F91BCF6007DDB3C /* catch */,
@@ -388,6 +394,14 @@
 				28BB756D1FB6391C009A6290 /* approx.hpp */,
 			);
 			path = math;
+			sourceTree = "<group>";
+		};
+		28C66FAC1FC5641B00F9C0D1 /* variant */ = {
+			isa = PBXGroup;
+			children = (
+				28C66FAD1FC5643A00F9C0D1 /* variant.hpp */,
+			);
+			path = variant;
 			sourceTree = "<group>";
 		};
 		D172B67E1FA0C3F20039A121 /* stb */ = {
