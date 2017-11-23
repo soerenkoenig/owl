@@ -288,9 +288,11 @@ namespace owl
     
     constexpr matrix() = default;
     
+   
+    //elements in column major order !!!
     matrix(std::initializer_list<Scalar> list)
     {
-        std::copy(list.begin(),list.end(),data_.begin());
+        std::copy(list.begin(), list.end(), data_.begin());
     }
 
     
@@ -299,6 +301,7 @@ namespace owl
     {
     }
     
+      //elements in column major order !!!
     template<typename S, typename... Args>
     explicit matrix(S&& a, Args&&... args)
         : data_{static_cast<value_type>(std::forward<S>(a)),static_cast<value_type>(std::forward<Args>(args))...}
@@ -592,15 +595,12 @@ namespace owl
     template<typename M = matrix, typename = std::enable_if_t<M::is_vector()>>
     matrix normalized() const
     {
-      value_type l = length();
-      if(l != 0)
-      {
-        l = static_cast<value_type>(1 / l);
-        *this *= l;
-      }
+      matrix res = *this;
+      res.normalize();
+      return res;
     }
     
-    matrix<Scalar,Cols,Rows> transposed() const
+    matrix<Scalar, Cols, Rows> transposed() const
     {
       matrix<Scalar,Cols,Rows> ans;
       for(size_type i = 0; i < Rows;++i)
@@ -608,6 +608,12 @@ namespace owl
           ans(j, i) = operator()(i, j);
   
       return ans;
+    }
+    
+    template<typename M = matrix, typename = std::enable_if_t<M::is_square()>>
+    void transpose()
+    {
+      *this = transposed();
     }
     
     private:
@@ -654,8 +660,7 @@ namespace owl
     typename = std::enable_if_t< matrix<S,N,M>::is_vector()> >
     matrix<S,N,M> normalize(matrix<S,N,M>& v)
     {
-      v.normalize();
-      return v;
+      return v.normalized();
     }
   
     template< typename  S, std::size_t N, std::size_t M,
