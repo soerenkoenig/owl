@@ -568,7 +568,8 @@ namespace owl
       return prod;
     }
     
-    template <typename S2, std::size_t Cols2, std::size_t C = Cols, typename = std::enable_if_t<C == 1>, typename = void>
+    template <typename S2, std::size_t Cols2, std::size_t C = Cols,
+     typename = std::enable_if_t<C == 1>, typename = void>
     auto operator*(const matrix<S2,1,Cols2>& other) const
     {
       matrix<decltype(std::declval<Scalar>() * std::declval<S2>()), Rows, Cols2> prod{};

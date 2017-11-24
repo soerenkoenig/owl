@@ -5,7 +5,7 @@
 
 namespace test
 {
-  
+
   TEST_CASE( "matrix transpose", "[math]" )
   {
     owl::math::matrix33f m;
@@ -35,7 +35,7 @@ namespace test
 
   }
   
-   TEST_CASE( "matrix multiplication", "[math]" )
+   TEST_CASE( "matrix multiplications", "[math]" )
   {
     owl::math::matrix33f m;
     m << 1,2,3,
