@@ -289,24 +289,24 @@ namespace owl
     constexpr matrix() = default;
     
    
-    //elements in column major order !!!
+    template<typename M = matrix, typename = std::enable_if_t<M::is_vector()>>
     matrix(std::initializer_list<Scalar> list)
     {
-        std::copy(list.begin(), list.end(), data_.begin());
+      std::copy(list.begin(), list.end(), data_.begin());
     }
 
     
     constexpr matrix(std::array<Scalar, Rows*Cols> arr)
-        : data_{arr}
+      : data_{arr}
     {
     }
     
       //elements in column major order !!!
-    template<typename S, typename... Args>
+    template<typename M = matrix, typename S, typename... Args, typename = std::enable_if_t<M::is_vector()>>
     explicit matrix(S&& a, Args&&... args)
-        : data_{static_cast<value_type>(std::forward<S>(a)),static_cast<value_type>(std::forward<Args>(args))...}
+      : data_{static_cast<value_type>(std::forward<S>(a)), static_cast<value_type>(std::forward<Args>(args))...}
     {
-        static_assert(sizeof...(Args) == 0 || sizeof...(Args) + 1 == size(), "incorrect number of arguments");
+      static_assert(sizeof...(Args) == 0 || sizeof...(Args) + 1 == size(), "incorrect number of arguments");
     }
     
     matrix(matrix& other) = default;
@@ -318,9 +318,9 @@ namespace owl
     template <typename S2>
     matrix(const matrix<S2, Rows, Cols>& other)
     {
-        for(size_type i = 0; i < Rows;++i)
-            for(size_type j = 0; j < Cols; ++j)
-                operator()(i, j) = other(i, j);
+      for(size_type i = 0; i < Rows;++i)
+        for(size_type j = 0; j < Cols; ++j)
+          operator()(i, j) = other(i, j);
     }
     
     //assignment operators
@@ -619,6 +619,56 @@ namespace owl
     private:
       container_type data_;
     };
+    
+    namespace detail
+    {
+      template<typename  S, std::size_t N, std::size_t M>
+      struct comma_initializer
+      {
+        using matrix_type = matrix<S,N,M>;
+        
+        template <typename S2>
+        comma_initializer(matrix_type& m, S2&& s)
+          : mat_(m), row_{0}, col_{1}
+        {
+          mat_(0, 0) = s;
+        }
+        
+        ~comma_initializer()
+        {
+          assert(row_ + 1  == mat_.nrows() && col_  == mat_.ncols());
+        }
+        
+        template <typename S2, typename = typename matrix_type::template enable_if_scalar_t<S2> >
+        comma_initializer& operator()(S2&& s)
+        {
+          mat_(row_, col_) = std::forward<S2>(s);
+        }
+        
+        template <typename S2, typename = typename matrix_type::template enable_if_scalar_t<S2>>
+        comma_initializer& operator,(S2&& s)
+        {
+          if(col_ == mat_.ncols())
+          {
+            col_ = 0;
+            ++row_;
+            assert(row_ < mat_.nrows());
+          }
+          mat_(row_, col_++) = std::forward<S2>(s);
+          return *this;
+        }
+        
+        matrix_type& mat_;
+        std::size_t row_;
+        std::size_t col_;
+      };
+    }
+    
+    template<typename  S, std::size_t N, std::size_t M, typename S2>
+    auto operator<<(matrix<S,N,M>& lhs, S2&& value)
+    {
+      return detail::comma_initializer<S,N,M>(lhs, value);
+    }
   
     template <typename Scalar, std::size_t Dim>
     using square_matrix = matrix<Scalar, Dim, Dim>;
@@ -694,7 +744,6 @@ namespace owl
       for(size_type i = 0; i < N;++i)
         for(size_type j = 0; j < M; ++j)
           ans(j,i) = rhs(i,j);
-    
       return ans;
     }
   
@@ -722,7 +771,6 @@ namespace owl
       for(std::size_t i = 0; i < M; ++i)
         for(std::size_t j = 0; j < N; ++j)
           in >> m(i,j);
-
       return in;
     }
   
@@ -731,7 +779,7 @@ namespace owl
     template <typename S>
     S det(const square_matrix<S,2>& m)
     {
-      return m(0,0)*m(1,1) - m(0,1)*m(1,0);
+      return m(0,0) * m(1,1) - m(0,1) * m(1,0);
     }
   
     ///determinant of 3x3 matrix
@@ -850,54 +898,56 @@ namespace owl
         T t156 = m(0,0) * m(2,1);
         T t158 = m(0,0) * m(2,3);
         T t161 = m(2,0) * m(0,1);
-        return square_matrix<T,4>{ (t1 * m(2,2) - t3 * m(2,3) - m(3,3) * m(1,2) * m(2,1) +
-                   t7 * m(2,3) - t9 * m(2,2) + t11 * m(1,3)) * t70,
-        -(t47 * m(2,2) - t53 * m(2,3) + m(1,3) * m(3,2) * m(2,0) - t108 *
-                    m(3,3) + t23 * m(3,0) - t111 * m(2,2)) * t70,
-         (-m(1,1) * m(2,0) * m(3,3) + m(1,1) * m(2,3) * m(3,0) - t28 *
-                   m(3,0) + t148 * m(1,3) + t150 * m(3,3) - m(2,3) * m(3,1) * m(1,0)) * t70,
-         -(-t3 * m(2,0) + t30 * m(2,2) + t11 * m(1,0) - m(3,0) * m(1,2) *
-                    m(2,1) - t41 * m(2,2) + t7 * m(2,0)) * t70,
-        
-         -(t72 * m(2,2) - t74 * m(2,3) - t56 * m(3,3) + t35 * m(3,1) -
-                    t78 * m(2,2) + m(0,3) * m(3,2) * m(2,1)) * t70,
-         (t19 * m(2,2) - t27 * m(2,3) - t58 * m(2,2) + t63 * m(0,3) + t39 *
-                   m(2,3) - t50 * m(0,2)) * t70,
-         -(t156 * m(3,3) - t158 * m(3,1) + t33 * m(3,1) - t161 * m(3,3) - m(2,1) *
-                    m(3,0) * m(0,3) + m(2,3) * m(3,0) * m(0,1)) * t70,
-         (-t22 * m(2,2) + t27 * m(2,1) - t39 * m(2,1) + t148 * m(0,2) + t45 *
-                   m(2,2) - t63 * m(0,1)) * t70,
-        
-       
-         (t72 * m(1,2) - t74 * m(1,3) - t1 * m(0,2) + m(0,2) * m(3,1) *
-                   m(1,3) + t3 * m(0,3) - t78 * m(1,2)) * t70,
-        
-         -(t19 * m(1,2) - t27 * m(1,3) - t47 * m(0,2) - t58 * m(1,2) + t111 *
-                    m(0,2) + t66 * m(3,2)) * t70,
-        
-         (t19 * m(1,1) - t22 * m(1,3) - t58 * m(1,1) - t47 * m(0,1) + t41 *
-                   m(0,3) + t45 * m(1,3)) * t70,
-        
-         -(-t53 * m(0,1) + t27 * m(1,1) - t39 * m(1,1) + t41 * m(0,2) - t22 *
-                    m(1,2) + t45 * m(1,2)) * t70,
-        
-        -(t51 * m(2,3) - t64 * m(2,2) - m(1,1) * m(0,2) * m(2,3) + t56 *
-                    m(1,3) + m(1,1) * m(0,3) * m(2,2) - m(0,3) * m(1,2) * m(2,1)) * t70,
-       
-        
-         (t131 * m(2,3) - m(0,0) * m(1,3) * m(2,2) - t135 * m(2,3) - t108 *
-                   m(0,3) + m(1,3) * m(2,0) * m(0,2) + t66 * m(2,2)) * t70,
-       
-       
-         -(-m(2,3) * m(1,0) * m(0,1) + t158 * m(1,1) - t33 * m(1,1) + t161 *
-                    m(1,3) - t156 * m(1,3) + t150 * m(0,3)) * t70,
-       
-        
-        
-        t70 * (t161 * m(1,2) - t37 * m(1,1) - m(1,0) * m(0,1) * m(2,2) + t135 *
-               m(2,1) + t14 * m(2,2) - t131 * m(2,1)) };
+      square_matrix<T,4> minv; //todo transpose
+      minv << (t1 * m(2,2) - t3 * m(2,3) - m(3,3) * m(1,2) * m(2,1) +
+              t7 * m(2,3) - t9 * m(2,2) + t11 * m(1,3)) * t70,
+      
+              -(t72 * m(2,2) - t74 * m(2,3) - t56 * m(3,3) + t35 * m(3,1) -
+              t78 * m(2,2) + m(0,3) * m(3,2) * m(2,1)) * t70,
+      
+              (t72 * m(1,2) - t74 * m(1,3) - t1 * m(0,2) + m(0,2) * m(3,1) *
+              m(1,3) + t3 * m(0,3) - t78 * m(1,2)) * t70,
+      
+              -(t51 * m(2,3) - t64 * m(2,2) - m(1,1) * m(0,2) * m(2,3) + t56 *
+              m(1,3) + m(1,1) * m(0,3) * m(2,2) - m(0,3) * m(1,2) * m(2,1)) * t70,
+      
+              -(t47 * m(2,2) - t53 * m(2,3) + m(1,3) * m(3,2) * m(2,0) - t108 *
+              m(3,3) + t23 * m(3,0) - t111 * m(2,2)) * t70,
+      
+              (t19 * m(2,2) - t27 * m(2,3) - t58 * m(2,2) + t63 * m(0,3) + t39 *
+              m(2,3) - t50 * m(0,2)) * t70,
+     
+              -(t19 * m(1,2) - t27 * m(1,3) - t47 * m(0,2) - t58 * m(1,2) + t111 *
+              m(0,2) + t66 * m(3,2)) * t70,
+      
+              (t131 * m(2,3) - m(0,0) * m(1,3) * m(2,2) - t135 * m(2,3) - t108 *
+              m(0,3) + m(1,3) * m(2,0) * m(0,2) + t66 * m(2,2)) * t70,
+      
+              (-m(1,1) * m(2,0) * m(3,3) + m(1,1) * m(2,3) * m(3,0) - t28 *
+              m(3,0) + t148 * m(1,3) + t150 * m(3,3) - m(2,3) * m(3,1) * m(1,0)) * t70,
+      
+              -(t156 * m(3,3) - t158 * m(3,1) + t33 * m(3,1) - t161 * m(3,3) - m(2,1) *
+              m(3,0) * m(0,3) + m(2,3) * m(3,0) * m(0,1)) * t70,
+      
+             (t19 * m(1,1) - t22 * m(1,3) - t58 * m(1,1) - t47 * m(0,1) + t41 *
+             m(0,3) + t45 * m(1,3)) * t70,
     
-   
+             -(-m(2,3) * m(1,0) * m(0,1) + t158 * m(1,1) - t33 * m(1,1) + t161 *
+             m(1,3) - t156 * m(1,3) + t150 * m(0,3)) * t70,
+      
+             -(-t3 * m(2,0) + t30 * m(2,2) + t11 * m(1,0) - m(3,0) * m(1,2) *
+             m(2,1) - t41 * m(2,2) + t7 * m(2,0)) * t70,
+      
+             (-t22 * m(2,2) + t27 * m(2,1) - t39 * m(2,1) + t148 * m(0,2) + t45 *
+             m(2,2) - t63 * m(0,1)) * t70,
+        
+             -(-t53 * m(0,1) + t27 * m(1,1) - t39 * m(1,1) + t41 * m(0,2) - t22 *
+             m(1,2) + t45 * m(1,2)) * t70,
+      
+             t70 * (t161 * m(1,2) - t37 * m(1,1) - m(1,0) * m(0,1) * m(2,2) + t135 *
+             m(2,1) + t14 * m(2,2) - t131 * m(2,1));
+    
+      return minv;
     }
   
 
@@ -926,7 +976,6 @@ namespace owl
     matrix<T,M,N> eye()
     {
         matrix<T,M,N> r{};
-     //   r = (T)0;
         std::size_t o = (std::min)(M,N);
         for(std::size_t i = 0; i < o; i++)
             r(i,i) = (T)1;
@@ -937,7 +986,6 @@ namespace owl
     matrix<T,M,M> eye()
     {
         matrix<T,M,M> r{};
-       // r = (T)0;
     
         for(std::size_t i = 0; i < M; i++)
             r(i,i) = (T)1;
@@ -948,7 +996,11 @@ namespace owl
         typename Mat = matrix<T,M,N>, typename = std::enable_if_t<Mat::is_vector(3)> >
     square_matrix<T,3> cross_mat(matrix<T,M,N>& v)
     {
-        return square_matrix<T,3>{ 0, v(2), -v(1), -v(2), 0, v(0), v(1), -v(0), 0 };
+      square_matrix<T,3> m;
+      m <<     0, -v(2),  v(1),
+            v(2),     0, -v(0),
+           -v(1),  v(0),     0;
+      return m;
     }
   
     template <typename T, std::size_t M, std::size_t N>
@@ -972,38 +1024,45 @@ namespace owl
     template<typename S,typename T>
     square_matrix<S,4> perspective(const T& fovy, const T&aspect, const T& znear, const T& zfar)
     {
-        S fovyr = (S)(fovy*3.14159/180.0);
-        S f = (S)(cos(fovyr/2.0f)/sin(fovyr/2.0f));
-        return square_matrix<S,4> {
-         f/aspect, 0, 0, 0, 0, f, 0, 0, 0,
-         0, (zfar+znear)/(znear-zfar), -1 ,0, 0,
-        (2*zfar*znear)/(znear-zfar),0 };
-    
+      S fovyr = (S)(fovy*3.14159 / 180.0);
+      S f = (S)(cos(fovyr/2.0f) / sin(fovyr / 2.0f));
+      square_matrix<S,4> m;
+      m << f / aspect,  0,                         0,                            0,
+                    0,  f,                         0,                            0,
+                    0,  0, (zfar+znear)/(znear-zfar),  (2*zfar*znear)/(znear-zfar),
+                    0,  0,                        -1,                            0;
+      return m;
     }
   
     template<typename S, typename T>
     square_matrix<S,4> frustrum(const T& left, const T&right,const T& bottom, const T&top, const T& znear, const T& zfar)
     {
-        S A = (right+left)/(right-left);
-        S B = (top+bottom)/(top-bottom);
-        S C = -(zfar+znear)/(zfar-znear);
-        S D = -2*zfar*znear/(zfar-znear);
-        return square_matrix<S,4>{
-            2*znear/(right-left),0,0,0,0,2*znear/(top-bottom), 0,0,A,B, C, -1, 0, 0, D, 0 };
+      S A = (right + left) / (right - left);
+      S B = (top + bottom) / (top - bottom);
+      S C = -(zfar + znear) / (zfar - znear);
+      S D = -2 * zfar * znear / (zfar - znear);
+      square_matrix<S,4> m;
+      m << 2 * znear / (right - left),                          0,  A, 0,
+                                    0, 2 * znear / (top - bottom),  B, 0,
+                                    0,                          0,  C, D,
+                                    0,                          0, -1, 0;
+      return m;
     }
   
     template<typename S>
     square_matrix<S,4> lookat(const vector<S,3>& eye, const vector<S,3>& target, vector<S,3> up)
     {
-        vector<S,3>  f = normalize(target - eye);
-        up.normalize();
-        vector<S,3> s = cross(f,up);
-        s.normalize();
-        vector<S,3> u = cross(s,f);
-        return square_matrix<S,4>{ s(0), u(0), -f(0), 0,
-            s(1), u(1), -f(1), 0,
-            s(2), u(2), -f(2), 0,
-            -dot(s,eye),-dot(u,eye),dot(f,eye),1};
+      vector<S,3>  f = normalize(target - eye);
+      up.normalize();
+      vector<S,3> s = cross(f, up);
+      s.normalize();
+      vector<S,3> u = cross(s, f);
+      square_matrix<S,4> m;
+      m <<  s(0),  s(1),  s(2), -dot(s, eye),
+            u(0),  u(1),  u(2), -dot(u, eye),
+           -f(0), -f(1), -f(2), -dot(f, eye),
+               0,     0,     0,            1;
+      return m;
     }
   
   
@@ -1014,29 +1073,43 @@ namespace owl
                                const std::array<T,4>& viewport,
                                const square_matrix<T,4> &modelviewproj, bool flipy = true)
     {
-        S sx, sy;
-        S tx, ty;
-        sx = viewport[2] / width;
-        sy = viewport[3] / height;
-        tx = (S)(viewport[2] + 2.0 * (viewport[0] - x)) / width;
-        if(flipy)
-            ty = (S)(viewport[3] + 2.0 * (viewport[1] - (viewport[3]-y))) / height;
-        else
-            ty = (S)(viewport[3] + 2.0 * (viewport[1] - y)) / height;
-        square_matrix<S,4> m(sx, 0, 0, 0, 0, sy, 0, 0, 0, 0, 1, 0, tx, ty, 0, 1);
-        return m*modelviewproj;
+      S sx, sy;
+      S tx, ty;
+      sx = viewport[2] / width;
+      sy = viewport[3] / height;
+      tx = (S)(viewport[2] + 2.0 * (viewport[0] - x)) / width;
+      if(flipy)
+        ty = (S)(viewport[3] + 2.0 * (viewport[1] - (viewport[3]-y))) / height;
+      else
+        ty = (S)(viewport[3] + 2.0 * (viewport[1] - y)) / height;
+      square_matrix<S,4> m;
+       m << sx,  0, 0, tx,
+             0, sy, 0, ty,
+             0,  0, 1, 0,
+             0,  0, 0, 1;
+      return m * modelviewproj;
     }
   
     template <typename S, typename T>
     square_matrix<S,4> translate(const T& tx, const T& ty, const T& tz)
     {
-      return square_matrix<S,4>{1,0,0,0,0,1,0,0,0,0,1,0, tx, ty,tz,1};
+      square_matrix<S,4> m;
+      m << 1,   0,  0, tx,
+           0,   1,  0, ty,
+           0,   0,  1, tz,
+           0,   0,  0,  1;
+      return m;
     }
       
     template <typename S, typename T>
     square_matrix<S,4> translate(const vector<T, 3>& t)
     {
-        return square_matrix<S,4>{1,0,0,0,0,1,0,0,0,0,1,0, t.x(), t.y(), t.z(),1};
+      square_matrix<S,4> m;
+       m << 1, 0, 0, t.x(),
+            0, 1, 0, t.y(),
+            0, 0, 1, t.z(),
+            0, 0, 0,     1;
+      return m;
     }
       
     template <typename T>
@@ -1048,101 +1121,117 @@ namespace owl
     template <typename S, typename T>
     square_matrix<S,3> scale(const T& sx,const T& sy, const T& sz)
     {
-        return square_matrix<S,4>{sx,0,0,0,
-            0,sy,0,0,
-            0,0,sz,0,
-            0,0,0,1};
+      square_matrix<S,4> m;
+      m << sx,  0,  0, 0,
+            0, sy,  0, 0,
+            0,  0, sz, 0,
+            0,  0,  0, 1;
+      return m;
     }
       
     template <typename T>
     square_matrix<T,4> scale(const vector<T, 3>& s)
     {
-        return square_matrix<T,4>{s.x(),0,0,0,
-            0,s.y(),0,0,
-            0,0,s.z(),0,
-            0,0,0,1};
+      square_matrix<T,4> m;
+      m << s.x(),    0,     0, 0,
+               0,s.y(),     0, 0,
+               0,    0, s.z(), 0,
+               0,    0,     0, 1;
+      return m;
     }
   
     template <typename S, typename T>
     square_matrix<S,3> uniform_scale(const T& s)
     {
-    return square_matrix<S,4>{s,0,0,0,
-        0,s,0,0,
-        0,0,s,0,
-        0,0,0,1};
+      square_matrix<S,4> m;
+      m << s, 0, 0, 0,
+           0, s, 0, 0,
+           0, 0, s, 0,
+           0, 0, 0, 1;
+      return m;
     }
   
     template<typename T>
     square_matrix<T,4> rotate(const vector<T, 3> axis, const T& angle)
     {
-        if(angle == 0)
-            return eye<T,4>();
-        square_matrix<T,3> R = eye<T,3>();
-        vector<T,3> dirn =  axis;
-        dirn.normalize();
-        square_matrix<T,3> omega = cross_mat(dirn);
-        T theta = angle;
-    
-        R += sin(theta)*omega + (1.0f-cos(theta))*(omega*omega);
-    return square_matrix<T,4> {R(0,0),R(1,0),R(2,0),0,
-        R(0,1),R(1,1),R(2,1),0,
-        R(0,2),R(1,2),R(2,2),0,
-        0,0,0,1};
+      if(angle == 0)
+        return eye<T,4>();
+     
+      square_matrix<T,3> R = eye<T,3>();
+      vector<T,3> dirn =  axis;
+      dirn.normalize();
+      square_matrix<T,3> omega = cross_mat(dirn);
+      T theta = angle;
+  
+      R += sin(theta)*omega + (1.0f-cos(theta))*(omega*omega);
+      square_matrix<T,4> m;
+      m << R(0,0), R(0,1), R(0,2), 0,
+           R(1,0), R(1,1), R(1,2), 0,
+           R(2,0), R(2,1), R(2,2), 0,
+                0,      0,      0, 1;
+      return m;
     }
       
     template<typename T>
     square_matrix<T,4> rotate(const vector<T, 3>& axis_start, const vector<T, 3>& axis_end, const T& angle)
     {
       vector<T,3> axis = axis_end - axis_start;
-        return translate<T>(axis_start) * rotate<T>(axis,angle) * translate<T>(-axis_start);
+      return translate<T>(axis_start) * rotate<T>(axis,angle) * translate<T>(-axis_start);
     }
       
   
     template <typename T>
     square_matrix<T,4> rotateX(const T& angle)
     {
-        T Cos{cos(angle)};
-        T Sin{sin(angle)};
-        return square_matrix<T,4>{ 1, 0, 0, 0,
-                                   0, Cos, Sin,0,
-                                   0, -Sin, Cos, 0,
-                                   0, 0, 0, 1};
+      T Cos{cos(angle)};
+      T Sin{sin(angle)};
+      square_matrix<T,4> m;
+      m << 1, 0, 0, 0,
+           0, Cos, Sin,0,
+           0, -Sin, Cos, 0,
+           0, 0, 0, 1;
+      return m;
     }
   
     template <typename T>
     square_matrix<T,4> rotateY(const T& angle)
     {
-        T Cos{cos(angle)};
-        T Sin{sin(angle)};
-        return square_matrix<T,4>{ Cos , 0, -Sin, 0,
-            0 ,1, 0,0,
-            Sin, 0,  Cos, 0,
-            0,0,0,1};
+      T Cos{cos(angle)};
+      T Sin{sin(angle)};
+      square_matrix<T,4> m;
+      m <<  Cos, 0, Sin, 0,
+              0, 1, 0,0,
+           -Sin, 0,  Cos, 0,
+              0,0,0,1;
+      return m;
     }
   
     template <typename T>
     square_matrix<T,4> rotateZ(const T& angle)
     {
-    T Cos{cos(angle)};
-    T Sin{sin(angle)};
-    return square_matrix<T,4>{ Cos , Sin, 0, 0,
-        -Sin ,Cos,0,0,
-        0, 0,1, 0,
-        0,0,0,1};
+      T Cos{cos(angle)};
+      T Sin{sin(angle)};
+      square_matrix<T,4> m;
+      m << Cos, -Sin, 0, 0,
+           Sin,  Cos, 0, 0,
+             0,    0, 1, 0,
+             0,    0, 0, 1;
+      return m;
     }
   
     template <typename S, typename T>
     square_matrix<S,4> ortho(T left, T right, T bottom, T top, T zNear, T zFar)
     {
-    
-        T rl = right -  left;
-        T tb = top - bottom;
-        T zfn = zFar - zNear;
-    
-        return square_matrix<S,4> {static_cast<T>(2) / rl,0,0,0,
-            0,static_cast<T>(2) / tb,0,0,
-            0,0,- static_cast<T>(2) / zfn,0,
-            - (right + left) / rl,- (top + bottom) / tb,- (zFar + zNear) / zfn,1};
+      T rl = right -  left;
+      T tb = top - bottom;
+      T zfn = zFar - zNear;
+  
+      square_matrix<S,4> m;
+      m << static_cast<T>(2) / rl,                      0,                        0,  -(right + left) / rl,
+                                0, static_cast<T>(2) / tb,                        0,  -(top + bottom) / tb,
+                                0,                      0, -static_cast<T>(2) / zfn, -(zFar + zNear) / zfn,
+                                0,                      0,                        0,                     1;
+      return m;
     }
     
     template <typename T, std::size_t M, std::size_t N,

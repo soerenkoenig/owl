@@ -8,29 +8,31 @@ namespace test
   
   TEST_CASE( "matrix transpose", "[math]" )
   {
-    owl::math::matrix33f m {1,2,3,
-                           4,5,6,
-                           7,8,9};
-    owl::math::matrix33f mt {1,4,7,
-                            2,5,8,
-                            3,6,9};
+    owl::math::matrix33f m;
+    m << 1,2,3,
+         4,5,6,
+         7,8,9;
     
-   
-    
+    owl::math::matrix33f mt;
+    mt << 1,4,7,
+          2,5,8,
+          3,6,9;
+  
     CHECK(m.transposed() == mt);
     m.transpose();
     CHECK(m == mt);
     
-    owl::math::matrix23f m2 {1,2,3,
-      4,5,6};
-    INFO(m2)
-    owl::math::matrix32f m2t {1,3,5,2,4,6};
+    owl::math::matrix23f m2;
+    m2 << 1,2,3,
+          4,5,6;
+
+    owl::math::matrix32f m2t;
+    m2t << 1,4,
+           2,5,
+           3,6;
     
     CHECK(m2.transposed() == m2t);
 
-    
-    
-    
   }
 
   TEST_CASE( "matrix", "[math]" )
