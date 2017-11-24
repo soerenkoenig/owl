@@ -533,8 +533,7 @@ namespace owl
     }
     
     template <typename S2, std::size_t Cols2>
-    matrix<decltype(std::declval<Scalar>() * std::declval<S2>()), Rows, Cols2>
-    operator*(const matrix<S2,Cols,Cols2>& other) const
+    auto operator*(const matrix<S2,Cols,Cols2>& other) const
     {
       matrix<decltype(std::declval<Scalar>() * std::declval<S2>()), Rows, Cols2> prod{};
   
@@ -595,19 +594,19 @@ namespace owl
     template<typename M = matrix, typename = std::enable_if_t<M::is_vector()>>
     matrix normalized() const
     {
-      matrix res = *this;
-      res.normalize();
-      return res;
+      matrix m = *this;
+      m.normalize();
+      return m;
     }
     
     matrix<Scalar, Cols, Rows> transposed() const
     {
-      matrix<Scalar,Cols,Rows> ans;
+      matrix<Scalar,Cols,Rows> m;
       for(size_type i = 0; i < Rows;++i)
         for(size_type j = 0; j < Cols; ++j)
-          ans(j, i) = operator()(i, j);
+          m(j, i) = operator()(i, j);
   
-      return ans;
+      return m;
     }
     
     template<typename M = matrix, typename = std::enable_if_t<M::is_square()>>
@@ -740,20 +739,22 @@ namespace owl
     matrix<S,M,N> transpose(const matrix<S,N,M>& rhs)
     {
       using size_type = typename matrix<S,M,N>::size_type;
-      matrix<S,M,N> ans;
+      matrix<S,M,N> m;
       for(size_type i = 0; i < N;++i)
         for(size_type j = 0; j < M; ++j)
-          ans(j,i) = rhs(i,j);
-      return ans;
+          m(j,i) = rhs(i,j);
+      return m;
     }
   
     template< typename  S, std::size_t N, std::size_t M,
         typename = std::enable_if_t< matrix<S,N,M>::is_vector(3)> >
     matrix<S,N,M> cross( const matrix<S,N,M>& lhs, const matrix<S,N,M>& rhs)
     {
-      return matrix<S,N,M>{lhs.y() * rhs.z() - lhs.z() * rhs.y(),
+      matrix<S,N,M> m;
+      m << lhs.y() * rhs.z() - lhs.z() * rhs.y(),
         lhs.z() * rhs.x() - lhs.x() * rhs.z(),
-        lhs.x() * rhs.y() - lhs.y() * rhs.x()};
+        lhs.x() * rhs.y() - lhs.y() * rhs.x();
+      return m;
     }
   
     template <typename S, std::size_t N, std::size_t M>
@@ -818,86 +819,92 @@ namespace owl
     template <typename S>
     square_matrix<S,2> invert(const square_matrix<S,2>& m)
     {
-        S t4 = (S)1.0 / (-m(0,0) * m(1,1) + m(0,1) * m(1,0));
-        return{ -m(1,1) * t4, m(1,0) * t4, m(0,1) * t4, -m(0,0) * t4 };
+      S t4 = (S)1.0 / (-m(0,0) * m(1,1) + m(0,1) * m(1,0));
+    
+      square_matrix<S,2> minv;
+      minv <<  -m(1,1) * t4,  m(0,1) * t4,
+                m(1,0) * t4, -m(0,0) * t4;
     }
   
     ///compute inverse of 3x3 matrix
     template <typename T>
     square_matrix<T,3> invert(const square_matrix<T,3>& m)
     {
-    
-        T t4 = m(2,0) * m(0,1);
-        T t6 = m(2,0) * m(0,2);
-        T t8 = m(1,0) * m(0,1);
-        T t10 = m(1,0) * m(0,2);
-        T t12 = m(0,0) * m(1,1);
-        T t14 = m(0,0) * m(1,2);
-        T t17 = (T)1.0 / (t4 * m(1,2) - t6 * m(1,1) - t8 * m(2,2) + t10 * m(2,1) + t12 * m(2,2) - t14 * m(2,1));
-        return square_matrix<T,3>{ (m(1,1) * m(2,2) - m(1,2) * m(2,1)) * t17,
-                -(-m(2,0) * m(1,2) + m(1,0) * m(2,2)) * t17,
-                (-m(2,0) * m(1,1) + m(1,0) * m(2,1)) * t17,
-                -(m(0,1) * m(2,2) - m(0,2) * m(2,1)) * t17,
-                (-t6 + m(0,0) * m(2,2)) * t17,
-                -(-t4 + m(0,0) * m(2,1)) * t17,
-                (m(0,1) * m(1,2) - m(0,2) * m(1,1)) * t17,
-                -(-t10 + t14) * t17,
-                (-t8 + t12) * t17 };
+      T t4 = m(2,0) * m(0,1);
+      T t6 = m(2,0) * m(0,2);
+      T t8 = m(1,0) * m(0,1);
+      T t10 = m(1,0) * m(0,2);
+      T t12 = m(0,0) * m(1,1);
+      T t14 = m(0,0) * m(1,2);
+      T t17 = (T)1.0 / (t4 * m(1,2) - t6 * m(1,1) - t8 * m(2,2) + t10 * m(2,1) + t12 * m(2,2) - t14 * m(2,1));
+      square_matrix<T,3> minv;
+      minv << (m(1,1) * m(2,2) - m(1,2) * m(2,1)) * t17,
+              -(m(0,1) * m(2,2) - m(0,2) * m(2,1)) * t17,
+              (m(0,1) * m(1,2) - m(0,2) * m(1,1)) * t17,
+      
+              -(-m(2,0) * m(1,2) + m(1,0) * m(2,2)) * t17,
+              (-t6 + m(0,0) * m(2,2)) * t17,
+              -(-t10 + t14) * t17,
+      
+              (-m(2,0) * m(1,1) + m(1,0) * m(2,1)) * t17,
+              -(-t4 + m(0,0) * m(2,1)) * t17,
+              (-t8 + t12) * t17 ;
+      return minv;
     }
   
     //compute inverse of 4x4 matrix
     template <typename T>
     square_matrix<T,4> invert(const square_matrix<T,4>& m)
     {
-        T t1 = m(3,3) * m(1,1);
-        T t3 = m(3,2) * m(1,1);
-        T t7 = m(3,1) * m(1,2);
-        T t9 = m(3,1) * m(1,3);
-        T t11 = m(3,2) * m(2,1);
-        T t14 = m(0,0) * m(1,1);
-        T t19 = m(0,0) * m(3,3);
-        T t20 = m(1,2) * m(2,1);
-        T t22 = m(3,1) * m(0,0);
-        T t23 = m(1,2) * m(2,3);
-        T t25 = m(1,3) * m(2,2);
-        T t27 = m(3,2) * m(0,0);
-        T t28 = m(2,1) * m(1,3);
-        T t30 = m(1,1) * m(3,0);
-        T t31 = m(0,3) * m(2,2);
-        T t33 = m(2,0) * m(0,3);
-        T t35 = m(0,2) * m(2,3);
-        T t37 = m(2,0) * m(0,2);
-        T t39 = m(3,0) * m(0,2);
-        T t41 = m(3,1) * m(1,0);
-        T t43 = t14 * m(3,3) * m(2,2) - t14 * m(3,2) * m(2,3) - t19 * t20 +
-        t22 * t23 - t22 * t25 + t27 * t28 - t30 * t31 + t3 * t33 + t30 * t35
-        - t1 * t37 - t39 * t28 - t41 * t35;
-        T t45 = m(3,0) * m(0,1);
-        T t47 = m(1,0) * m(3,3);
-        T t50 = m(2,0) * m(3,3);
-        T t51 = m(0,1) * m(1,2);
-        T t53 = m(3,2) * m(1,0);
-        T t56 = m(0,2) * m(2,1);
-        T t58 = m(3,0) * m(0,3);
-        T t63 = m(3,2) * m(2,0);
-        T t64 = m(0,1) * m(1,3);
-        T t66 = m(1,0) * m(0,3);
-        T t68 = -t7 * t33 - t45 * t23 - t47 * m(0,1) * m(2,2) + t50 * t51 + t53 *
-        m(0,1) * m(2,3) + t47 * t56 + t58 * t20 + t9 * t37 + t41 * t31 + t45 *
-        t25 - t63 * t64 - t11 * t66;
-        T t70 = (T)1.0 / (t43 + t68);
-        T t72 = m(3,3) * m(0,1);
-        T t74 = m(3,2) * m(0,1);
-        T t78 = m(0,3) * m(3,1);
-        T t108 = m(2,0) * m(1,2);
-        T t111 = m(1,3) * m(3,0);
-        T t131 = m(0,0) * m(1,2);
-        T t135 = m(1,0) * m(0,2);
-        T t148 = m(3,1) * m(2,0);
-        T t150 = m(1,0) * m(2,1);
-        T t156 = m(0,0) * m(2,1);
-        T t158 = m(0,0) * m(2,3);
-        T t161 = m(2,0) * m(0,1);
+      T t1 = m(3,3) * m(1,1);
+      T t3 = m(3,2) * m(1,1);
+      T t7 = m(3,1) * m(1,2);
+      T t9 = m(3,1) * m(1,3);
+      T t11 = m(3,2) * m(2,1);
+      T t14 = m(0,0) * m(1,1);
+      T t19 = m(0,0) * m(3,3);
+      T t20 = m(1,2) * m(2,1);
+      T t22 = m(3,1) * m(0,0);
+      T t23 = m(1,2) * m(2,3);
+      T t25 = m(1,3) * m(2,2);
+      T t27 = m(3,2) * m(0,0);
+      T t28 = m(2,1) * m(1,3);
+      T t30 = m(1,1) * m(3,0);
+      T t31 = m(0,3) * m(2,2);
+      T t33 = m(2,0) * m(0,3);
+      T t35 = m(0,2) * m(2,3);
+      T t37 = m(2,0) * m(0,2);
+      T t39 = m(3,0) * m(0,2);
+      T t41 = m(3,1) * m(1,0);
+      T t43 = t14 * m(3,3) * m(2,2) - t14 * m(3,2) * m(2,3) - t19 * t20 +
+      t22 * t23 - t22 * t25 + t27 * t28 - t30 * t31 + t3 * t33 + t30 * t35
+      - t1 * t37 - t39 * t28 - t41 * t35;
+      T t45 = m(3,0) * m(0,1);
+      T t47 = m(1,0) * m(3,3);
+      T t50 = m(2,0) * m(3,3);
+      T t51 = m(0,1) * m(1,2);
+      T t53 = m(3,2) * m(1,0);
+      T t56 = m(0,2) * m(2,1);
+      T t58 = m(3,0) * m(0,3);
+      T t63 = m(3,2) * m(2,0);
+      T t64 = m(0,1) * m(1,3);
+      T t66 = m(1,0) * m(0,3);
+      T t68 = -t7 * t33 - t45 * t23 - t47 * m(0,1) * m(2,2) + t50 * t51 + t53 *
+      m(0,1) * m(2,3) + t47 * t56 + t58 * t20 + t9 * t37 + t41 * t31 + t45 *
+      t25 - t63 * t64 - t11 * t66;
+      T t70 = (T)1.0 / (t43 + t68);
+      T t72 = m(3,3) * m(0,1);
+      T t74 = m(3,2) * m(0,1);
+      T t78 = m(0,3) * m(3,1);
+      T t108 = m(2,0) * m(1,2);
+      T t111 = m(1,3) * m(3,0);
+      T t131 = m(0,0) * m(1,2);
+      T t135 = m(1,0) * m(0,2);
+      T t148 = m(3,1) * m(2,0);
+      T t150 = m(1,0) * m(2,1);
+      T t156 = m(0,0) * m(2,1);
+      T t158 = m(0,0) * m(2,3);
+      T t161 = m(2,0) * m(0,1);
       square_matrix<T,4> minv; //todo transpose
       minv << (t1 * m(2,2) - t3 * m(2,3) - m(3,3) * m(1,2) * m(2,1) +
               t7 * m(2,3) - t9 * m(2,2) + t11 * m(1,3)) * t70,
@@ -954,42 +961,42 @@ namespace owl
     template <typename T, std::size_t M, std::size_t N>
     matrix<T,M,N> dyad(const vector<T,M>& v1, const vector<T,N>& v2)
     {
-        matrix<T,M,N> m;
-        for(std::size_t j = 0; j < N; ++j)
-            for(std::size_t i = 0; i < M; ++i)
-                m(i,j) = v1(i)*v2(j);
-        return m;
+      matrix<T,M,N> m;
+      for(std::size_t j = 0; j < N; ++j)
+          for(std::size_t i = 0; i < M; ++i)
+              m(i,j) = v1(i)*v2(j);
+      return m;
     }
   
   
     template <typename T, std::size_t M, std::size_t N>
     T trace(const matrix<T,M,N>& m)
     {
-        T tr = (T)0;
-        std::size_t o = (std::min)(M,N);
-        for(std::size_t i = 0; i < o; ++i)
-            tr += m(i,i);
-        return tr;
+      T tr = (T)0;
+      std::size_t o = (std::min)(M,N);
+      for(std::size_t i = 0; i < o; ++i)
+          tr += m(i,i);
+      return tr;
     }
   
     template <typename T, std::size_t M, std::size_t N>
     matrix<T,M,N> eye()
     {
-        matrix<T,M,N> r{};
-        std::size_t o = (std::min)(M,N);
-        for(std::size_t i = 0; i < o; i++)
-            r(i,i) = (T)1;
-        return r;
+      matrix<T,M,N> r{};
+      std::size_t o = (std::min)(M,N);
+      for(std::size_t i = 0; i < o; i++)
+        r(i,i) = (T)1;
+      return r;
     }
   
     template <typename T, std::size_t M>
     matrix<T,M,M> eye()
     {
-        matrix<T,M,M> r{};
-    
-        for(std::size_t i = 0; i < M; i++)
-            r(i,i) = (T)1;
-        return r;
+      matrix<T,M,M> r{};
+  
+      for(std::size_t i = 0; i < M; i++)
+        r(i,i) = (T)1;
+      return r;
     }
   
     template <typename T,std::size_t M, std::size_t N,
@@ -1006,19 +1013,19 @@ namespace owl
     template <typename T, std::size_t M, std::size_t N>
     matrix<T,M,N> ones()
     {
-        matrix<T,M,N> r;
-        r=T{1};
-        return r;
+      matrix<T,M,N> r;
+      r=T{1};
+      return r;
     }
   
     template <typename T, std::size_t N >
     square_matrix<T,N> diag(const vector<T,N>& v)
     {
-        square_matrix<T,N> r;
-        r = (T)0;
-        for(std::size_t i = 0; i < N; i++)
-            r(i,i) = v(i);
-        return r;
+      square_matrix<T,N> r;
+      r = (T)0;
+      for(std::size_t i = 0; i < N; i++)
+        r(i,i) = v(i);
+      return r;
     }
 
     template<typename S,typename T>
@@ -1115,7 +1122,7 @@ namespace owl
     template <typename T>
     square_matrix<T,4> translate(const vector<T, 3>& source, const vector<T,3>& dest)
     {
-        return translate<T>(dest - source);
+      return translate<T>(dest - source);
     }
   
     template <typename S, typename T>
@@ -1251,147 +1258,24 @@ namespace owl
       return random_matrix<T,M,M,Engine,Distribution>();
     }
   
-    /*
-     template <typename T>
-    tiny_mat<T, 4, 4> projection_matrix_from_intrinsics(const math::tiny_mat<T, 3, 3>& K, int img_width, int img_height, T znear, T zfar)
-    {
-    
-    T fx = K(0, 0);
-    T fy = K(1, 1);
-    //T skew = K(0, 1);
-    T u0 = K(0, 2);
-    T v0 = K(1, 2);
-    
-    T l = -znear  * u0/fx;
-    
-    T r = znear  *(img_width - u0) / fx;
-    
-    T b = -znear  *v0 / fy;
-    
-    T t = znear  *( img_height - v0) / fy;
-    return frustrum(l, r, b, t, znear, zfar);
-    
-    }
     
     template <typename T>
-    tiny_mat<T,2,2> rotation_2D(T angle)
+    matrix<T,4,4> projection_matrix_from_intrinsics(const matrix<T, 3, 3>& K, int img_width, int img_height, T znear, T zfar)
     {
-    angle *= (T)(3.14159/180.0);
-    T cosa = cos(angle);
-    T sina = sin(angle);
-    
-    tiny_mat<T,2,2> r;
-    r(0,0) = cosa; r(0,1) = -sina;
-    r(1,0) = sina; r(1,1) = cosa;
-    return r;
+      T fx = K(0, 0);
+      T fy = K(1, 1);
+      T skew = K(0, 1);
+      assert(skew == 1); //not rectangular pixel case is ignored 
+      T u0 = K(0, 2);
+      T v0 = K(1, 2);
+      
+      T l = -znear  * u0/fx;
+      T r = znear  *(img_width - u0) / fx;
+      T b = -znear  *v0 / fy;
+      T t = znear  *( img_height - v0) / fy;
+      return frustrum(l, r, b, t, znear, zfar);
     }
-    
-    template<typename T>
-    tiny_mat<T,3,3> rotation_3D(const tiny_vec<T, 3> axis, const T& angle)
-    {
-    tiny_mat<T,3,3> R;
-    R.eye();
-    if(angle == 0)
-        return R;
-    tiny_vec<T,3> dirn =  axis;
-    dirn.normalize();
-    tiny_mat<T,3,3> omega = cross_mat(dirn);
-    T theta = angle;
-    //float theta2 = angle*angle;
-    R += sin(theta)*omega + (1.0f-cos(theta))*(omega*omega);
-    
-    return R;
-    }
-    
-    
-    template <typename T, std::size_t N>
-    tiny_mat<T,N+1,N+1> homog(const tiny_mat<T,N,N>& m)
-    {
-    tiny_mat<T,N+1,N+1> mh;
-    
-    for(std::size_t j = 0; j < m.ncols(); j++)
-        {
-        for(std::size_t i = 0; i < m.nrows(); i++)
-            mh(i,j) = m(i,j);
-        mh(m.nrows(),j) = 0;
-        }
-    
-    for(std::size_t i = 0; i < m.nrows(); i++)
-        mh(i,m.ncols()) = 0;
-    mh(m.nrows(),m.ncols()) = 1;
-    
-    return mh;
-    }
-    
-    template<typename T>
-    tiny_mat<T,4,4> rotation_homog_3D(const tiny_vec<T, 3> axis, const T& angle)
-    {
-    tiny_mat<T,3,3> R = rotation_3D(axis,angle);
-    return homog(R);
-    }
-    
-    
-    template <typename T>
-    tiny_mat<T,3,3> translation_homog_2D(const T& tx,const T& ty)
-    {
-    tiny_mat<T,3,3> tr = eye<T,3,3>();
-    tr(0,2) = tx;
-    tr(1,2) = ty;
-    return tr;
-    }
-    
-    
-    template <typename T>
-    tiny_mat<T,3,3> scale_3d(const T& sx,const T& sy,const T& sz)
-    {
-    tiny_mat<T,3,3> tr = eye<T,3,3>();
-    tr(0,0) = sx;
-    tr(1,1) = sy;
-    tr(2,2) = sz;
-    return tr;
-    }
-    
-    template <typename T>
-    tiny_mat<T,3,3> scale_3D(const T& s)
-    {
-    tiny_mat<T,3,3> tr = eye<T,3,3>();
-    tr(0,0) = s;
-    tr(1,1) = s;
-    tr(2,2) = s;
-    return tr;
-    }
-    
-    
-    template <typename T>
-    tiny_mat<T,4,4> translation_homog_3D(const tiny_vec<T,3>& t)
-    {
-    tiny_mat<T,4,4> tr = eye<T,4,4>();
-    tr(0,3) = t[0];
-    tr(1,3) = t[1];
-    tr(2,3) = t[2];
-    return tr;
-    }
-    
-    
-    template <typename T>
-    tiny_mat<T,4,4> scale_homog_3D(const T& sx,const T& sy,const T& sz)
-    {
-    
-    return homog(scale_3D(sx,sy,sz));
-    }
-    
-    
-    template <typename T>
-    tiny_mat<T,4,4> scale_homog_3D(const T& s)
-    {
-    
-    return homog(scale_3D(s));
-    }
-    
-    */
-  
   }
-  
 }
 
 
