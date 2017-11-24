@@ -532,7 +532,7 @@ namespace owl
      return *this;
     }
     
-    template <typename S2, std::size_t Cols2>
+    template <typename S2, std::size_t Cols2, std::size_t R = Rows, std::size_t C = Cols, typename = std::enable_if_t<R != 1 && C != 1>>
     auto operator*(const matrix<S2,Cols,Cols2>& other) const
     {
       matrix<decltype(std::declval<Scalar>() * std::declval<S2>()), Rows, Cols2> prod{};
@@ -542,6 +542,54 @@ namespace owl
           for(size_type j = 0; j < Cols; ++j)
             prod(i, k) += operator()(i, j) * other(j, k);
       
+      return prod;
+    }
+    
+    template <typename S2, std::size_t R = Rows, std::size_t C = Cols, typename = std::enable_if_t<R == 1 && C != 1>>
+    auto operator*(const matrix<S2,Cols,1>& other) const
+    {
+      decltype(std::declval<Scalar>() * std::declval<S2>()) prod{};
+  
+      for(size_type j = 0; j < Cols; ++j)
+        prod += operator()(j) * other(j);
+    
+      return prod;
+    }
+    
+    template <typename S2, std::size_t Cols2, std::size_t R = Rows, typename = std::enable_if_t<R == 1>>
+    auto operator*(const matrix<S2,Cols,Cols2>& other) const
+    {
+      matrix<decltype(std::declval<Scalar>() * std::declval<S2>()), 1, Cols2> prod{};
+  
+      for(size_type k = 0; k < Cols2; ++k)
+        for(size_type j = 0; j < Cols; ++j)
+          prod(k) += operator()(j) * other(j, k);
+  
+      return prod;
+    }
+    
+    template <typename S2, std::size_t Cols2, std::size_t C = Cols, typename = std::enable_if_t<C == 1>, typename = void>
+    auto operator*(const matrix<S2,1,Cols2>& other) const
+    {
+      matrix<decltype(std::declval<Scalar>() * std::declval<S2>()), Rows, Cols2> prod{};
+  
+      for(size_type i = 0; i < Rows; ++i)
+        for(size_type k = 0; k < Cols2; ++k)
+            prod(i, k) += operator()(i) * other(k);
+    
+      return prod;
+    }
+    
+    
+    template <typename S2, std::size_t C = Cols, size_t R = Rows, typename = std::enable_if_t<C != 1 && R != 1>, typename = void>
+    auto operator*(const matrix<S2,Cols,1>& other) const
+    {
+      matrix<decltype(std::declval<Scalar>() * std::declval<S2>()), Rows, 1> prod{};
+  
+      for(size_type i = 0; i < Rows; ++i)
+          for(size_type j = 0; j < Cols; ++j)
+            prod(i) += operator()(i, j) * other(j);
+    
         return prod;
     }
     

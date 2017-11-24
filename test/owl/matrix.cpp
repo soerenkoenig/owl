@@ -34,6 +34,39 @@ namespace test
     CHECK(m2.transposed() == m2t);
 
   }
+  
+   TEST_CASE( "matrix multiplication", "[math]" )
+  {
+    owl::math::matrix33f m;
+    m << 1,2,3,
+         4,5,6,
+         7,8,9;
+  
+    owl::math::vector3f v;
+    v << 1,4,7;
+  
+    auto vt = transpose(v);
+  
+    owl::math::vector3f v2;
+    v2 << 30, 66, 102;
+  
+   owl::math::row_vector<float,3> v3;
+   v3 << 66, 78, 90;
+  
+    CHECK(m*v == v2);
+    CHECK(vt*m == v3);
+    CHECK(vt*v == 66);
+    CHECK(vt*v == sqr_length(v));
+  
+     owl::math::matrix33f m2;
+    m2 << 1,  4,  7,
+          4, 16, 28,
+          7, 28, 49;
+  
+    CHECK( v*vt == m2);
+  
+  }
+  
 
   TEST_CASE( "matrix", "[math]" )
   {
