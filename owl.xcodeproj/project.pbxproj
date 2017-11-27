@@ -117,6 +117,7 @@
 		284C09CC1F9E54220062BFF1 /* filter_iterator.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = filter_iterator.hpp; sourceTree = "<group>"; };
 		285D63921FC8C4C7007EBB23 /* angle.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = angle.hpp; sourceTree = "<group>"; };
 		285D63931FC8C67D007EBB23 /* angle.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = angle.cpp; sourceTree = "<group>"; };
+		285D63951FCBD2E2007EBB23 /* trafos.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = trafos.hpp; sourceTree = "<group>"; };
 		286F1DF01F9E67A500FCC209 /* map_iterator.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = map_iterator.cpp; sourceTree = "<group>"; };
 		286F1DF21F9E6C4E00FCC209 /* filter_iterator.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = filter_iterator.cpp; sourceTree = "<group>"; };
 		287090A91FC8BDF600356338 /* matrix.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = matrix.cpp; sourceTree = "<group>"; };
@@ -400,6 +401,7 @@
 				284C09C21F96806F0062BFF1 /* matrix.hpp */,
 				28BB756D1FB6391C009A6290 /* approx.hpp */,
 				285D63921FC8C4C7007EBB23 /* angle.hpp */,
+				285D63951FCBD2E2007EBB23 /* trafos.hpp */,
 			);
 			path = math;
 			sourceTree = "<group>";

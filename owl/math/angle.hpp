@@ -1,3 +1,12 @@
+//
+//           .___.
+//           {o,o}
+//          ./)_)
+//      owl --"-"---
+//
+//  Copyright © 2017 Sören König. All rights reserved.
+//
+
 #pragma once
 
 #include <utility>
@@ -13,6 +22,9 @@ namespace owl
     {
     public:
       using scalar_type = Scalar;
+    
+      template <typename S1, typename S2 = Scalar>
+      using enable_if_scalar_t = std::enable_if_t<std::is_convertible<S1, S2>::value>;
   
       struct degree_tag {};
       struct radian_tag {};
@@ -20,17 +32,20 @@ namespace owl
   
       constexpr angle() = default;
   
-      constexpr angle(const scalar_type& value, degree_tag)
+      template <typename S, typename = enable_if_scalar_t<S>>
+      constexpr angle(const S& value, degree_tag)
         : value_(value * constants::pi<scalar_type> / 180)
       {
       }
   
-      constexpr angle(const scalar_type& value, radian_tag)
+      template <typename S, typename = enable_if_scalar_t<S>>
+      constexpr angle(const S& value, radian_tag)
         : value_(value)
       {
       }
   
-      constexpr angle(const scalar_type& value, gon_tag)
+      template <typename S, typename = enable_if_scalar_t<S>>
+      constexpr angle(const S& value, gon_tag)
         : value_(value * constants::pi<scalar_type> / 200)
       {
       }

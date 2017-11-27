@@ -1,5 +1,6 @@
 
 #include "owl/math/matrix.hpp"
+#include "owl/math/trafos.hpp"
 #include "owl/math/approx.hpp"
 #include "catch/catch.hpp"
 
@@ -73,15 +74,15 @@ namespace test
     using namespace owl::math;
     auto tr = translate<float>(vector3f(0,0,0),vector3f(1,2,3));
     CHECK(approx(tr * vector4f(0,0,0,1)) == vector4f(1,2,3,1));
-    CHECK(approx(rotateX<float>(0)) == matrix44f::identity());
-    CHECK(approx(det(rotateY<double>(4.9))) == 1);
-    CHECK(approx(det(rotateZ<double>(4.9))) == 1);
+    CHECK(approx(rotateX(degrees<float>(0))) == matrix44f::identity());
+    CHECK(approx(det(rotateY(degrees<float>(4.9)))) == 1);
+    CHECK(approx(det(rotateZ(degrees<float>(4.9)))) == 1);
       
-    auto trt = rotate<float>(vector3f(1,0,0),vector3f(1,1,0),90*3.14159/180.0);
+    auto trt = rotate(vector3f(1,0,0),vector3f(1,1,0),degrees<float>(90));
 
     CHECK(approx(trt*vector4f(0,0,0,1)) == vector4f(1,0,1,1));
     
-    CHECK(approx(rotateX<float>(3.6) * rotateX<float>(-3.6)) == matrix44f::identity());
+    CHECK(approx(rotateX(degrees<float>(3.6)) * rotateX(degrees<float>(-3.6))) == matrix44f::identity());
   
     auto I = matrix44f::identity();
     auto V = vector4f{1,2,3,4};
