@@ -118,9 +118,13 @@
 		285D63921FC8C4C7007EBB23 /* angle.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = angle.hpp; sourceTree = "<group>"; };
 		285D63931FC8C67D007EBB23 /* angle.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = angle.cpp; sourceTree = "<group>"; };
 		285D63951FCBD2E2007EBB23 /* trafos.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = trafos.hpp; sourceTree = "<group>"; };
+		285D63961FCBD9F8007EBB23 /* ransac.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = ransac.hpp; sourceTree = "<group>"; };
+		285D63971FCCA33A007EBB23 /* connected_components.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = connected_components.hpp; sourceTree = "<group>"; };
+		285D63981FCCACBB007EBB23 /* frustrum.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = frustrum.hpp; sourceTree = "<group>"; };
 		286F1DF01F9E67A500FCC209 /* map_iterator.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = map_iterator.cpp; sourceTree = "<group>"; };
 		286F1DF21F9E6C4E00FCC209 /* filter_iterator.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = filter_iterator.cpp; sourceTree = "<group>"; };
 		287090A91FC8BDF600356338 /* matrix.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = matrix.cpp; sourceTree = "<group>"; };
+		28757C7E1FCDDA18001720F1 /* plane.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = plane.hpp; sourceTree = "<group>"; };
 		2883C2411F91BA7F007DDB3C /* libowl.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libowl.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		2883C2531F91BAFA007DDB3C /* test */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = text; path = test; sourceTree = BUILT_PRODUCTS_DIR; };
 		2883C2551F91BAFA007DDB3C /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
@@ -271,6 +275,8 @@
 				D1993BCD1FBB1D94005737F9 /* buffer.cpp */,
 				D1993BCE1FBB1D94005737F9 /* buffer.hpp */,
 				28C66FA51FC1BA5600F9C0D1 /* handle.hpp */,
+				285D63961FCBD9F8007EBB23 /* ransac.hpp */,
+				285D63971FCCA33A007EBB23 /* connected_components.hpp */,
 			);
 			path = utils;
 			sourceTree = "<group>";
@@ -402,6 +408,8 @@
 				28BB756D1FB6391C009A6290 /* approx.hpp */,
 				285D63921FC8C4C7007EBB23 /* angle.hpp */,
 				285D63951FCBD2E2007EBB23 /* trafos.hpp */,
+				285D63981FCCACBB007EBB23 /* frustrum.hpp */,
+				28757C7E1FCDDA18001720F1 /* plane.hpp */,
 			);
 			path = math;
 			sourceTree = "<group>";
