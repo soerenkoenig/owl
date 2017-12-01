@@ -36,15 +36,6 @@ namespace owl
         normalize();
       }
     
-    
-      nplane(const vector_type& point, const vector_type& normal)
-      {
-        auto it = std::copy(normal.begin(), normal.end(), data_.begin());
-        *it = -dot(normal, point);
-      
-        normalize();
-      }
-    
       template<typename S, typename... Args, typename = enable_if_scalar_t<S> >
       nplane(S&& nx, Args&&... args)
         : data_{std::forward<S>(nx), std::forward<Args>(args)...}
@@ -63,7 +54,6 @@ namespace owl
       }
     
   
-    
     
       scalar_type operator()(const vector_type& vec)
       {
@@ -97,6 +87,22 @@ namespace owl
     using planed = plane<double>;
     using linef = line<float>;
     using lined = line<double>;
+  
+     /*plane(const vector_type& point, const vector_type& normal)
+      {
+        auto it = std::copy(normal.begin(), normal.end(), data_.begin());
+        *it = -dot(normal, point);
+      
+        normalize();
+      }*/
+  
+    template<typename T, std::size_t N>
+    nplane<T,N> nplane_from_point_and_normal(const vector<T,N>& point, const vector<T,N>& normal)
+    {
+      vector<T,N+1> coeffs;
+      coeffs << normal, -dot(normal, point);
+      return nplane<T,N>(coeffs);
+    }
     
     template<typename T, std::size_t N>
     T distance(const nplane<T,N>& pl, const vector<T,N>& pnt)

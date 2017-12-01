@@ -680,9 +680,9 @@ namespace owl
         
         template <typename S2>
         comma_initializer(matrix_type& m, S2&& s)
-          : mat_(m), row_{0}, col_{1}
+          : mat_(m), row_{0}, col_{0}
         {
-          mat_(0, 0) = s;
+          *this,(std::forward<S2>(s));
         }
         
         ~comma_initializer()
@@ -690,13 +690,15 @@ namespace owl
           assert(row_ + 1  == mat_.nrows() && col_  == mat_.ncols());
         }
         
-        template <typename S2, typename = typename matrix_type::template enable_if_scalar_t<S2> >
-        comma_initializer& operator()(S2&& s)
+        template <typename Container, typename = std::enable_if_t<utils::is_container<std::decay_t<Container>>::value> >
+        comma_initializer& operator,(Container&& c)
         {
-          mat_(row_, col_) = std::forward<S2>(s);
+          for(auto&& elem : c)
+            *this, elem;
+          return *this;
         }
         
-        template <typename S2, typename = typename matrix_type::template enable_if_scalar_t<S2>>
+        template <typename S2, typename = typename matrix_type::template enable_if_scalar_t<S2>, typename = void>
         comma_initializer& operator,(S2&& s)
         {
           if(col_ == mat_.ncols())
@@ -718,7 +720,7 @@ namespace owl
     template<typename  S, std::size_t N, std::size_t M, typename S2>
     auto operator<<(matrix<S,N,M>& lhs, S2&& value)
     {
-      return detail::comma_initializer<S,N,M>(lhs, value);
+      return detail::comma_initializer<S,N,M>(lhs, std::forward<S2>(value));
     }
   
     template <typename Scalar, std::size_t Dim>
