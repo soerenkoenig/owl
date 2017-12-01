@@ -5,14 +5,16 @@ namespace owl
 {
   namespace math
   {
-    template<typename Scalar, std::size_t N>
+    template<typename Scalar, std::size_t Dimension>
     class ray
     {
     public:
-      using scalar_type = Scalar;
-      using vector_type = vector<Scalar,N>;
+      static_assert(Dimension > 1, "invalid parameter Dimension");
       
-      ray() {}
+      using scalar_type = Scalar;
+      using vector_type = vector<Scalar, Dimension>;
+      
+      ray() = default;
       
       ray(const vector_type &origin, const vector_type& direction)
         : origin(origin)
@@ -48,9 +50,9 @@ namespace owl
       vector_type direction_;
     };
     
-    using ray3f = ray<float,3>;
-    using ray3d = ray<double,3>;
-    using ray2f = ray<float,2>;
-    using ray2d = ray<double,2>;
+    using ray3f = ray<float, 3>;
+    using ray3d = ray<double, 3>;
+    using ray2f = ray<float, 2>;
+    using ray2d = ray<double, 2>;
   }
 }

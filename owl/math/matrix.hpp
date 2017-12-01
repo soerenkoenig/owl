@@ -170,7 +170,7 @@ namespace owl
       return matrix{owl::utils::make_array<size()>(detail::one<Scalar>)};
     }
     
-     static constexpr matrix identity()
+    static constexpr matrix identity()
     {
       return matrix{owl::utils::make_array<size()>(detail::eye<Scalar,Rows>)};
     }
@@ -1079,8 +1079,6 @@ namespace owl
         r(i,i) = v(i);
       return r;
     }
-
-   
     
     template <typename T, std::size_t M, std::size_t N,
       typename Engine = std::mt19937, typename Distribution = std::normal_distribution<T>>
