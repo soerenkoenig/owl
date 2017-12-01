@@ -18,7 +18,7 @@ namespace owl
   {
   
     template <typename Scalar, std::size_t Dimension>
-    class plane
+    class nplane
     {
     public:
       using scalar_type = Scalar;
@@ -28,15 +28,16 @@ namespace owl
       template <typename S1>
       using enable_if_scalar_t = typename vector_type::template enable_if_scalar_t<S1>;
     
-      plane() = default;
+      nplane() = default;
     
-      plane(const vector<Scalar, Dimension + 1>& arr)
+      nplane(const vector<Scalar, Dimension + 1>& arr)
         : data_(arr)
       {
         normalize();
       }
     
-      plane(const vector_type& point, const vector_type& normal)
+    
+      nplane(const vector_type& point, const vector_type& normal)
       {
         auto it = std::copy(normal.begin(), normal.end(), data_.begin());
         *it = -dot(normal, point);
@@ -45,7 +46,7 @@ namespace owl
       }
     
       template<typename S, typename... Args, typename = enable_if_scalar_t<S> >
-      plane(S&& nx, Args&&... args)
+      nplane(S&& nx, Args&&... args)
         : data_{std::forward<S>(nx), std::forward<Args>(args)...}
       {
         normalize();
@@ -85,17 +86,26 @@ namespace owl
       homogenous_vector_type data_;
     };
   
-    using plane3f = plane<float,3>;
-    using plane3d = plane<double,3>;
+    template<typename Scalar>
+    using line = nplane<Scalar,2>;
+  
+    template<typename Scalar>
+    using plane = nplane<Scalar,3>;
+  
+  
+    using planef = plane<float>;
+    using planed = plane<double>;
+    using linef = line<float>;
+    using lined = line<double>;
     
     template<typename T, std::size_t N>
-    T distance(const plane<T,N>& pl, const vector<T,N>& pnt)
+    T distance(const nplane<T,N>& pl, const vector<T,N>& pnt)
     {
       return dot(pl.normal(), pnt) - pl.distance();
     }
   
     template<typename T, std::size_t N>
-    std::optional<T> intersect(const ray<T,N> r, const plane<T,N>& pl)
+    std::optional<T> intersect(const ray<T,N> r, const nplane<T,N>& pl)
     {
       T denom = dot( pl.normal(), r.direction());
       if( denom == 0)
