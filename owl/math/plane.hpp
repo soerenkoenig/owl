@@ -17,35 +17,38 @@ namespace owl
   namespace math
   {
   
-    template <typename T, std::size_t N>
+    template <typename Scalar, std::size_t Dimension>
     class plane
     {
     public:
-      using scalar_type = T;
-      using vector_type = vector<T,N>;
-      using homogenous_vector_type = vector<T,N>;
+      using scalar_type = Scalar;
+      using vector_type = vector<Scalar, Dimension>;
+      using homogenous_vector_type = vector<Scalar, Dimension + 1>;
+   
+      template <typename S1>
+      using enable_if_scalar_t = typename vector_type::template enable_if_scalar_t<S1>;
     
       plane() = default;
     
-      plane(const vector<T,N+1>& arr, bool auto_normalize = true)
+      plane(const vector<Scalar, Dimension + 1>& arr)
         : data_(arr)
       {
-        if(auto_normalize)
-          normalize();
+        normalize();
       }
     
-      plane(const vector_type& point, const vector_type& normal, bool auto_normalize = true)
+      plane(const vector_type& point, const vector_type& normal)
       {
         auto it = std::copy(normal.begin(), normal.end(), data_.begin());
         *it = -dot(normal, point);
-        if(auto_normalize)
-          normalize();
+      
+        normalize();
       }
     
-      plane(const vector_type& normal, scalar_type distance)
+      template<typename S, typename... Args, typename = enable_if_scalar_t<S> >
+      plane(S&& nx, Args&&... args)
+        : data_{std::forward<S>(nx), std::forward<Args>(args)...}
       {
-        auto it = std::copy(normal.begin(), normal.end(), data_.begin());
-        *it = -distance;
+        normalize();
       }
     
       const vector_type& normal() const
@@ -53,29 +56,31 @@ namespace owl
         return reinterpret_cast<const vector_type&>(data_);
       }
     
-      vector_type& normal()
-      {
-        return reinterpret_cast<vector_type&>(data_);
-      }
-    
       scalar_type distance() const
       {
         return -data_[3];
       }
     
-      void set_distance(const scalar_type& dist)
+  
+    
+    
+      scalar_type operator()(const vector_type& vec)
       {
-        return data_[3] = -dist;
+        return dot(normal(), vec) + data_[3];
       }
     
+      scalar_type operator()(const homogenous_vector_type& hvec)
+      {
+        return dot(data_, hvec);
+      }
+    
+    private:
       void normalize()
       {
         auto len = normal().length();
         if(len != 0)
           data_ /= len;
       }
-    
-    private:
     
       homogenous_vector_type data_;
     };
@@ -96,7 +101,7 @@ namespace owl
       if( denom == 0)
         return std::nullopt;
     
-      T t =  dot( pl.normal(), r.origin) - pl.distance() / denom;
+      T t = distance(pl, r.origin) / denom;
       if (t < 0)
         return std::nullopt;
       return t;
