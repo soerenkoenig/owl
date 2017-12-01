@@ -22,6 +22,7 @@
 		286F1DF11F9E67A500FCC209 /* map_iterator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 286F1DF01F9E67A500FCC209 /* map_iterator.cpp */; };
 		286F1DF31F9E6C4E00FCC209 /* filter_iterator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 286F1DF21F9E6C4E00FCC209 /* filter_iterator.cpp */; };
 		287090AA1FC8BDF600356338 /* matrix.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 287090A91FC8BDF600356338 /* matrix.cpp */; };
+		28757C801FCF5A45001720F1 /* plane.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28757C7F1FCF5A44001720F1 /* plane.cpp */; };
 		2883C2561F91BAFA007DDB3C /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2883C2551F91BAFA007DDB3C /* main.cpp */; };
 		2883C25B1F91BB33007DDB3C /* libowl.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2883C2411F91BA7F007DDB3C /* libowl.dylib */; };
 		288410B81FA600E800CE68DA /* obj.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 288410B71FA600E800CE68DA /* obj.cpp */; };
@@ -126,6 +127,7 @@
 		286F1DF21F9E6C4E00FCC209 /* filter_iterator.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = filter_iterator.cpp; sourceTree = "<group>"; };
 		287090A91FC8BDF600356338 /* matrix.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = matrix.cpp; sourceTree = "<group>"; };
 		28757C7E1FCDDA18001720F1 /* plane.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = plane.hpp; sourceTree = "<group>"; };
+		28757C7F1FCF5A44001720F1 /* plane.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = plane.cpp; sourceTree = "<group>"; };
 		2883C2411F91BA7F007DDB3C /* libowl.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libowl.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		2883C2531F91BAFA007DDB3C /* test */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = text; path = test; sourceTree = BUILT_PRODUCTS_DIR; };
 		2883C2551F91BAFA007DDB3C /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
@@ -247,6 +249,7 @@
 				28C66FA61FC1BF1D00F9C0D1 /* handle.cpp */,
 				285D63931FC8C67D007EBB23 /* angle.cpp */,
 				D1C330561FCDA37C007E446E /* ray.cpp */,
+				28757C7F1FCF5A44001720F1 /* plane.cpp */,
 			);
 			path = owl;
 			sourceTree = "<group>";
@@ -414,6 +417,7 @@
 				285D63951FCBD2E2007EBB23 /* trafos.hpp */,
 				285D63981FCCACBB007EBB23 /* frustrum.hpp */,
 				28757C7E1FCDDA18001720F1 /* plane.hpp */,
+				D1C330551FCD9F3E007E446E /* ray.hpp */,
 			);
 			path = math;
 			sourceTree = "<group>";
@@ -577,6 +581,7 @@
 				284C09C91F968F5C0062BFF1 /* container_traits.cpp in Sources */,
 				288410B81FA600E800CE68DA /* obj.cpp in Sources */,
 				286F1DF31F9E6C4E00FCC209 /* filter_iterator.cpp in Sources */,
+				28757C801FCF5A45001720F1 /* plane.cpp in Sources */,
 				2883C2561F91BAFA007DDB3C /* main.cpp in Sources */,
 				28C66FA71FC1BF1D00F9C0D1 /* handle.cpp in Sources */,
 				285D63941FC8C67D007EBB23 /* angle.cpp in Sources */,

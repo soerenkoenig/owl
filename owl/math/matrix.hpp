@@ -15,6 +15,7 @@
 #include <iostream>
 #include <algorithm>
 #include <random>
+#include <type_traits>
 
 #include "owl/utils/linear_index.hpp"
 #include "owl/utils/iterator_range.hpp"
@@ -58,8 +59,10 @@ namespace owl
     class matrix
     {
     public:
+    static_assert(Rows * Cols > 0, "invalid matrix dimension");
+    static_assert(std::is_arithmetic_v<Scalar> && !std::is_same_v<Scalar, bool>, "invalid scalar type");
     
-    using container_type = std::array<Scalar,Rows*Cols>;
+    using container_type = std::array<Scalar, Rows * Cols>;
     using size_type = typename container_type::size_type;
     using difference_type = typename container_type::difference_type;
     using iterator = typename container_type::iterator;
@@ -296,7 +299,7 @@ namespace owl
     }
 
     
-    constexpr matrix(std::array<Scalar, Rows*Cols> arr)
+    constexpr matrix(std::array<Scalar, Rows * Cols> arr)
       : data_{arr}
     {
     }
