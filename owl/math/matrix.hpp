@@ -29,7 +29,6 @@ namespace owl
   {
     namespace detail
     {
-      
       template <typename T, std::size_t N>
       constexpr T delta(std::size_t i)
       {
@@ -92,7 +91,7 @@ namespace owl
     
     constexpr static size_type size()
     {
-      return Rows*Cols;
+      return Rows * Cols;
     }
     
     constexpr static size_type ncols()
@@ -208,22 +207,22 @@ namespace owl
     
     row_iterator row_begin(size_type row_index)
     {
-      return row_iterator{iterator_at(row_index,0)};
+      return row_iterator{iterator_at(row_index, 0)};
     }
     
     row_iterator row_end(size_type row_index)
     {
-      return row_iterator{iterator_at(row_index,ncols())};
+      return row_iterator{iterator_at(row_index, ncols())};
     }
     
     const_row_iterator row_begin(size_type r) const
     {
-      return const_row_iterator{iterator_at(r,0)};
+      return const_row_iterator{iterator_at(r, 0)};
     }
     
     const_row_iterator row_end(size_type r) const
     {
-      return const_row_iterator{iterator_at(r,ncols())};
+      return const_row_iterator{iterator_at(r, ncols())};
     }
     
     const_row_iterator row_cbegin(size_type r) const
@@ -258,7 +257,7 @@ namespace owl
     
     const_column_iterator column_cbegin(size_type c) const
     {
-      return const_column_iterator{iterator_at(0,c)};
+      return const_column_iterator{iterator_at(0, c)};
     }
     
     const_column_iterator column_cend(size_type c) const
@@ -536,7 +535,7 @@ namespace owl
     }
     
     template <typename S2, std::size_t Cols2, std::size_t R = Rows, std::size_t C = Cols, typename = std::enable_if_t<R != 1 && C != 1>>
-    auto operator*(const matrix<S2,Cols,Cols2>& other) const
+    auto operator*(const matrix<S2, Cols, Cols2>& other) const
     {
       matrix<decltype(std::declval<Scalar>() * std::declval<S2>()), Rows, Cols2> prod{};
   
@@ -560,7 +559,7 @@ namespace owl
     }
     
     template <typename S2, std::size_t Cols2, std::size_t R = Rows, typename = std::enable_if_t<R == 1>>
-    auto operator*(const matrix<S2,Cols,Cols2>& other) const
+    auto operator*(const matrix<S2, Cols, Cols2>& other) const
     {
       matrix<decltype(std::declval<Scalar>() * std::declval<S2>()), 1, Cols2> prod{};
   
@@ -882,7 +881,7 @@ namespace owl
   
     ///compute inverse of 3x3 matrix
     template <typename T>
-    square_matrix<T,3> invert(const square_matrix<T,3>& m)
+    square_matrix<T,3> invert(const square_matrix<T, 3>& m)
     {
       T t4 = m(2, 0) * m(0, 1);
       T t6 = m(2, 0) * m(0, 2);
@@ -908,7 +907,7 @@ namespace owl
   
     //compute inverse of 4x4 matrix
     template <typename T>
-    square_matrix<T,4> invert(const square_matrix<T,4>& m)
+    square_matrix<T,4> invert(const square_matrix<T, 4>& m)
     {
       T t1 = m(3, 3) * m(1, 1);
       T t3 = m(3, 2) * m(1, 1);
@@ -1055,7 +1054,7 @@ namespace owl
   
     template <typename T,std::size_t M, std::size_t N,
         typename Mat = matrix<T, M, N>, typename = std::enable_if_t<Mat::is_vector(3)> >
-    square_matrix<T, 3> cross_mat(matrix<T,M,N>& v)
+    square_matrix<T, 3> cross_mat(matrix<T, M, N>& v)
     {
       square_matrix<T,3> m;
       m <<     0, -v(2),  v(1),
@@ -1110,7 +1109,7 @@ namespace owl
       T u0 = K(0, 2);
       T v0 = K(1, 2);
       
-      T l = -znear  * u0/fx;
+      T l = -znear  * u0 / fx;
       T r = znear  *(img_width - u0) / fx;
       T b = -znear  *v0 / fy;
       T t = znear  *( img_height - v0) / fy;
