@@ -333,7 +333,7 @@ namespace owl
     matrix& operator=(matrix&& other) = default;
     
     template <typename S2>
-    matrix& operator=(const matrix<S2,Rows,Cols>& other)
+    matrix& operator=(const matrix<S2, Rows, Cols>& other)
     {
         for(size_type i = 0; i < Rows;++i)
             for(size_type j = 0; j < Cols; ++j)
@@ -431,37 +431,37 @@ namespace owl
     //comparison operators
     
     template< typename S, std::size_t N, std::size_t M>
-    friend bool operator==(const matrix<S,N,M>& lhs, const matrix<S,N,M>& rhs)
+    friend bool operator==(const matrix<S, N, M>& lhs, const matrix<S, N, M>& rhs)
     {
       return lhs.data_ == rhs.data_;
     }
     
     template< typename S, std::size_t N, std::size_t M>
-    friend bool operator!=(const matrix<S,N,M>& lhs, const matrix<S,N,M>& rhs)
+    friend bool operator!=(const matrix<S, N, M>& lhs, const matrix<S, N, M>& rhs)
     {
       return lhs.data_ != rhs.data_;
     }
     
     template< typename S, std::size_t N, std::size_t M>
-    friend bool operator<(const matrix<S,N,M>& lhs, const matrix<S,N,M>& rhs)
+    friend bool operator<(const matrix<S, N, M>& lhs, const matrix<S, N, M>& rhs)
     {
       return lhs.data_ < rhs.data_;
     }
     
     template<typename S, std::size_t N, std::size_t M>
-    friend bool operator<=(const matrix<S,N,M>& lhs, const matrix<S,N,M>& rhs)
+    friend bool operator<=(const matrix<S, N, M>& lhs, const matrix<S, N, M>& rhs)
     {
       return lhs.data_ <= rhs.data_;
     }
     
     template<typename S, std::size_t N, std::size_t M>
-    friend bool operator>(const matrix<S,N,M>& lhs, const matrix<S,N,M>& rhs)
+    friend bool operator>(const matrix<S, N, M>& lhs, const matrix<S, N, M>& rhs)
     {
       return lhs.data_ > rhs.data_;
     }
     
     template <typename S, std::size_t N, std::size_t M, typename T>
-    friend bool operator>=(const matrix<S,N,M>& lhs, const matrix<S,N,M>& rhs)
+    friend bool operator>=(const matrix<S, N, M>& lhs, const matrix<S, N, M>& rhs)
     {
       return lhs.data_ >= rhs.data_;
     }
@@ -498,28 +498,28 @@ namespace owl
     }
     
     template <typename S2>
-    matrix& operator+=(const matrix<S2,Rows,Cols>& other)
+    matrix& operator+=(const matrix<S2, Rows, Cols>& other)
     {
       std::transform(begin(), end(), other.begin(), begin(), std::plus<value_type>());
       return *this;
     }
     
     template<typename S, typename T, std::size_t N, std::size_t M>
-    friend matrix operator+( matrix<S,N,M> lhs, const matrix<T,N,M>& rhs )
+    friend matrix operator+( matrix<S, N, M> lhs, const matrix<T, N, M>& rhs )
     {
       lhs += rhs;
       return lhs;
     }
     
     template <typename S2>
-    matrix& operator-=(const matrix<S2,Rows,Cols>& other)
+    matrix& operator-=(const matrix<S2, Rows, Cols>& other)
     {
       std::transform (begin(), end(), other.begin(), begin(), std::minus<value_type>());
       return *this;
     }
     
     template< typename  S, typename T, std::size_t N, std::size_t M>
-    friend matrix operator-( matrix<S,N,M> lhs, const matrix<T,N,M>& rhs )
+    friend matrix operator-(matrix<S, N, M> lhs, const matrix<T, N, M>& rhs )
     {
       lhs -= rhs;
       return lhs;
@@ -549,7 +549,7 @@ namespace owl
     }
     
     template <typename S2, std::size_t R = Rows, std::size_t C = Cols, typename = std::enable_if_t<R == 1 && C != 1>>
-    auto operator*(const matrix<S2,Cols,1>& other) const
+    auto operator*(const matrix<S2, Cols, 1>& other) const
     {
       decltype(std::declval<Scalar>() * std::declval<S2>()) prod{};
   
@@ -573,7 +573,7 @@ namespace owl
     
     template <typename S2, std::size_t Cols2, std::size_t C = Cols,
      typename = std::enable_if_t<C == 1>, typename = void>
-    auto operator*(const matrix<S2,1,Cols2>& other) const
+    auto operator*(const matrix<S2, 1, Cols2>& other) const
     {
       matrix<decltype(std::declval<Scalar>() * std::declval<S2>()), Rows, Cols2> prod{};
   
@@ -586,7 +586,7 @@ namespace owl
     
     
     template <typename S2, std::size_t C = Cols, size_t R = Rows, typename = std::enable_if_t<C != 1 && R != 1>, typename = void>
-    auto operator*(const matrix<S2,Cols,1>& other) const
+    auto operator*(const matrix<S2, Cols, 1>& other) const
     {
       matrix<decltype(std::declval<Scalar>() * std::declval<S2>()), Rows, 1> prod{};
   
@@ -623,7 +623,7 @@ namespace owl
     template<typename M = matrix, typename = std::enable_if_t<M::is_vector()>>
     value_type sqr_length() const
     {
-      return std::inner_product(cbegin(),cend(),cbegin(),value_type{});
+      return std::inner_product(cbegin(), cend(), cbegin(), value_type{});
     }
     
     template<typename M = matrix, typename = std::enable_if_t<M::is_vector()>>
@@ -676,7 +676,7 @@ namespace owl
       template<typename  S, std::size_t N, std::size_t M>
       struct comma_initializer
       {
-        using matrix_type = matrix<S,N,M>;
+        using matrix_type = matrix<S, N, M>;
         
         template <typename S2>
         comma_initializer(matrix_type& m, S2&& s)
@@ -718,9 +718,9 @@ namespace owl
     }
     
     template<typename  S, std::size_t N, std::size_t M, typename S2>
-    auto operator<<(matrix<S,N,M>& lhs, S2&& value)
+    auto operator<<(matrix<S, N, M>& lhs, S2&& value)
     {
-      return detail::comma_initializer<S,N,M>(lhs, std::forward<S2>(value));
+      return detail::comma_initializer<S, N, M>(lhs, std::forward<S2>(value));
     }
   
     template <typename Scalar, std::size_t Dim>
@@ -730,7 +730,7 @@ namespace owl
     using vector = matrix<Scalar, Dim,1>;
   
     template <typename Scalar, std::size_t Dim>
-    using row_vector = matrix<Scalar,1, Dim>;
+    using row_vector = matrix<Scalar, 1, Dim>;
   
     template <typename Scalar>
     using vector2 = vector<Scalar, 2>;
@@ -755,28 +755,28 @@ namespace owl
     using matrix34f = matrix<float, 3, 4>;
     using matrix43f = matrix<float, 4, 3>;
   
-    using matrix44f = square_matrix<float,4>;
+    using matrix44f = square_matrix<float, 4>;
 
     //implementation
   
     template< typename  S, std::size_t N, std::size_t M,
-    typename = std::enable_if_t< matrix<S,N,M>::is_vector()> >
-    matrix<S,N,M> normalize(matrix<S,N,M>& v)
+    typename = std::enable_if_t< matrix<S, N, M>::is_vector()> >
+    matrix<S,N,M> normalize(matrix<S, N, M>& v)
     {
       return v.normalized();
     }
   
     template< typename  S, std::size_t N, std::size_t M,
-      typename = std::enable_if_t< matrix<S,N,M>::is_vector()> >
-    S sqr_length(const matrix<S,N,M>& v)
+      typename = std::enable_if_t< matrix<S, N, M>::is_vector()> >
+    S sqr_length(const matrix<S, N, M>& v)
     {
       return v.sqr_length();
     }
   
   
     template< typename  S, std::size_t N, std::size_t M,
-        typename = std::enable_if_t< matrix<S,N,M>::is_vector()> >
-    S length(const matrix<S,N,M>& v)
+        typename = std::enable_if_t< matrix<S, N, M>::is_vector()> >
+    S length(const matrix<S, N, M>& v)
     {
       return v.length();
     }
@@ -784,27 +784,27 @@ namespace owl
   
     template< typename  S, std::size_t N, std::size_t M,
       typename = std::enable_if_t< matrix<S,N,M>::is_vector()> >
-    S dot( const matrix<S,N,M>& lhs, const matrix<S,N,M>& rhs)
+    S dot( const matrix<S, N, M>& lhs, const matrix<S, N, M>& rhs)
     {
-      return std::inner_product(lhs.cbegin(),lhs.cend(),rhs.cbegin(),S{0});
+      return std::inner_product(lhs.cbegin(), lhs.cend(), rhs.cbegin(), S{0});
     }
   
     template< typename  S, std::size_t N, std::size_t M>
-    matrix<S,M,N> transpose(const matrix<S,N,M>& rhs)
+    matrix<S, M, N> transpose(const matrix<S, N, M>& rhs)
     {
-      using size_type = typename matrix<S,M,N>::size_type;
-      matrix<S,M,N> m;
+      using size_type = typename matrix<S, M, N>::size_type;
+      matrix<S, M, N> m;
       for(size_type i = 0; i < N;++i)
         for(size_type j = 0; j < M; ++j)
-          m(j,i) = rhs(i,j);
+          m(j, i) = rhs(i, j);
       return m;
     }
   
     template< typename  S, std::size_t N, std::size_t M,
-        typename = std::enable_if_t< matrix<S,N,M>::is_vector(3)> >
-    matrix<S,N,M> cross( const matrix<S,N,M>& lhs, const matrix<S,N,M>& rhs)
+        typename = std::enable_if_t< matrix<S, N, M>::is_vector(3)> >
+    matrix<S, N, M> cross(const matrix<S, N, M>& lhs, const matrix<S, N, M>& rhs)
     {
-      matrix<S,N,M> m;
+      matrix<S, N, M> m;
       m << lhs.y() * rhs.z() - lhs.z() * rhs.y(),
         lhs.z() * rhs.x() - lhs.x() * rhs.z(),
         lhs.x() * rhs.y() - lhs.y() * rhs.x();
@@ -812,41 +812,41 @@ namespace owl
     }
   
     template <typename S, std::size_t N, std::size_t M>
-    std::ostream& operator<<(std::ostream& out, const matrix<S,N,M>& m)
+    std::ostream& operator<<(std::ostream& out, const matrix<S, N, M>& m)
     {
       for(std::size_t i = 0; i < N; ++i)
         for(std::size_t j = 0; j < M; ++j)
-          out << m(i,j) << ((j == M-1) ? "\n" : " ");
+          out << m(i, j) << ((j == M - 1) ? "\n" : " ");
       return out;
     }
   
     template <typename S, std::size_t M, std::size_t N>
-    std::istream& operator>>(std::istream& in,  matrix<S,M,N>& m)
+    std::istream& operator>>(std::istream& in, matrix<S,M,N>& m)
     {
       for(std::size_t i = 0; i < M; ++i)
         for(std::size_t j = 0; j < N; ++j)
-          in >> m(i,j);
+          in >> m(i, j);
       return in;
     }
   
   
     ///determinant of 2x2 matrix
     template <typename S>
-    S det(const square_matrix<S,2>& m)
+    S det(const square_matrix<S, 2>& m)
     {
-      return m(0,0) * m(1,1) - m(0,1) * m(1,0);
+      return m(0, 0) * m(1, 1) - m(0, 1) * m(1, 0);
     }
   
     ///determinant of 3x3 matrix
     template <typename S>
     S det(const square_matrix<S,3>& m)
     {
-      return m(0,0) * m(1,1) * m(2,2)
-        +m(0,1) * m(1,2) * m(2,0)
-        +m(0,2) * m(1,0) * m(2,1)
-        -m(0,0) * m(1,2) * m(2,1)
-        -m(0,1) * m(1,0) * m(2,2)
-        -m(0,2) * m(1,1) * m(2,0);
+      return m(0, 0) * m(1, 1) * m(2, 2)
+        +m(0, 1) * m(1, 2) * m(2, 0)
+        +m(0, 2) * m(1, 0) * m(2, 1)
+        -m(0, 0) * m(1, 2) * m(2, 1)
+        -m(0, 1) * m(1, 0) * m(2, 2)
+        -m(0, 2) * m(1, 1) * m(2, 0);
     }
   
     ///determinant of 4x4 matrix
@@ -854,18 +854,18 @@ namespace owl
     S det(const square_matrix<S,4>& m)
     {
       return
-        m(0,3) * m(1,2) * m(2,1) * m(3,0) - m(0,2) * m(1,3) * m(2,1) * m(3,0) -
-        m(0,3) * m(1,1) * m(2,2) * m(3,0) + m(0,1) * m(1,3) * m(2,2) * m(3,0) +
-        m(0,2) * m(1,1) * m(2,3) * m(3,0) - m(0,1) * m(1,2) * m(2,3) * m(3,0) -
-        m(0,3) * m(1,2) * m(2,0) * m(3,1) + m(0,2) * m(1,3) * m(2,0) * m(3,1) +
-        m(0,3) * m(1,0) * m(2,2) * m(3,1) - m(0,0) * m(1,3) * m(2,2) * m(3,1) -
-        m(0,2) * m(1,0) * m(2,3) * m(3,1) + m(0,0) * m(1,2) * m(2,3) * m(3,1) +
-        m(0,3) * m(1,1) * m(2,0) * m(3,2) - m(0,1) * m(1,3) * m(2,0) * m(3,2) -
-        m(0,3) * m(1,0) * m(2,1) * m(3,2) + m(0,0) * m(1,3) * m(2,1) * m(3,2) +
-        m(0,1) * m(1,0) * m(2,3) * m(3,2) - m(0,0) * m(1,1) * m(2,3) * m(3,2) -
-        m(0,2) * m(1,1) * m(2,0) * m(3,3) + m(0,1) * m(1,2) * m(2,0) * m(3,3) +
-        m(0,2) * m(1,0) * m(2,1) * m(3,3) - m(0,0) * m(1,2) * m(2,1) * m(3,3) -
-        m(0,1) * m(1,0) * m(2,2) * m(3,3) + m(0,0) * m(1,1) * m(2,2) * m(3,3);
+        m(0, 3) * m(1, 2) * m(2, 1) * m(3, 0) - m(0, 2) * m(1, 3) * m(2, 1) * m(3, 0) -
+        m(0, 3) * m(1, 1) * m(2, 2) * m(3, 0) + m(0, 1) * m(1, 3) * m(2, 2) * m(3, 0) +
+        m(0, 2) * m(1, 1) * m(2, 3) * m(3, 0) - m(0, 1) * m(1, 2) * m(2, 3) * m(3, 0) -
+        m(0, 3) * m(1, 2) * m(2, 0) * m(3, 1) + m(0, 2) * m(1, 3) * m(2, 0) * m(3, 1) +
+        m(0, 3) * m(1, 0) * m(2, 2) * m(3, 1) - m(0, 0) * m(1, 3) * m(2, 2) * m(3, 1) -
+        m(0, 2) * m(1, 0) * m(2, 3) * m(3, 1) + m(0, 0) * m(1, 2) * m(2, 3) * m(3, 1) +
+        m(0, 3) * m(1, 1) * m(2, 0) * m(3, 2) - m(0, 1) * m(1, 3) * m(2, 0) * m(3, 2) -
+        m(0, 3) * m(1, 0) * m(2, 1) * m(3, 2) + m(0, 0) * m(1, 3) * m(2, 1) * m(3, 2) +
+        m(0, 1) * m(1, 0) * m(2, 3) * m(3, 2) - m(0, 0) * m(1, 1) * m(2, 3) * m(3, 2) -
+        m(0, 2) * m(1, 1) * m(2, 0) * m(3, 3) + m(0, 1) * m(1, 2) * m(2, 0) * m(3, 3) +
+        m(0, 2) * m(1, 0) * m(2, 1) * m(3, 3) - m(0, 0) * m(1, 2) * m(2, 1) * m(3, 3) -
+        m(0, 1) * m(1, 0) * m(2, 2) * m(3, 3) + m(0, 0) * m(1, 1) * m(2, 2) * m(3, 3);
     }
   
   
@@ -873,35 +873,35 @@ namespace owl
     template <typename S>
     square_matrix<S,2> invert(const square_matrix<S,2>& m)
     {
-      S t4 = (S)1.0 / (-m(0,0) * m(1,1) + m(0,1) * m(1,0));
+      S t4 = (S)1.0 / (-m(0, 0) * m(1, 1) + m(0, 1) * m(1, 0));
     
       square_matrix<S,2> minv;
-      minv <<  -m(1,1) * t4,  m(0,1) * t4,
-                m(1,0) * t4, -m(0,0) * t4;
+      minv <<  -m(1, 1) * t4,  m(0, 1) * t4,
+                m(1, 0) * t4, -m(0, 0) * t4;
     }
   
     ///compute inverse of 3x3 matrix
     template <typename T>
     square_matrix<T,3> invert(const square_matrix<T,3>& m)
     {
-      T t4 = m(2,0) * m(0,1);
-      T t6 = m(2,0) * m(0,2);
-      T t8 = m(1,0) * m(0,1);
-      T t10 = m(1,0) * m(0,2);
-      T t12 = m(0,0) * m(1,1);
-      T t14 = m(0,0) * m(1,2);
-      T t17 = (T)1.0 / (t4 * m(1,2) - t6 * m(1,1) - t8 * m(2,2) + t10 * m(2,1) + t12 * m(2,2) - t14 * m(2,1));
+      T t4 = m(2, 0) * m(0, 1);
+      T t6 = m(2, 0) * m(0, 2);
+      T t8 = m(1, 0) * m(0, 1);
+      T t10 = m(1, 0) * m(0, 2);
+      T t12 = m(0, 0) * m(1, 1);
+      T t14 = m(0, 0) * m(1, 2);
+      T t17 = (T)1.0 / (t4 * m(1, 2) - t6 * m(1, 1) - t8 * m(2, 2) + t10 * m(2, 1) + t12 * m(2, 2) - t14 * m(2, 1));
       square_matrix<T,3> minv;
-      minv << (m(1,1) * m(2,2) - m(1,2) * m(2,1)) * t17,
-              -(m(0,1) * m(2,2) - m(0,2) * m(2,1)) * t17,
-              (m(0,1) * m(1,2) - m(0,2) * m(1,1)) * t17,
+      minv << (m(1, 1) * m(2, 2) - m(1, 2) * m(2, 1)) * t17,
+              -(m(0, 1) * m(2, 2) - m(0, 2) * m(2, 1)) * t17,
+              (m(0, 1) * m(1, 2) - m(0, 2) * m(1, 1)) * t17,
       
-              -(-m(2,0) * m(1,2) + m(1,0) * m(2,2)) * t17,
-              (-t6 + m(0,0) * m(2,2)) * t17,
+              -(-m(2, 0) * m(1, 2) + m(1, 0) * m(2, 2)) * t17,
+              (-t6 + m(0, 0) * m(2, 2)) * t17,
               -(-t10 + t14) * t17,
       
-              (-m(2,0) * m(1,1) + m(1,0) * m(2,1)) * t17,
-              -(-t4 + m(0,0) * m(2,1)) * t17,
+              (-m(2, 0) * m(1, 1) + m(1, 0) * m(2, 1)) * t17,
+              -(-t4 + m(0, 0) * m(2, 1)) * t17,
               (-t8 + t12) * t17 ;
       return minv;
     }
@@ -910,152 +910,152 @@ namespace owl
     template <typename T>
     square_matrix<T,4> invert(const square_matrix<T,4>& m)
     {
-      T t1 = m(3,3) * m(1,1);
-      T t3 = m(3,2) * m(1,1);
-      T t7 = m(3,1) * m(1,2);
-      T t9 = m(3,1) * m(1,3);
-      T t11 = m(3,2) * m(2,1);
-      T t14 = m(0,0) * m(1,1);
-      T t19 = m(0,0) * m(3,3);
-      T t20 = m(1,2) * m(2,1);
-      T t22 = m(3,1) * m(0,0);
-      T t23 = m(1,2) * m(2,3);
-      T t25 = m(1,3) * m(2,2);
-      T t27 = m(3,2) * m(0,0);
-      T t28 = m(2,1) * m(1,3);
-      T t30 = m(1,1) * m(3,0);
-      T t31 = m(0,3) * m(2,2);
-      T t33 = m(2,0) * m(0,3);
-      T t35 = m(0,2) * m(2,3);
-      T t37 = m(2,0) * m(0,2);
-      T t39 = m(3,0) * m(0,2);
-      T t41 = m(3,1) * m(1,0);
-      T t43 = t14 * m(3,3) * m(2,2) - t14 * m(3,2) * m(2,3) - t19 * t20 +
+      T t1 = m(3, 3) * m(1, 1);
+      T t3 = m(3, 2) * m(1, 1);
+      T t7 = m(3, 1) * m(1, 2);
+      T t9 = m(3, 1) * m(1, 3);
+      T t11 = m(3, 2) * m(2, 1);
+      T t14 = m(0, 0) * m(1, 1);
+      T t19 = m(0, 0) * m(3, 3);
+      T t20 = m(1, 2) * m(2, 1);
+      T t22 = m(3, 1) * m(0, 0);
+      T t23 = m(1, 2) * m(2, 3);
+      T t25 = m(1, 3) * m(2, 2);
+      T t27 = m(3, 2) * m(0, 0);
+      T t28 = m(2, 1) * m(1, 3);
+      T t30 = m(1, 1) * m(3, 0);
+      T t31 = m(0, 3) * m(2, 2);
+      T t33 = m(2,0) * m(0, 3);
+      T t35 = m(0,2) * m(2, 3);
+      T t37 = m(2,0) * m(0, 2);
+      T t39 = m(3,0) * m(0, 2);
+      T t41 = m(3,1) * m(1, 0);
+      T t43 = t14 * m(3, 3) * m(2, 2) - t14 * m(3, 2) * m(2, 3) - t19 * t20 +
       t22 * t23 - t22 * t25 + t27 * t28 - t30 * t31 + t3 * t33 + t30 * t35
       - t1 * t37 - t39 * t28 - t41 * t35;
-      T t45 = m(3,0) * m(0,1);
-      T t47 = m(1,0) * m(3,3);
-      T t50 = m(2,0) * m(3,3);
-      T t51 = m(0,1) * m(1,2);
-      T t53 = m(3,2) * m(1,0);
-      T t56 = m(0,2) * m(2,1);
-      T t58 = m(3,0) * m(0,3);
-      T t63 = m(3,2) * m(2,0);
-      T t64 = m(0,1) * m(1,3);
-      T t66 = m(1,0) * m(0,3);
-      T t68 = -t7 * t33 - t45 * t23 - t47 * m(0,1) * m(2,2) + t50 * t51 + t53 *
+      T t45 = m(3, 0) * m(0, 1);
+      T t47 = m(1, 0) * m(3, 3);
+      T t50 = m(2, 0) * m(3, 3);
+      T t51 = m(0, 1) * m(1, 2);
+      T t53 = m(3, 2) * m(1, 0);
+      T t56 = m(0, 2) * m(2, 1);
+      T t58 = m(3, 0) * m(0, 3);
+      T t63 = m(3, 2) * m(2, 0);
+      T t64 = m(0, 1) * m(1, 3);
+      T t66 = m(1, 0) * m(0, 3);
+      T t68 = -t7 * t33 - t45 * t23 - t47 * m(0, 1) * m(2, 2) + t50 * t51 + t53 *
       m(0,1) * m(2,3) + t47 * t56 + t58 * t20 + t9 * t37 + t41 * t31 + t45 *
       t25 - t63 * t64 - t11 * t66;
       T t70 = (T)1.0 / (t43 + t68);
-      T t72 = m(3,3) * m(0,1);
-      T t74 = m(3,2) * m(0,1);
-      T t78 = m(0,3) * m(3,1);
-      T t108 = m(2,0) * m(1,2);
-      T t111 = m(1,3) * m(3,0);
-      T t131 = m(0,0) * m(1,2);
-      T t135 = m(1,0) * m(0,2);
-      T t148 = m(3,1) * m(2,0);
-      T t150 = m(1,0) * m(2,1);
-      T t156 = m(0,0) * m(2,1);
-      T t158 = m(0,0) * m(2,3);
-      T t161 = m(2,0) * m(0,1);
-      square_matrix<T,4> minv; //todo transpose
-      minv << (t1 * m(2,2) - t3 * m(2,3) - m(3,3) * m(1,2) * m(2,1) +
-              t7 * m(2,3) - t9 * m(2,2) + t11 * m(1,3)) * t70,
+      T t72 = m(3, 3) * m(0, 1);
+      T t74 = m(3, 2) * m(0, 1);
+      T t78 = m(0, 3) * m(3, 1);
+      T t108 = m(2, 0) * m(1, 2);
+      T t111 = m(1, 3) * m(3, 0);
+      T t131 = m(0, 0) * m(1, 2);
+      T t135 = m(1, 0) * m(0, 2);
+      T t148 = m(3, 1) * m(2, 0);
+      T t150 = m(1, 0) * m(2, 1);
+      T t156 = m(0, 0) * m(2, 1);
+      T t158 = m(0, 0) * m(2, 3);
+      T t161 = m(2, 0) * m(0, 1);
+      square_matrix<T, 4> minv; //todo transpose
+      minv << (t1 * m(2, 2) - t3 * m(2, 3) - m(3, 3) * m(1, 2) * m(2, 1) +
+              t7 * m(2, 3) - t9 * m(2, 2) + t11 * m(1, 3)) * t70,
       
-              -(t72 * m(2,2) - t74 * m(2,3) - t56 * m(3,3) + t35 * m(3,1) -
-              t78 * m(2,2) + m(0,3) * m(3,2) * m(2,1)) * t70,
+              -(t72 * m(2, 2) - t74 * m(2, 3) - t56 * m(3, 3) + t35 * m(3, 1) -
+              t78 * m(2, 2) + m(0, 3) * m(3, 2) * m(2, 1)) * t70,
       
-              (t72 * m(1,2) - t74 * m(1,3) - t1 * m(0,2) + m(0,2) * m(3,1) *
-              m(1,3) + t3 * m(0,3) - t78 * m(1,2)) * t70,
+              (t72 * m(1, 2) - t74 * m(1, 3) - t1 * m(0, 2) + m(0, 2) * m(3, 1) *
+              m(1, 3) + t3 * m(0, 3) - t78 * m(1, 2)) * t70,
       
-              -(t51 * m(2,3) - t64 * m(2,2) - m(1,1) * m(0,2) * m(2,3) + t56 *
-              m(1,3) + m(1,1) * m(0,3) * m(2,2) - m(0,3) * m(1,2) * m(2,1)) * t70,
+              -(t51 * m(2, 3) - t64 * m(2, 2) - m(1, 1) * m(0, 2) * m(2, 3) + t56 *
+              m(1, 3) + m(1, 1) * m(0, 3) * m(2, 2) - m(0, 3) * m(1,2) * m(2, 1)) * t70,
       
-              -(t47 * m(2,2) - t53 * m(2,3) + m(1,3) * m(3,2) * m(2,0) - t108 *
-              m(3,3) + t23 * m(3,0) - t111 * m(2,2)) * t70,
+              -(t47 * m(2, 2) - t53 * m(2, 3) + m(1, 3) * m(3, 2) * m(2, 0) - t108 *
+              m(3, 3) + t23 * m(3, 0) - t111 * m(2, 2)) * t70,
       
-              (t19 * m(2,2) - t27 * m(2,3) - t58 * m(2,2) + t63 * m(0,3) + t39 *
+              (t19 * m(2, 2) - t27 * m(2, 3) - t58 * m(2, 2) + t63 * m(0, 3) + t39 *
               m(2,3) - t50 * m(0,2)) * t70,
      
-              -(t19 * m(1,2) - t27 * m(1,3) - t47 * m(0,2) - t58 * m(1,2) + t111 *
-              m(0,2) + t66 * m(3,2)) * t70,
+              -(t19 * m(1, 2) - t27 * m(1, 3) - t47 * m(0, 2) - t58 * m(1, 2) + t111 *
+              m(0, 2) + t66 * m(3,2)) * t70,
       
-              (t131 * m(2,3) - m(0,0) * m(1,3) * m(2,2) - t135 * m(2,3) - t108 *
-              m(0,3) + m(1,3) * m(2,0) * m(0,2) + t66 * m(2,2)) * t70,
+              (t131 * m(2, 3) - m(0, 0) * m(1, 3) * m(2, 2) - t135 * m(2, 3) - t108 *
+              m(0, 3) + m(1, 3) * m(2, 0) * m(0, 2) + t66 * m(2, 2)) * t70,
       
-              (-m(1,1) * m(2,0) * m(3,3) + m(1,1) * m(2,3) * m(3,0) - t28 *
-              m(3,0) + t148 * m(1,3) + t150 * m(3,3) - m(2,3) * m(3,1) * m(1,0)) * t70,
+              (-m(1, 1) * m(2, 0) * m(3, 3) + m(1, 1) * m(2, 3) * m(3, 0) - t28 *
+              m(3, 0) + t148 * m(1, 3) + t150 * m(3, 3) - m(2, 3) * m(3, 1) * m(1, 0)) * t70,
       
-              -(t156 * m(3,3) - t158 * m(3,1) + t33 * m(3,1) - t161 * m(3,3) - m(2,1) *
-              m(3,0) * m(0,3) + m(2,3) * m(3,0) * m(0,1)) * t70,
+              -(t156 * m(3, 3) - t158 * m(3, 1) + t33 * m(3, 1) - t161 * m(3, 3) - m(2, 1) *
+              m(3, 0) * m(0, 3) + m(2, 3) * m(3, 0) * m(0, 1)) * t70,
       
-             (t19 * m(1,1) - t22 * m(1,3) - t58 * m(1,1) - t47 * m(0,1) + t41 *
-             m(0,3) + t45 * m(1,3)) * t70,
+             (t19 * m(1, 1) - t22 * m(1, 3) - t58 * m(1, 1) - t47 * m(0,1) + t41 *
+             m(0, 3) + t45 * m(1, 3)) * t70,
     
-             -(-m(2,3) * m(1,0) * m(0,1) + t158 * m(1,1) - t33 * m(1,1) + t161 *
-             m(1,3) - t156 * m(1,3) + t150 * m(0,3)) * t70,
+             -(-m(2, 3) * m(1, 0) * m(0, 1) + t158 * m(1, 1) - t33 * m(1, 1) + t161 *
+             m(1, 3) - t156 * m(1, 3) + t150 * m(0, 3)) * t70,
       
-             -(-t3 * m(2,0) + t30 * m(2,2) + t11 * m(1,0) - m(3,0) * m(1,2) *
-             m(2,1) - t41 * m(2,2) + t7 * m(2,0)) * t70,
+             -(-t3 * m(2, 0) + t30 * m(2, 2) + t11 * m(1, 0) - m(3, 0) * m(1, 2) *
+             m(2, 1) - t41 * m(2, 2) + t7 * m(2, 0)) * t70,
       
-             (-t22 * m(2,2) + t27 * m(2,1) - t39 * m(2,1) + t148 * m(0,2) + t45 *
-             m(2,2) - t63 * m(0,1)) * t70,
+             (-t22 * m(2, 2) + t27 * m(2, 1) - t39 * m(2, 1) + t148 * m(0, 2) + t45 *
+             m(2, 2) - t63 * m(0, 1)) * t70,
         
-             -(-t53 * m(0,1) + t27 * m(1,1) - t39 * m(1,1) + t41 * m(0,2) - t22 *
-             m(1,2) + t45 * m(1,2)) * t70,
+             -(-t53 * m(0, 1) + t27 * m(1, 1) - t39 * m(1, 1) + t41 * m(0, 2) - t22 *
+             m(1, 2) + t45 * m(1, 2)) * t70,
       
-             t70 * (t161 * m(1,2) - t37 * m(1,1) - m(1,0) * m(0,1) * m(2,2) + t135 *
-             m(2,1) + t14 * m(2,2) - t131 * m(2,1));
+             t70 * (t161 * m(1, 2) - t37 * m(1, 1) - m(1, 0) * m(0, 1) * m(2, 2) + t135 *
+             m(2, 1) + t14 * m(2, 2) - t131 * m(2, 1));
     
       return minv;
     }
   
 
     template <typename T, std::size_t M, std::size_t N>
-    matrix<T,M,N> dyad(const vector<T,M>& v1, const vector<T,N>& v2)
+    matrix<T, M, N> dyad(const vector<T, M>& v1, const vector<T, N>& v2)
     {
-      matrix<T,M,N> m;
+      matrix<T, M, N> m;
       for(std::size_t j = 0; j < N; ++j)
           for(std::size_t i = 0; i < M; ++i)
-              m(i,j) = v1(i)*v2(j);
+              m(i, j) = v1(i) * v2(j);
       return m;
     }
   
   
     template <typename T, std::size_t M, std::size_t N>
-    T trace(const matrix<T,M,N>& m)
+    T trace(const matrix<T, M, N>& m)
     {
       T tr = (T)0;
-      std::size_t o = (std::min)(M,N);
+      std::size_t o = (std::min)(M, N);
       for(std::size_t i = 0; i < o; ++i)
-          tr += m(i,i);
+          tr += m(i, i);
       return tr;
     }
   
     template <typename T, std::size_t M, std::size_t N>
-    matrix<T,M,N> eye()
+    matrix<T, M, N> eye()
     {
-      matrix<T,M,N> r{};
-      std::size_t o = (std::min)(M,N);
+      matrix<T, M, N> r{};
+      std::size_t o = (std::min)(M, N);
       for(std::size_t i = 0; i < o; i++)
-        r(i,i) = (T)1;
+        r(i, i) = (T)1;
       return r;
     }
   
     template <typename T, std::size_t M>
-    matrix<T,M,M> eye()
+    matrix<T, M, M> eye()
     {
-      matrix<T,M,M> r{};
+      matrix<T, M, M> r{};
   
       for(std::size_t i = 0; i < M; i++)
-        r(i,i) = (T)1;
+        r(i, i) = (T)1;
       return r;
     }
   
     template <typename T,std::size_t M, std::size_t N,
-        typename Mat = matrix<T,M,N>, typename = std::enable_if_t<Mat::is_vector(3)> >
-    square_matrix<T,3> cross_mat(matrix<T,M,N>& v)
+        typename Mat = matrix<T, M, N>, typename = std::enable_if_t<Mat::is_vector(3)> >
+    square_matrix<T, 3> cross_mat(matrix<T,M,N>& v)
     {
       square_matrix<T,3> m;
       m <<     0, -v(2),  v(1),
@@ -1065,38 +1065,38 @@ namespace owl
     }
   
     template <typename T, std::size_t M, std::size_t N>
-    matrix<T,M,N> ones()
+    matrix<T, M, N> ones()
     {
-      matrix<T,M,N> r;
+      matrix<T, M, N> r;
       r=T{1};
       return r;
     }
   
     template <typename T, std::size_t N >
-    square_matrix<T,N> diag(const vector<T,N>& v)
+    square_matrix<T, N> diag(const vector<T, N>& v)
     {
-      square_matrix<T,N> r;
+      square_matrix<T, N> r;
       r = (T)0;
       for(std::size_t i = 0; i < N; i++)
-        r(i,i) = v(i);
+        r(i, i) = v(i);
       return r;
     }
     
     template <typename T, std::size_t M, std::size_t N,
       typename Engine = std::mt19937, typename Distribution = std::normal_distribution<T>>
-    matrix<T,M,N> random_matrix()
+    matrix<T, M, N> random_matrix()
     {
       static auto generator = std::bind(Distribution(), owl::utils::create_seeded_engine<Engine>());
-      matrix<T,M,N> m;
-      std::generate(m.begin(),m.end(),generator);
+      matrix<T, M, N> m;
+      std::generate(m.begin(), m.end(), generator);
       return m;
     }
     
     template <typename T, std::size_t M,
     typename Engine = std::mt19937, typename Distribution = std::normal_distribution<T>>
-    square_matrix<T,M> random_square_matrix()
+    square_matrix<T, M> random_square_matrix()
     {
-      return random_matrix<T,M,M,Engine,Distribution>();
+      return random_matrix<T, M, M, Engine, Distribution>();
     }
   
     
