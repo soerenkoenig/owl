@@ -13,6 +13,7 @@
 #include <vector>
 #include <string>
 
+#include "owl/export.hpp"
 #include "owl/utils/container_utils.hpp"
 #include "owl/utils/buffer.hpp"
 
@@ -21,8 +22,8 @@ namespace owl
   namespace utils
   {
   
-    std::string base64_encode(const buffer& buf);
+    OWL_API std::string base64_encode(const buffer& buf);
   
-    buffer base64_decode(const std::string& encoded_string);
+    OWL_API buffer base64_decode(const std::string& encoded_string);
   }
 }

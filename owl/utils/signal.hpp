@@ -7,6 +7,7 @@
 #include <vector>
 #include <iostream>
 
+#include "owl/export.hpp"
 #include "owl/utils/non_copyable.hpp"
 #include "owl/utils/handle.hpp"
 
@@ -49,7 +50,7 @@ namespace owl
 
 
     template<>
-    struct combiner_default<void>
+    struct OWL_API combiner_default<void>
     {
       using result_type = void;
       using combined_result_type = void;
@@ -79,7 +80,7 @@ namespace owl
       combined_result_type result_;
     };
  
-    struct combiner_and
+    struct OWL_API combiner_and
     {
       using result_type = bool;
       using combined_result_type = bool;
@@ -98,7 +99,7 @@ namespace owl
       combined_result_type result_ = true;
     };
  
-    struct combiner_or
+    struct OWL_API combiner_or
     {
       using result_type = bool;
       using combined_result_type = bool;
@@ -189,12 +190,12 @@ namespace owl
       combined_result_type result_;
     };
    
-    struct callback_tag{};
+    struct OWL_API callback_tag{};
     using callback_handle = owl::utils::handle<callback_tag>;
  
     namespace detail
     {
-      class signal_base : non_copyable
+      class OWL_API signal_base : non_copyable
       {
         virtual bool disconnect(callback_handle handle, int priority) = 0;
 
@@ -220,7 +221,7 @@ namespace owl
     }
  
    
-    class connection
+    class OWL_API connection
     {
     public:
      
@@ -303,7 +304,7 @@ namespace owl
       int priority_;
     };
    
-   class scoped_connection : public connection, private non_copyable
+   class OWL_API scoped_connection : public connection, private non_copyable
    {
    public:
      
@@ -335,7 +336,7 @@ namespace owl
      
    };
    
-   class connection_list : private non_copyable
+   class OWL_API connection_list : private non_copyable
    {
    public:
      ~connection_list()
@@ -478,13 +479,13 @@ namespace owl
     };
    
     template<class Instance, class Class, class Result, class... Args>
-    std::function<Result ( Args... )> slot(Instance &object, Result (Class::*method)(Args...))
+    std::function<Result (Args...)> slot(Instance &object, Result (Class::*method)(Args...))
     {
       return [&object, method] (Args... args)  { return ( object .* method )( args... ); };
     }
 
     template<class Class, class Result, class... Args>
-    std::function<Result ( Args... )> slot(Class *object, Result ( Class::*method )(Args...))
+    std::function<Result (Args...)> slot(Class *object, Result ( Class::*method )(Args...))
     {
       return [object, method] (Args... args)  { return ( object ->* method )( args... ); };
     }

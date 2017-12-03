@@ -10,11 +10,13 @@
 
 #pragma once
 
+#include "owl/export.hpp"
+
 namespace owl
 {
   namespace utils
   {
-    struct non_copyable
+    struct OWL_API non_copyable
     {
     protected:
       non_copyable() = default;

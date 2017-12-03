@@ -15,11 +15,13 @@
 #include <initializer_list>
 #include <algorithm>
 
+#include "owl/export.hpp"
+
 namespace owl
 {
   namespace utils
   {
-    class buffer
+    class OWL_API buffer
     {
      public:
     
@@ -107,9 +109,7 @@ namespace owl
     
       bool operator>(const buffer& other) const;
     
-      bool operator>=(const buffer& other) const;
-        
-    
+      bool operator>=(const buffer& other) const;   
     
    private:
     

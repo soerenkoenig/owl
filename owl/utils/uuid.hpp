@@ -15,13 +15,14 @@
 #include <limits>
 #include <algorithm>
 
+#include "owl/export.hpp"
 #include "owl/utils/hash_utils.hpp"
 
 namespace owl
 {
   namespace utils
   {
-    struct uuid
+    struct OWL_API uuid
     {
     public:
       using container_type = std::array<std::uint8_t, 16>;
@@ -302,8 +303,8 @@ namespace owl
 
 namespace std
 {
- template<>
-  struct hash<owl::utils::uuid>
+  template<>
+  struct OWL_API hash<owl::utils::uuid>
   {
     std::size_t operator()(const owl::utils::uuid& value) const
     {

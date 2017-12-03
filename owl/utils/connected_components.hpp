@@ -56,7 +56,7 @@ namespace owl
        {
        
          x++;
-         while(x <num_elems_ && x != id[x])
+         while(x < num_elems_ && x != id[x])
            x++;
          if(x == num_elems_)
            x= -1;
