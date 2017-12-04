@@ -100,27 +100,27 @@ namespace owl
     buffer::iterator buffer::begin()
     {
 #ifdef WIN32
-	  return stdext::make_checked_array_iterator(data_,size_);
+	    return stdext::make_checked_array_iterator(data_, size_);
 #else
-	  return data_;
+	    return data_;
 #endif
     }
   
     buffer::const_iterator buffer::begin() const
-	{
+  	{
 #ifdef WIN32
-	  return stdext::make_checked_array_iterator<const std::uint8_t*>(data_, size_);
+	    return stdext::make_checked_array_iterator<const std::uint8_t*>(data_, size_);
 #else
-	  return data_;
+	    return data_;
 #endif
-	}
+	  }
   
     buffer::const_iterator buffer::cbegin() const
     {
 #ifdef WIN32
-	  return stdext::make_checked_array_iterator<const std::uint8_t*>(data_, size_);
+  	  return stdext::make_checked_array_iterator<const std::uint8_t*>(data_, size_);
 #else
-	  return data_;
+	    return data_;
 #endif
     }
   
@@ -145,9 +145,9 @@ namespace owl
     buffer::const_iterator buffer::cend() const
     {
 #ifdef WIN32
-	  return stdext::make_checked_array_iterator<const std::uint8_t*>(data_, size_, size_);
+	    return stdext::make_checked_array_iterator<const std::uint8_t*>(data_, size_, size_);
 #else
-	  return data_ + size_;
+	    return data_ + size_;
 #endif
     }
   
