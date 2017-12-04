@@ -40,7 +40,7 @@ namespace owl
         {
           bound_type bmin;
           for(std::size_t i = 0; i < Dimension; ++i)
-            bmin(i) = std::min(a(i),b(i));
+            bmin(i) = std::min(a(i), b(i));
           return bmin;
         }
         
@@ -48,7 +48,7 @@ namespace owl
         {
           bound_type bmin;
           for(std::size_t i = 0; i < Dimension; ++i)
-            bmin(i) = std::max(a(i),b(i));
+            bmin(i) = std::max(a(i), b(i));
           return bmin;
         }
         
@@ -72,14 +72,13 @@ namespace owl
         
         static bound_type minimum(const bound_type& a, const bound_type& b)
         {
-          return std::min(a,b);
+          return std::min(a, b);
         }
         
         static bound_type maximum(const bound_type& a, const bound_type& b)
         {
-          return std::max(a,b);
+          return std::max(a, b);
         }
-        
       };
       
     }
@@ -93,7 +92,7 @@ namespace owl
       using bound_type = typename helper_type_::bound_type;
       
       interval()
-       : bounds{detail::interval_helper<Scalar, Dimension>::max(), detail::interval_helper<Scalar, Dimension>::lowest()}
+       : bounds{helper_type_::max(), helper_type_::lowest()}
       {
       }
       
@@ -132,8 +131,7 @@ namespace owl
         lower_bound = helper_type_::minimum(lower_bound, p);
         upper_bound = helper_type_::maximum(upper_bound, p);
       }
-      
-      
+    
       union
       {
         std::array<bound_type, 2> bounds;
@@ -146,13 +144,10 @@ namespace owl
     };
     
     template <typename Scalar>
-    using rectangle = interval<Scalar,2>;
+    using rectangle = interval<Scalar, 2>;
     
     template <typename Scalar>
-    using box = interval<Scalar,3>;
-    
-    
-    
+    using box = interval<Scalar, 3>;
   }
 }
 
