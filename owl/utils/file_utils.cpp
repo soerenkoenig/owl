@@ -43,7 +43,7 @@ namespace owl
       size = file.tellg();
       file.seekg(0, std::ios::beg);
     
-      buf.resize(size);
+      buf.resize(static_cast<std::size_t>(size));
       return (bool)file.read((char*) buf.data(), size);
     }
   

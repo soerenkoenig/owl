@@ -14,6 +14,7 @@
 #include <string>
 #include <initializer_list>
 #include <algorithm>
+#include <iterator>
 
 #include "owl/export.hpp"
 
@@ -27,9 +28,14 @@ namespace owl
     
       using value_type = std::uint8_t;
       using reference = std::uint8_t&;
-      using const_reference = const std::uint8_t&;
+	  using const_reference = const std::uint8_t&;
+#ifdef WIN32
+	  using const_iterator = stdext::checked_array_iterator<const std::uint8_t*>;
+      using iterator = stdext::checked_array_iterator<std::uint8_t*>;
+#else
+	  using const_iterator = const std::uint8_t*;
       using iterator = std::uint8_t*;
-      using const_iterator = const std::uint8_t*;
+#endif
       using size_type = std::size_t;
       using pointer = std::uint8_t*;
       using const_pointer = const std::uint8_t*;
