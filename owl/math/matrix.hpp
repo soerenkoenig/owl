@@ -46,12 +46,25 @@ namespace owl
       {
           return (T)1;
       }
+      
+      template <typename T>
+      constexpr T max(std::size_t i)
+      {
+        return std::numeric_limits<T>::max();
+      }
+      
+      template <typename T>
+      constexpr T lowest(std::size_t i)
+      {
+        return std::numeric_limits<T>::lowest();
+      }
 
       template <typename T, std::size_t N>
       constexpr T eye(std::size_t i)
       {
           return (i % (N + 1)) == 0 ? (T)1 : 0;
       }
+      
     }
   
     template <typename Scalar, std::size_t Rows, std::size_t Cols>
@@ -167,6 +180,16 @@ namespace owl
     static constexpr matrix one()
     {
       return matrix{owl::utils::make_array<size()>(detail::one<Scalar>)};
+    }
+      
+    static constexpr matrix max()
+    {
+       return matrix{owl::utils::make_array<size()>(detail::max<Scalar>)};
+    }
+    
+    static constexpr matrix lowest()
+    {
+      return matrix{owl::utils::make_array<size()>(detail::lowest<Scalar>)};
     }
     
     static constexpr matrix identity()
@@ -670,6 +693,7 @@ namespace owl
       container_type data_;
     };
     
+    
     namespace detail
     {
       template<typename  S, std::size_t N, std::size_t M>
@@ -1056,7 +1080,7 @@ namespace owl
         typename Mat = matrix<T, M, N>, typename = std::enable_if_t<Mat::is_vector(3)> >
     square_matrix<T, 3> cross_mat(matrix<T, M, N>& v)
     {
-      square_matrix<T,3> m;
+      square_matrix<T, 3> m;
       m <<     0, -v(2),  v(1),
             v(2),     0, -v(0),
            -v(1),  v(0),     0;
@@ -1067,7 +1091,7 @@ namespace owl
     matrix<T, M, N> ones()
     {
       matrix<T, M, N> r;
-      r=T{1};
+      r = T{1};
       return r;
     }
   

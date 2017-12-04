@@ -45,6 +45,7 @@
 		D1993BCF1FBB1D94005737F9 /* buffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1993BCD1FBB1D94005737F9 /* buffer.cpp */; };
 		D1993BD01FBB1D94005737F9 /* buffer.hpp in Headers */ = {isa = PBXBuildFile; fileRef = D1993BCE1FBB1D94005737F9 /* buffer.hpp */; };
 		D1C330571FCDA37C007E446E /* ray.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1C330561FCDA37C007E446E /* ray.cpp */; };
+		D1C3305A1FD59E0F007E446E /* interval.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1C330591FD59E0F007E446E /* interval.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -178,6 +179,8 @@
 		D1993BCE1FBB1D94005737F9 /* buffer.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = buffer.hpp; sourceTree = "<group>"; };
 		D1C330551FCD9F3E007E446E /* ray.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = ray.hpp; sourceTree = "<group>"; };
 		D1C330561FCDA37C007E446E /* ray.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ray.cpp; sourceTree = "<group>"; };
+		D1C330581FD59C72007E446E /* interval.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = interval.hpp; sourceTree = "<group>"; };
+		D1C330591FD59E0F007E446E /* interval.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = interval.cpp; sourceTree = "<group>"; };
 		D1F621601FAA13350078436C /* hash_utils.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = hash_utils.hpp; sourceTree = "<group>"; };
 		D1FC096A1F964DEE00320C13 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -250,6 +253,7 @@
 				285D63931FC8C67D007EBB23 /* angle.cpp */,
 				D1C330561FCDA37C007E446E /* ray.cpp */,
 				28757C7F1FCF5A44001720F1 /* plane.cpp */,
+				D1C330591FD59E0F007E446E /* interval.cpp */,
 			);
 			path = owl;
 			sourceTree = "<group>";
@@ -418,6 +422,7 @@
 				285D63981FCCACBB007EBB23 /* frustrum.hpp */,
 				28757C7E1FCDDA18001720F1 /* nplane.hpp */,
 				D1C330551FCD9F3E007E446E /* ray.hpp */,
+				D1C330581FD59C72007E446E /* interval.hpp */,
 			);
 			path = math;
 			sourceTree = "<group>";
@@ -574,6 +579,7 @@
 				D1993BCC1FBADB1E005737F9 /* base64.cpp in Sources */,
 				D15138B01FB196E9009D3414 /* non_copyable.cpp in Sources */,
 				D1C330571FCDA37C007E446E /* ray.cpp in Sources */,
+				D1C3305A1FD59E0F007E446E /* interval.cpp in Sources */,
 				284C09C51F9681D40062BFF1 /* matrix.cpp in Sources */,
 				28CA4D3E1FAA6F4E00C753D6 /* uuid.cpp in Sources */,
 				D172B67B1F9F197C0039A121 /* count_iterator.cpp in Sources */,
