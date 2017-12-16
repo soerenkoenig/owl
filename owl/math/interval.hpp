@@ -185,7 +185,7 @@ namespace owl
       
       bool inside(const bound_type& p) const
       {
-        return helper_type_::template inside<LowerBoundOpen,UpperBoundOpen>(lower_bound, upper_bound, p);
+        return helper_type_::template inside<LowerBoundOpen, UpperBoundOpen>(lower_bound, upper_bound, p);
       }
       
       bool inside(const interval& other) const
@@ -229,11 +229,11 @@ namespace owl
       };
     };
     
-    template <typename Scalar>
-    using rectangle = interval<Scalar, 2>;
+    template <typename Scalar, bool LowerBoundOpen = false, bool UpperBoundOpen = true>
+    using rectangle = interval<Scalar, 2, LowerBoundOpen, UpperBoundOpen>;
     
-    template <typename Scalar>
-    using box = interval<Scalar, 3>;
+    template <typename Scalar, bool LowerBoundOpen = false, bool UpperBoundOpen = true>
+    using box = interval<Scalar, 3, LowerBoundOpen, UpperBoundOpen>;
   }
 }
 

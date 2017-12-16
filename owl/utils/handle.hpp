@@ -118,7 +118,7 @@ namespace owl
 namespace std
 {
   template<typename Tag, typename Index>
-  struct hash<owl::utils::handle<Tag,Index>>
+  struct hash<owl::utils::handle<Tag, Index>>
   {
     std::size_t operator()(const owl::utils::handle<Tag, Index>& value) const
     {

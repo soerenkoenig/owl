@@ -812,7 +812,7 @@ namespace owl
       return std::inner_product(lhs.cbegin(), lhs.cend(), rhs.cbegin(), S{0});
     }
   
-    template< typename  S, std::size_t N, std::size_t M>
+    template< typename S, std::size_t N, std::size_t M>
     matrix<S, M, N> transpose(const matrix<S, N, M>& rhs)
     {
       using size_type = typename matrix<S, M, N>::size_type;
@@ -823,7 +823,7 @@ namespace owl
       return m;
     }
   
-    template< typename  S, std::size_t N, std::size_t M,
+    template< typename S, std::size_t N, std::size_t M,
         typename = std::enable_if_t< matrix<S, N, M>::is_vector(3)> >
     matrix<S, N, M> cross(const matrix<S, N, M>& lhs, const matrix<S, N, M>& rhs)
     {
@@ -833,6 +833,31 @@ namespace owl
         lhs.x() * rhs.y() - lhs.y() * rhs.x();
       return m;
     }
+  
+    //compute project of u onto v
+    template< typename S, std::size_t N, std::size_t M,
+        typename = std::enable_if_t< matrix<S, N, M>::is_vector(3)> >
+    auto project(const matrix<S, N, M>& u, const matrix<S, N, M>& v)
+    {
+      return dot(u,v)/dot(v,v)*v;
+    }
+  
+    template< typename S, std::size_t N, std::size_t M,
+        typename = std::enable_if_t< matrix<S, N, M>::is_vector(3)> >
+    auto orthogonal(const matrix<S, N, M>& u, const matrix<S, N, M>& v)
+    {
+      return u - project(u,v);
+    }
+  
+    template< typename S, std::size_t N, std::size_t M,
+        typename = std::enable_if_t< matrix<S, N, M>::is_vector(2)> >
+    auto rotate90(const matrix<S, N, M>& v)
+    {
+      return matrix<S, N, M>(-v.y(), v.x());
+    }
+  
+  
+  
   
     template <typename S, std::size_t N, std::size_t M>
     std::ostream& operator<<(std::ostream& out, const matrix<S, N, M>& m)

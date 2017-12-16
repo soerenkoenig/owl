@@ -158,49 +158,6 @@ namespace owl
         std::begin(range), std::end(range));
       return make_iterator_range(f, f.end());
     }
-
-  /*
-    template<typename Iterator1, typename Iterator2, std::size_t StepSize>
-    bool operator==(const filter_iterator<Iterator1, StepSize>& lhs,
-      const step_iterator<Iterator2, StepSize>& rhs)
-    {
-      return lhs.base() == rhs.base();
-    }
-  
-    template<typename Iterator1, typename Iterator2, std::size_t StepSize>
-    bool operator!=(const step_iterator<Iterator1, StepSize>& lhs,
-      const step_iterator<Iterator2, StepSize>& rhs)
-    {
-      return lhs.base() != rhs.base();
-    }
- 
-    template<typename Iterator, std::size_t StepSize>
-    bool operator==(const Iterator& lhs, const step_iterator<Iterator, StepSize>& rhs)
-    {
-      return lhs == rhs.base();
-    }
-  
-    template<typename Iterator, std::size_t StepSize>
-    bool operator!=(const Iterator& lhs, const step_iterator<Iterator, StepSize>& rhs)
-    {
-      return lhs != rhs.base();
-    }
-  
-    template<typename Iterator, std::size_t StepSize>
-    bool operator==(const step_iterator<Iterator, StepSize>& lhs,
-      const Iterator& rhs)
-    {
-      return lhs.base() == rhs;
-    }
-  
-    template<typename Iterator, std::size_t StepSize>
-    bool operator!=(const step_iterator<Iterator, StepSize>& lhs,
-      const Iterator& rhs)
-    {
-      return lhs.base() != rhs;
-    }
-   
-  */
   }
 }
 
