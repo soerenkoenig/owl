@@ -842,6 +842,7 @@ namespace owl
       return dot(u,v)/dot(v,v)*v;
     }
   
+    //compute orthogonal component of u w.r.t v
     template< typename S, std::size_t N, std::size_t M,
         typename = std::enable_if_t< matrix<S, N, M>::is_vector(3)> >
     auto orthogonal(const matrix<S, N, M>& u, const matrix<S, N, M>& v)
@@ -849,14 +850,21 @@ namespace owl
       return u - project(u,v);
     }
   
+     //compute project of u onto v
+    template< typename S, std::size_t N, std::size_t M,
+        typename = std::enable_if_t< matrix<S, N, M>::is_vector(3)> >
+    auto reflect(const matrix<S, N, M>& v, const matrix<S, N, M>& n)
+    {
+      return v - 2*dot(v,n)/dot(n,n) * n;
+    }
+  
+    //rotate v ccw by 90 deg
     template< typename S, std::size_t N, std::size_t M,
         typename = std::enable_if_t< matrix<S, N, M>::is_vector(2)> >
     auto rotate90(const matrix<S, N, M>& v)
     {
       return matrix<S, N, M>(-v.y(), v.x());
     }
-  
-  
   
   
     template <typename S, std::size_t N, std::size_t M>
