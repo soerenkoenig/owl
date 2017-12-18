@@ -847,15 +847,48 @@ namespace owl
         typename = std::enable_if_t< matrix<S, N, M>::is_vector(3)> >
     auto orthogonal(const matrix<S, N, M>& u, const matrix<S, N, M>& v)
     {
-      return u - project(u,v);
+      return (1 - dot(u,v)/dot(v,v))*v;
     }
   
      //compute project of u onto v
     template< typename S, std::size_t N, std::size_t M,
-        typename = std::enable_if_t< matrix<S, N, M>::is_vector(3)> >
+        typename = std::enable_if_t<matrix<S, N, M>::is_vector(3)> >
     auto reflect(const matrix<S, N, M>& v, const matrix<S, N, M>& n)
     {
       return v - 2*dot(v,n)/dot(n,n) * n;
+    }
+  
+    ///returns the double cross product of vector a, b and c a x(b x c)
+    template< typename S, std::size_t N, std::size_t M,
+        typename = std::enable_if_t<matrix<S, N, M>::is_vector(3)> >
+    matrix<S, N, M> dbl_cross(const matrix<S, N, M> &a, const matrix<S, N, M> &b, const matrix<S, N, M> &c)
+    {
+      return dot(a,c)*b - dot(a,b)*c;
+    }
+
+    ///returns the spat product (mixed vector product) of the vectors a, b and c
+    template< typename S, std::size_t N, std::size_t M,
+        typename = std::enable_if_t<matrix<S, N, M>::is_vector(3)> >
+    S spat(const matrix<S, N, M> &a,const matrix<S, N, M> &b,const matrix<S, N, M> &c)
+    {
+      return dot(cross(a, b), c);
+    }
+  
+    ///calculates the refracted direction of v on a surface with normal n and refraction indices c1,c2 and a bool flag  which indicates total reflection
+     template< typename S, std::size_t N, std::size_t M,
+        typename = std::enable_if_t<matrix<S, N, M>::is_vector(3)> >
+    std::pair<matrix<S, N, M>, bool> refract(const matrix<S, N, M> &v, const matrix<S, N, M> &n,S c1, S c2)
+    {
+      S NdotV = -dot(n,v) / dot(n,n);
+      S c = c2/c1;
+
+      S cosasqr = (S)1.0 - (c * c) * ((S)1.0 - NdotV * NdotV);
+  
+      if(cosasqr < 0)
+        return {reflect(v,n), true};
+      
+      else
+        return {c*v + (c * NdotV - sqrt(cosasqr) / dot(n,n) ) * n, false};
     }
   
     //rotate v ccw by 90 deg
