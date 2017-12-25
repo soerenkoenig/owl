@@ -779,6 +779,7 @@ namespace owl
     using matrix43f = matrix<float, 4, 3>;
   
     using matrix44f = square_matrix<float, 4>;
+  
 
     //implementation
   
@@ -812,7 +813,7 @@ namespace owl
       return std::inner_product(lhs.cbegin(), lhs.cend(), rhs.cbegin(), S{0});
     }
   
-    template< typename S, std::size_t N, std::size_t M>
+    template<typename S, std::size_t N, std::size_t M>
     matrix<S, M, N> transpose(const matrix<S, N, M>& rhs)
     {
       using size_type = typename matrix<S, M, N>::size_type;
@@ -823,7 +824,7 @@ namespace owl
       return m;
     }
   
-    template< typename S, std::size_t N, std::size_t M,
+    template<typename S, std::size_t N, std::size_t M,
         typename = std::enable_if_t< matrix<S, N, M>::is_vector(3)> >
     matrix<S, N, M> cross(const matrix<S, N, M>& lhs, const matrix<S, N, M>& rhs)
     {
@@ -831,6 +832,14 @@ namespace owl
       m << lhs.y() * rhs.z() - lhs.z() * rhs.y(),
         lhs.z() * rhs.x() - lhs.x() * rhs.z(),
         lhs.x() * rhs.y() - lhs.y() * rhs.x();
+      return m;
+    }
+  
+    template<typename S, std::size_t N, std::size_t M, typename S2>
+    auto comp_mult(const matrix<S, N, M>& lhs, const matrix<S2, N, M>& rhs)
+    {
+      matrix<decltype(std::declval<S>() * std::declval<S2>()), N, M> m;
+      std::transform(lhs.begin(),lhs.end(),rhs.begin(), m.begin(), std::multiplies<>());
       return m;
     }
   

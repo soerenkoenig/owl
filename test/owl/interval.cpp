@@ -16,9 +16,6 @@ namespace test
     CHECK(b.inside(vector3f(0,0,0)));
     
     interval<float> range;
-    
-    
-    
-    
+   
   }
 }

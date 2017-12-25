@@ -10,7 +10,6 @@
 
 #pragma once
 
-#pragma once
 #include "owl/math/matrix.hpp"
 
 namespace owl

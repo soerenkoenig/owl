@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		280418F71FDC4AEF004EA43B /* libboost_filesystem-mt.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 280418F51FDC4ACF004EA43B /* libboost_filesystem-mt.dylib */; };
+		280418FA1FDC4BDF004EA43B /* libboost_system-mt.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 280418F81FDC4B4B004EA43B /* libboost_system-mt.dylib */; };
+		28043CE41FE1ABE800AE177A /* connected_components.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28043CE31FE1ABE800AE177A /* connected_components.cpp */; };
 		2816E6A31FA12F8600CCE00A /* image.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 2816E6A11FA12F8600CCE00A /* image.hpp */; };
 		2816E6A61FA133EF00CCE00A /* image.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2816E6A51FA133EF00CCE00A /* image.cpp */; };
 		2816E6A91FA139AB00CCE00A /* file_utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2816E6A81FA139AB00CCE00A /* file_utils.cpp */; };
@@ -18,7 +21,10 @@
 		284C09C51F9681D40062BFF1 /* matrix.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 284C09C41F9681D40062BFF1 /* matrix.cpp */; };
 		284C09C91F968F5C0062BFF1 /* container_traits.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 284C09C81F968F5C0062BFF1 /* container_traits.cpp */; };
 		284C09CB1F9B0B370062BFF1 /* step_iterator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 284C09CA1F9B0B370062BFF1 /* step_iterator.cpp */; };
+		2857F02B1FEF280700DEF030 /* colors.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2857F02A1FEF280700DEF030 /* colors.cpp */; };
+		2857F0301FF128B200DEF030 /* gamma_correction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2857F02F1FF128B200DEF030 /* gamma_correction.cpp */; };
 		285D63941FC8C67D007EBB23 /* angle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 285D63931FC8C67D007EBB23 /* angle.cpp */; };
+		286563CE1FE86A73003758E1 /* color_maps.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 286563CD1FE86A73003758E1 /* color_maps.cpp */; };
 		286F1DF11F9E67A500FCC209 /* map_iterator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 286F1DF01F9E67A500FCC209 /* map_iterator.cpp */; };
 		286F1DF31F9E6C4E00FCC209 /* filter_iterator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 286F1DF21F9E6C4E00FCC209 /* filter_iterator.cpp */; };
 		287090AA1FC8BDF600356338 /* matrix.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 287090A91FC8BDF600356338 /* matrix.cpp */; };
@@ -100,6 +106,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		280418F51FDC4ACF004EA43B /* libboost_filesystem-mt.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libboost_filesystem-mt.dylib"; path = "../../../../../opt/local/lib/libboost_filesystem-mt.dylib"; sourceTree = "<group>"; };
+		280418F81FDC4B4B004EA43B /* libboost_system-mt.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libboost_system-mt.dylib"; path = "../../../../../opt/local/lib/libboost_system-mt.dylib"; sourceTree = "<group>"; };
+		28043CE31FE1ABE800AE177A /* connected_components.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = connected_components.cpp; sourceTree = "<group>"; };
 		2816E6A11FA12F8600CCE00A /* image.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = image.hpp; sourceTree = "<group>"; };
 		2816E6A41FA1338700CCE00A /* stb_image_resize.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = stb_image_resize.h; sourceTree = "<group>"; };
 		2816E6A51FA133EF00CCE00A /* image.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = image.cpp; sourceTree = "<group>"; };
@@ -118,19 +127,26 @@
 		284C09C81F968F5C0062BFF1 /* container_traits.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = container_traits.cpp; sourceTree = "<group>"; };
 		284C09CA1F9B0B370062BFF1 /* step_iterator.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = step_iterator.cpp; sourceTree = "<group>"; };
 		284C09CC1F9E54220062BFF1 /* filter_iterator.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = filter_iterator.hpp; sourceTree = "<group>"; };
+		2857F0291FEA978B00DEF030 /* colors.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = colors.hpp; sourceTree = "<group>"; };
+		2857F02A1FEF280700DEF030 /* colors.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = colors.cpp; sourceTree = "<group>"; };
+		2857F02C1FF0596B00DEF030 /* lin_space.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = lin_space.hpp; sourceTree = "<group>"; };
+		2857F02E1FF1281500DEF030 /* gamma_correction.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = gamma_correction.hpp; sourceTree = "<group>"; };
+		2857F02F1FF128B200DEF030 /* gamma_correction.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = gamma_correction.cpp; sourceTree = "<group>"; };
 		285D63921FC8C4C7007EBB23 /* angle.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = angle.hpp; sourceTree = "<group>"; };
 		285D63931FC8C67D007EBB23 /* angle.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = angle.cpp; sourceTree = "<group>"; };
 		285D63951FCBD2E2007EBB23 /* trafos.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = trafos.hpp; sourceTree = "<group>"; };
 		285D63961FCBD9F8007EBB23 /* ransac.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = ransac.hpp; sourceTree = "<group>"; };
 		285D63971FCCA33A007EBB23 /* connected_components.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = connected_components.hpp; sourceTree = "<group>"; };
 		285D63981FCCACBB007EBB23 /* frustrum.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = frustrum.hpp; sourceTree = "<group>"; };
+		286563CC1FE864AC003758E1 /* color_maps.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = color_maps.hpp; sourceTree = "<group>"; };
+		286563CD1FE86A73003758E1 /* color_maps.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = color_maps.cpp; sourceTree = "<group>"; };
 		286F1DF01F9E67A500FCC209 /* map_iterator.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = map_iterator.cpp; sourceTree = "<group>"; };
 		286F1DF21F9E6C4E00FCC209 /* filter_iterator.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = filter_iterator.cpp; sourceTree = "<group>"; };
 		287090A91FC8BDF600356338 /* matrix.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = matrix.cpp; sourceTree = "<group>"; };
 		28757C7E1FCDDA18001720F1 /* nplane.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = nplane.hpp; sourceTree = "<group>"; };
 		28757C7F1FCF5A44001720F1 /* plane.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = plane.cpp; sourceTree = "<group>"; };
 		2883C2411F91BA7F007DDB3C /* libowl.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libowl.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
-		2883C2531F91BAFA007DDB3C /* test */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = text; path = test; sourceTree = BUILT_PRODUCTS_DIR; };
+		2883C2531F91BAFA007DDB3C /* test */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = test; sourceTree = BUILT_PRODUCTS_DIR; };
 		2883C2551F91BAFA007DDB3C /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		2883C25E1F91BD38007DDB3C /* catch.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = catch.hpp; sourceTree = "<group>"; };
 		288410B61FA6006A00CE68DA /* obj.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = obj.hpp; sourceTree = "<group>"; };
@@ -197,6 +213,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				280418FA1FDC4BDF004EA43B /* libboost_system-mt.dylib in Frameworks */,
+				280418F71FDC4AEF004EA43B /* libboost_filesystem-mt.dylib in Frameworks */,
 				2883C25B1F91BB33007DDB3C /* libowl.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -254,6 +272,9 @@
 				D1C330561FCDA37C007E446E /* ray.cpp */,
 				28757C7F1FCF5A44001720F1 /* plane.cpp */,
 				D1C330591FD59E0F007E446E /* interval.cpp */,
+				28043CE31FE1ABE800AE177A /* connected_components.cpp */,
+				2857F02A1FEF280700DEF030 /* colors.cpp */,
+				286563CD1FE86A73003758E1 /* color_maps.cpp */,
 			);
 			path = owl;
 			sourceTree = "<group>";
@@ -288,8 +309,20 @@
 				28C66FA51FC1BA5600F9C0D1 /* handle.hpp */,
 				285D63961FCBD9F8007EBB23 /* ransac.hpp */,
 				285D63971FCCA33A007EBB23 /* connected_components.hpp */,
+				2857F02C1FF0596B00DEF030 /* lin_space.hpp */,
 			);
 			path = utils;
+			sourceTree = "<group>";
+		};
+		2857F02D1FF1252200DEF030 /* color */ = {
+			isa = PBXGroup;
+			children = (
+				2857F0291FEA978B00DEF030 /* colors.hpp */,
+				286563CC1FE864AC003758E1 /* color_maps.hpp */,
+				2857F02E1FF1281500DEF030 /* gamma_correction.hpp */,
+				2857F02F1FF128B200DEF030 /* gamma_correction.cpp */,
+			);
+			path = color;
 			sourceTree = "<group>";
 		};
 		2883C2381F91BA7F007DDB3C = {
@@ -319,6 +352,7 @@
 		2883C2431F91BA7F007DDB3C /* owl */ = {
 			isa = PBXGroup;
 			children = (
+				2857F02D1FF1252200DEF030 /* color */,
 				2816E69F1FA12F4B00CCE00A /* graphics */,
 				28175DB61F95BCE1004ECB87 /* utils */,
 				288A6FAC1F91D96200783E52 /* math */,
@@ -342,6 +376,8 @@
 		2883C25A1F91BB33007DDB3C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				280418F81FDC4B4B004EA43B /* libboost_system-mt.dylib */,
+				280418F51FDC4ACF004EA43B /* libboost_filesystem-mt.dylib */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -566,6 +602,7 @@
 				28BB756A1FB0F6CC009A6290 /* signal.cpp in Sources */,
 				28175DB91F95BD14004ECB87 /* stop_watch.cpp in Sources */,
 				2816E6A91FA139AB00CCE00A /* file_utils.cpp in Sources */,
+				2857F0301FF128B200DEF030 /* gamma_correction.cpp in Sources */,
 				D1993BCF1FBB1D94005737F9 /* buffer.cpp in Sources */,
 				D1993BCA1FBAD8B0005737F9 /* base64.cpp in Sources */,
 				D1536A3C1FA7649B004B7905 /* uuid.cpp in Sources */,
@@ -581,6 +618,7 @@
 				D1C330571FCDA37C007E446E /* ray.cpp in Sources */,
 				D1C3305A1FD59E0F007E446E /* interval.cpp in Sources */,
 				284C09C51F9681D40062BFF1 /* matrix.cpp in Sources */,
+				28043CE41FE1ABE800AE177A /* connected_components.cpp in Sources */,
 				28CA4D3E1FAA6F4E00C753D6 /* uuid.cpp in Sources */,
 				D172B67B1F9F197C0039A121 /* count_iterator.cpp in Sources */,
 				28BB756C1FB3D030009A6290 /* signal.cpp in Sources */,
@@ -592,9 +630,11 @@
 				28C66FA71FC1BF1D00F9C0D1 /* handle.cpp in Sources */,
 				285D63941FC8C67D007EBB23 /* angle.cpp in Sources */,
 				28175DB41F91FD0B004ECB87 /* template_utils.cpp in Sources */,
+				286563CE1FE86A73003758E1 /* color_maps.cpp in Sources */,
 				2816E6A61FA133EF00CCE00A /* image.cpp in Sources */,
 				286F1DF11F9E67A500FCC209 /* map_iterator.cpp in Sources */,
 				28175DB51F91FD0B004ECB87 /* binary_serialization.cpp in Sources */,
+				2857F02B1FEF280700DEF030 /* colors.cpp in Sources */,
 				28175DBC1F95BEF0004ECB87 /* stop_watch.cpp in Sources */,
 				284C09CB1F9B0B370062BFF1 /* step_iterator.cpp in Sources */,
 			);
@@ -661,6 +701,8 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = /opt/local/include/;
+				LIBRARY_SEARCH_PATHS = /opt/local/lib/;
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -711,6 +753,8 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = /opt/local/include/;
+				LIBRARY_SEARCH_PATHS = /opt/local/lib/;
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = macosx;
@@ -729,6 +773,10 @@
 				GCC_ENABLE_CPP_EXCEPTIONS = YES;
 				GCC_ENABLE_CPP_RTTI = YES;
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/opt/local/lib,
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -744,6 +792,10 @@
 				GCC_ENABLE_CPP_EXCEPTIONS = YES;
 				GCC_ENABLE_CPP_RTTI = YES;
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/opt/local/lib,
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
@@ -753,6 +805,10 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = AS2VL7PB8X;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/opt/local/lib,
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -762,6 +818,10 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = AS2VL7PB8X;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/opt/local/lib,
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
