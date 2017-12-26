@@ -56,7 +56,7 @@ namespace owl
         {}
     
         
-        template <typename T2, typename = typename std::enable_if<std::is_constructible<T, T2>::value>::type>
+        template <typename T2, typename = typename std::enable_if_t<std::is_constructible<T, T2>::value>>
         friend bool operator==(const T2& lhs, const approximately& rhs)
         {
           auto lhs_v = static_cast<std::decay_t<T>>(lhs);
@@ -64,50 +64,50 @@ namespace owl
           return compare_equal(rhs_v, lhs_v, rhs.margin_, rhs.epsilon_ ,rhs.scale_);
         }
 
-        template <typename T2, typename = typename std::enable_if<std::is_constructible<T, T2>::value>::type>
+        template <typename T2, typename = typename std::enable_if_t<std::is_constructible<T, T2>::value>>
         friend bool operator==(const approximately& lhs, const T2& rhs)
         {
           return operator==(rhs, lhs);
         }
 
-        template <typename T2, typename = typename std::enable_if<std::is_constructible<T, T2>::value>::type>
+        template <typename T2, typename = typename std::enable_if_t<std::is_constructible<T, T2>::value>>
         friend bool operator!=(const T2& lhs, const approximately& rhs)
         {
           return !operator==(lhs, rhs);
         }
 
-        template <typename T2, typename = typename std::enable_if<std::is_constructible<T, T2>::value>::type>
+        template <typename T2, typename = typename std::enable_if_t<std::is_constructible<T, T2>::value>>
         friend bool operator!=(approximately const& lhs, const T2& rhs)
         {
           return !operator==(rhs, lhs);
         }
 
-        template <typename T2, typename = typename std::enable_if<std::is_constructible<T, T2>::value>::type>
+        template <typename T2, typename = typename std::enable_if_t<std::is_constructible<T, T2>::value>>
         friend bool operator<=(const T2& lhs, const approximately& rhs)
         {
           return static_cast<double>(lhs) < rhs.value_ || lhs == rhs;
         }
 
-        template <typename T2, typename = typename std::enable_if<std::is_constructible<T, T2>::value>::type>
+        template <typename T2, typename = typename std::enable_if_t<std::is_constructible<T, T2>::value>>
         friend bool operator<=(const approximately& lhs, const T2& rhs)
         {
           return lhs.value_ < static_cast<std::decay_t<T>>(rhs) || lhs == rhs;
         }
 
-        template <typename T2, typename = typename std::enable_if<std::is_constructible<T, T2>::value>::type>
+        template <typename T2, typename = typename std::enable_if_t<std::is_constructible<T, T2>::value>>
         friend bool operator>=(const T2& lhs, const approximately& rhs)
         {
           return static_cast<std::decay_t<T>>(lhs) > rhs.value_ || lhs == rhs;
         }
 
-        template <typename T2, typename = typename std::enable_if<std::is_constructible<T, T2>::value>::type>
+        template <typename T2, typename = typename std::enable_if_t<std::is_constructible<T, T2>::value>>
         friend bool operator>=(const approximately& lhs, const T2& rhs)
         {
           return lhs.value_ > static_cast<std::decay_t<T>>(rhs) || lhs == rhs;
         }
 
         template <typename Scalar,
-          typename = typename std::enable_if<std::is_constructible<double, Scalar>::value>::type>
+          typename = typename std::enable_if_t<std::is_constructible<double, Scalar>::value>>
         approximately& epsilon(const Scalar& s)
         {
           double eps_as_double = static_cast<double>(s);
@@ -120,7 +120,7 @@ namespace owl
         }
 
         template <typename Scalar,
-          typename = typename std::enable_if<std::is_constructible<double, Scalar>::value>::type>
+          typename = typename std::enable_if_t<std::is_constructible<double, Scalar>::value>>
         approximately& margin(const Scalar& s)
         {
           double margin_as_double = static_cast<double>(s);
@@ -133,7 +133,7 @@ namespace owl
         }
 
         template <typename Scalar,
-          typename = typename std::enable_if<std::is_constructible<double, Scalar>::value>::type>
+          typename = typename std::enable_if_t<std::is_constructible<double, Scalar>::value>>
         approximately& scale(const Scalar& newScale)
         {
           scale_ = static_cast<double>(newScale);

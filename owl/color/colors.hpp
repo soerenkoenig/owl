@@ -10,7 +10,11 @@
 
 #pragma once
 
+#include <cstdint>
+#include <algorithm>
+#include <array>
 #include "owl/math/matrix.hpp"
+#include "owl/optional.hpp"
 
 namespace owl
 {
@@ -23,15 +27,33 @@ namespace owl
  
       static constexpr T min() noexcept { return T(); }
       static constexpr T max() noexcept { return T(); }
+    
     };
   
-    template<> class channel_traits<unsigned char>
+    template<> class channel_traits<std::uint8_t>
     {
     public:
       static constexpr bool is_specialized = true;
  
-      static constexpr unsigned char min() noexcept { return 0; }
-      static constexpr unsigned char max() noexcept { return 255; }
+      static constexpr std::uint8_t min() noexcept { return 0; }
+      static constexpr std::uint8_t max() noexcept { return 255; }
+      static constexpr std::uint8_t convert(std::uint8_t v) { return v; }
+      static constexpr std::uint8_t convert(std::uint16_t v) { return static_cast<std::uint8_t>( v / 257 ); }
+      static constexpr std::uint8_t convert(float v){ return std::clamp(v, 0.0f, 1.0f) * 255; }
+      static constexpr std::uint8_t convert(double v){ return std::clamp(v, 0.0, 1.0) * 255; }
+    };
+  
+    template<> class channel_traits<std::uint16_t>
+    {
+    public:
+      static constexpr bool is_specialized = true;
+ 
+      static constexpr std::uint16_t min() noexcept { return 0; }
+      static constexpr std::uint16_t max() noexcept { return 65535; }
+      static constexpr std::uint16_t convert(std::uint8_t v) { return static_cast<std::uint16_t>( ( v << 8 ) | v ); }
+      static constexpr std::uint16_t convert(std::uint16_t v) { return v; }
+      static constexpr std::uint16_t convert(float v){ return std::clamp(v, 0.0f, 1.0f) * 65535; }
+      static constexpr std::uint16_t convert(double v){ return std::clamp(v, 0.0, 1.0) * 65535; }
     };
   
     template<> class channel_traits<float>
@@ -41,6 +63,10 @@ namespace owl
  
       static constexpr float min() noexcept { return 0.0f; }
       static constexpr float max() noexcept { return 1.0f; }
+      static constexpr float convert(std::uint8_t v) { return v / 255.0f; }
+      static constexpr float convert(std::uint16_t v) { return v / 65535.0f; }
+      static constexpr float convert(float v){ return v; }
+      static constexpr float convert(double v){ return static_cast<float>(v); }
     };
   
     template<> class channel_traits<double>
@@ -50,7 +76,10 @@ namespace owl
  
       static constexpr double min() noexcept { return 0.0; }
       static constexpr double max() noexcept { return 1.0; }
-    
+      static constexpr double convert(std::uint8_t v) { return v / 255.0; }
+      static constexpr double convert(std::uint16_t v) { return v / 65535.0; }
+      static constexpr double convert(float v){ return static_cast<double>(v); }
+      static constexpr double convert(double v){ return v; }
     };
   
   
@@ -180,12 +209,27 @@ namespace owl
         return channels_ != other.channels_;
       }
     
-      auto operator*(const color& other)
+      auto operator+(const color& other) const
+      {
+       return Derived<T>(channels_ + other.channels_);
+      }
+    
+      auto operator-(const color& other) const
+      {
+       return Derived<T>(channels_ - other.channels_);
+      }
+    
+      auto operator*(const color& other) const
       {
         return Derived<T>(comp_mult(channels_, other.channels_));
       }
     
-      auto operator*(color&& other)
+      auto operator/(const color& other) const
+      {
+        return Derived<T>(comp_div(channels_, other.channels_));
+      }
+    
+      auto operator*(color&& other) const
       {
         return Derived<T>(comp_mult(channels_, other.channels_));
       }
@@ -204,6 +248,15 @@ namespace owl
     {
       return col * s;
     }
+  
+    template <typename T, std::size_t N, template <typename> typename Derived>
+    std::ostream& operator<<(std::ostream& out, const color<T,N,Derived>& col)
+    {
+      return out << static_cast<const math::vector<T,N>&>(col);
+    }
+  
+  
+    
   
   
      template<typename T>
@@ -242,6 +295,24 @@ namespace owl
       reference g() { return (*this)[1]; }
       const_reference b() const { return (*this)[2];}
       reference b() { return (*this)[2]; }
+   };
+  
+   template<typename T>
+   class bgr : public color<T, 3, bgr>
+   {
+   public:
+      using base_type = color<T, 3, owl::color::rgb>;
+      using color<T, 3, owl::color::rgb>::color;
+      using typename base_type::value_type;
+      using typename base_type::reference;
+      using typename base_type::const_reference;
+   
+      const_reference b() const { return (*this)[0];}
+      reference b() { return (*this)[0]; }
+      const_reference g() const { return (*this)[1];}
+      reference g() { return (*this)[1]; }
+      const_reference r() const { return (*this)[2];}
+      reference r() { return (*this)[2]; }
    };
   
     template<typename T>
@@ -308,9 +379,16 @@ namespace owl
   
   
   using rgb8u = rgb<unsigned char>;
+  using bgr8u = bgr<unsigned char>;
   using rgba8u = rgba<unsigned char>;
   using bgra8u = bgra<unsigned char>;
   using cmyk8u = cmyk<unsigned char>;
+  
+  using rgb16u = rgb<unsigned short>;
+  using bgr16u = bgr<unsigned short>;
+  using rgba16u = rgba<unsigned short>;
+  using bgra16u = bgra<unsigned short>;
+  using cmyk16u = cmyk<unsigned short>;
   
   
   using rgb32f = rgb<float>;
@@ -361,8 +439,112 @@ namespace owl
                 (one_minus_k - col.b())/one_minus_k, K};
       }
     };
+
+    template <typename T>
+    struct color_conversion<rgb<T>, hsv<T>>
+    {
+      static rgb<T> convert(const hsv<T>& col)
+      {
+        T hue = col.h;
+        T sat = col.s;
+        T val = col.v;
+
+        float x = 0.0f, y = 0.0f, z = 0.0f;
+      
+        if(hue == 1)
+          hue = 0;
+        else
+          hue *= 6;
+
+        int i = static_cast<int>( floorf( hue ) );
+        T f = hue - i;
+        T p = val * ( 1 - sat );
+        T q = val * ( 1 - ( sat * f ) );
+        T t = val * ( 1 - ( sat * ( 1 - f ) ) );
+
+        switch(i)
+        {
+        case 0:
+          x = val; y = t; z = p;
+          break;
+        case 1:
+          x = q; y = val; z = p;
+          break;
+        case 2:
+          x = p; y = val; z = t;
+          break;
+        case 3:
+          x = p; y = q; z = val;
+          break;
+        case 4:
+          x = t; y = p; z = val;
+          break;
+        case 5:
+          x = val; y = p; z = q;
+          break;
+        }
+        return rgb<T>(x, y, z);
+      }
+    };
   
-     template <typename T>
+    template <typename T>
+    struct color_conversion<hsv<T>, rgb<T>>
+    {
+      static hsv<T> convert(const rgb<T>& col)
+      {
+      const T &x = col.r();
+      const T &y = col.g();
+      const T &z = col.b();
+
+      T max = (x > y) ? ((x > z) ? x : z) : ((y > z) ? y : z);
+      T min = (x < y) ? ((x < z) ? x : z) : ((y < z) ? y : z);
+      T range = max - min;
+      T val = max;
+      T sat = 0;
+      T hue = 0;
+  
+      if( max != 0 )
+        sat = range/max;
+    
+      if( sat != 0 )
+      {
+        T h;
+
+        if( x == max )
+          h = (y - z) / range;
+        else if( y == max )
+          h = 2 + ( z - x ) / range;
+        else
+          h = 4 + ( x - y ) / range;
+
+        hue = h / 6.0f;
+
+        if( hue < 0.0f )
+          hue += 1.0f;
+      }
+      return {hue, sat, val};
+      }
+    };
+  
+    template <typename T>
+    struct color_conversion<rgb<T>, bgr<T>>
+    {
+      static rgb<T> convert(const bgr<T>& col)
+      {
+        return {col.r(), col.g(), col.b()};
+      }
+    };
+  
+    template <typename T>
+    struct color_conversion<bgr<T>, rgb<T>>
+    {
+      static bgr<T> convert(const rgb<T>& col)
+      {
+      return {col.b(), col.g(), col.r()};
+      }
+    };
+  
+    template <typename T>
     struct color_conversion<rgba<T>, bgra<T>>
     {
       static rgba<T> convert(const bgra<T>& col)
@@ -384,7 +566,6 @@ namespace owl
   
   //strait rgba <-> premultiplied rgba
   //(r,g,b,a) <-> (ar, ag, ab, a);
-  
   template <typename ColorDestination, typename ColorSource>
   ColorDestination convert(const ColorSource& col)
   {
@@ -392,9 +573,33 @@ namespace owl
   }
   
   
+  //rgb to gray
+  template <typename T>
+  T rgb_2_gray(const rgb<T>& col)
+  {
+    return 0.2989 * col.r() + 0.5870 * col.g() + 0.1140 * col.b();
+  }
+  
+  template <typename T>
+  T rgb_2_gray(const bgr<T>& col)
+  {
+    return 0.2989 * col.r() + 0.5870 * col.g() + 0.1140 * col.b();
+  }
+  
+  struct svg_colors
+  {
+    static std::vector<std::string> color_names;
+    static std::vector<rgb8u> color_values;
 
-  
-  
+    static std::optional<rgb8u> lookup(const std::string& name)
+    {
+      auto it = std::lower_bound(color_names.begin(), color_names.end(), name);
+      if(*it != name)
+        return std::nullopt;
+      return *std::next(color_values.begin(),std::distance(color_names.begin(), it));
+    }
+
+    };
   
   }
 }

@@ -843,6 +843,14 @@ namespace owl
       return m;
     }
   
+    template<typename S, std::size_t N, std::size_t M, typename S2>
+    auto comp_div(const matrix<S, N, M>& lhs, const matrix<S2, N, M>& rhs)
+    {
+      matrix<decltype(std::declval<S>() * std::declval<S2>()), N, M> m;
+      std::transform(lhs.begin(),lhs.end(),rhs.begin(), m.begin(), std::divides<>());
+      return m;
+    }
+  
     //compute project of u onto v
     template< typename S, std::size_t N, std::size_t M,
         typename = std::enable_if_t< matrix<S, N, M>::is_vector(3)> >

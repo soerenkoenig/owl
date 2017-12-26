@@ -23,6 +23,7 @@
 		284C09CB1F9B0B370062BFF1 /* step_iterator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 284C09CA1F9B0B370062BFF1 /* step_iterator.cpp */; };
 		2857F02B1FEF280700DEF030 /* colors.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2857F02A1FEF280700DEF030 /* colors.cpp */; };
 		2857F0301FF128B200DEF030 /* gamma_correction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2857F02F1FF128B200DEF030 /* gamma_correction.cpp */; };
+		2857F0321FF2F54C00DEF030 /* colors.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2857F0311FF2F54C00DEF030 /* colors.cpp */; };
 		285D63941FC8C67D007EBB23 /* angle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 285D63931FC8C67D007EBB23 /* angle.cpp */; };
 		286563CE1FE86A73003758E1 /* color_maps.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 286563CD1FE86A73003758E1 /* color_maps.cpp */; };
 		286F1DF11F9E67A500FCC209 /* map_iterator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 286F1DF01F9E67A500FCC209 /* map_iterator.cpp */; };
@@ -132,6 +133,7 @@
 		2857F02C1FF0596B00DEF030 /* lin_space.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = lin_space.hpp; sourceTree = "<group>"; };
 		2857F02E1FF1281500DEF030 /* gamma_correction.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = gamma_correction.hpp; sourceTree = "<group>"; };
 		2857F02F1FF128B200DEF030 /* gamma_correction.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = gamma_correction.cpp; sourceTree = "<group>"; };
+		2857F0311FF2F54C00DEF030 /* colors.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = colors.cpp; sourceTree = "<group>"; };
 		285D63921FC8C4C7007EBB23 /* angle.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = angle.hpp; sourceTree = "<group>"; };
 		285D63931FC8C67D007EBB23 /* angle.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = angle.cpp; sourceTree = "<group>"; };
 		285D63951FCBD2E2007EBB23 /* trafos.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = trafos.hpp; sourceTree = "<group>"; };
@@ -321,6 +323,7 @@
 				286563CC1FE864AC003758E1 /* color_maps.hpp */,
 				2857F02E1FF1281500DEF030 /* gamma_correction.hpp */,
 				2857F02F1FF128B200DEF030 /* gamma_correction.cpp */,
+				2857F0311FF2F54C00DEF030 /* colors.cpp */,
 			);
 			path = color;
 			sourceTree = "<group>";
@@ -604,6 +607,7 @@
 				2816E6A91FA139AB00CCE00A /* file_utils.cpp in Sources */,
 				2857F0301FF128B200DEF030 /* gamma_correction.cpp in Sources */,
 				D1993BCF1FBB1D94005737F9 /* buffer.cpp in Sources */,
+				2857F0321FF2F54C00DEF030 /* colors.cpp in Sources */,
 				D1993BCA1FBAD8B0005737F9 /* base64.cpp in Sources */,
 				D1536A3C1FA7649B004B7905 /* uuid.cpp in Sources */,
 			);
