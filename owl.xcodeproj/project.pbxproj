@@ -134,6 +134,8 @@
 		2857F02E1FF1281500DEF030 /* gamma_correction.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = gamma_correction.hpp; sourceTree = "<group>"; };
 		2857F02F1FF128B200DEF030 /* gamma_correction.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = gamma_correction.cpp; sourceTree = "<group>"; };
 		2857F0311FF2F54C00DEF030 /* colors.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = colors.cpp; sourceTree = "<group>"; };
+		2857F0331FF3E4C800DEF030 /* color_conversion.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = color_conversion.hpp; sourceTree = "<group>"; };
+		2857F0341FF3E5CA00DEF030 /* channel_traits.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = channel_traits.hpp; sourceTree = "<group>"; };
 		285D63921FC8C4C7007EBB23 /* angle.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = angle.hpp; sourceTree = "<group>"; };
 		285D63931FC8C67D007EBB23 /* angle.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = angle.cpp; sourceTree = "<group>"; };
 		285D63951FCBD2E2007EBB23 /* trafos.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = trafos.hpp; sourceTree = "<group>"; };
@@ -324,6 +326,8 @@
 				2857F02E1FF1281500DEF030 /* gamma_correction.hpp */,
 				2857F02F1FF128B200DEF030 /* gamma_correction.cpp */,
 				2857F0311FF2F54C00DEF030 /* colors.cpp */,
+				2857F0331FF3E4C800DEF030 /* color_conversion.hpp */,
+				2857F0341FF3E5CA00DEF030 /* channel_traits.hpp */,
 			);
 			path = color;
 			sourceTree = "<group>";

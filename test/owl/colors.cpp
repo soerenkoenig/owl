@@ -1,4 +1,5 @@
 #include "owl/color/colors.hpp"
+#include "owl/color/color_conversion.hpp"
 #include "owl/color/gamma_correction.hpp"
 #include "owl/math/approx.hpp"
 #include "catch/catch.hpp"

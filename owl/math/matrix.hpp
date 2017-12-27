@@ -839,7 +839,7 @@ namespace owl
     auto comp_mult(const matrix<S, N, M>& lhs, const matrix<S2, N, M>& rhs)
     {
       matrix<decltype(std::declval<S>() * std::declval<S2>()), N, M> m;
-      std::transform(lhs.begin(),lhs.end(),rhs.begin(), m.begin(), std::multiplies<>());
+      std::transform(lhs.begin(), lhs.end(), rhs.begin(), m.begin(), std::multiplies<>());
       return m;
     }
   
@@ -847,70 +847,78 @@ namespace owl
     auto comp_div(const matrix<S, N, M>& lhs, const matrix<S2, N, M>& rhs)
     {
       matrix<decltype(std::declval<S>() * std::declval<S2>()), N, M> m;
-      std::transform(lhs.begin(),lhs.end(),rhs.begin(), m.begin(), std::divides<>());
+      std::transform(lhs.begin(), lhs.end(), rhs.begin(), m.begin(), std::divides<>());
       return m;
     }
   
     //compute project of u onto v
     template< typename S, std::size_t N, std::size_t M,
-        typename = std::enable_if_t< matrix<S, N, M>::is_vector(3)> >
+      typename = std::enable_if_t< matrix<S, N, M>::is_vector(3)> >
+    auto projected_length(const matrix<S, N, M>& u, const matrix<S, N, M>& v)
+    {
+      return dot(u,v) / dot(v,v);
+    }
+  
+    //compute project of u onto v
+    template< typename S, std::size_t N, std::size_t M,
+      typename = std::enable_if_t< matrix<S, N, M>::is_vector(3)> >
     auto project(const matrix<S, N, M>& u, const matrix<S, N, M>& v)
     {
-      return dot(u,v)/dot(v,v)*v;
+      return projected_length(u, v) * v;
     }
   
     //compute orthogonal component of u w.r.t v
     template< typename S, std::size_t N, std::size_t M,
-        typename = std::enable_if_t< matrix<S, N, M>::is_vector(3)> >
+      typename = std::enable_if_t< matrix<S, N, M>::is_vector(3)> >
     auto orthogonal(const matrix<S, N, M>& u, const matrix<S, N, M>& v)
     {
-      return (1 - dot(u,v)/dot(v,v))*v;
+      return (1 - projected_length(u, v)) * v;
     }
   
-     //compute project of u onto v
+  
     template< typename S, std::size_t N, std::size_t M,
-        typename = std::enable_if_t<matrix<S, N, M>::is_vector(3)> >
+      typename = std::enable_if_t<matrix<S, N, M>::is_vector(3)> >
     auto reflect(const matrix<S, N, M>& v, const matrix<S, N, M>& n)
     {
-      return v - 2*dot(v,n)/dot(n,n) * n;
+      return v - 2 * dot(v, n) / dot(n, n) * n;
     }
   
     ///returns the double cross product of vector a, b and c a x(b x c)
     template< typename S, std::size_t N, std::size_t M,
-        typename = std::enable_if_t<matrix<S, N, M>::is_vector(3)> >
+      typename = std::enable_if_t<matrix<S, N, M>::is_vector(3)> >
     matrix<S, N, M> dbl_cross(const matrix<S, N, M> &a, const matrix<S, N, M> &b, const matrix<S, N, M> &c)
     {
-      return dot(a,c)*b - dot(a,b)*c;
+      return dot(a, c) * b - dot(a, b) * c;
     }
 
     ///returns the spat product (mixed vector product) of the vectors a, b and c
     template< typename S, std::size_t N, std::size_t M,
-        typename = std::enable_if_t<matrix<S, N, M>::is_vector(3)> >
-    S spat(const matrix<S, N, M> &a,const matrix<S, N, M> &b,const matrix<S, N, M> &c)
+      typename = std::enable_if_t<matrix<S, N, M>::is_vector(3)> >
+    S spat(const matrix<S, N, M> &a,const matrix<S, N, M> &b, const matrix<S, N, M> &c)
     {
       return dot(cross(a, b), c);
     }
   
     ///calculates the refracted direction of v on a surface with normal n and refraction indices c1,c2 and a bool flag  which indicates total reflection
-     template< typename S, std::size_t N, std::size_t M,
-        typename = std::enable_if_t<matrix<S, N, M>::is_vector(3)> >
+    template< typename S, std::size_t N, std::size_t M,
+      typename = std::enable_if_t<matrix<S, N, M>::is_vector(3)> >
     std::pair<matrix<S, N, M>, bool> refract(const matrix<S, N, M> &v, const matrix<S, N, M> &n,S c1, S c2)
     {
-      S NdotV = -dot(n,v) / dot(n,n);
-      S c = c2/c1;
+      S NdotV = - dot(n, v) / dot(n, n);
+      S c = c2 / c1;
 
-      S cosasqr = (S)1.0 - (c * c) * ((S)1.0 - NdotV * NdotV);
+      S cosasqr = static_cast<S>(1) - (c * c) * (static_cast<S>(1) - NdotV * NdotV);
   
       if(cosasqr < 0)
         return {reflect(v,n), true};
       
       else
-        return {c*v + (c * NdotV - sqrt(cosasqr) / dot(n,n) ) * n, false};
+        return {c * v + (c * NdotV - sqrt(cosasqr) / dot(n, n) ) * n, false};
     }
   
     //rotate v ccw by 90 deg
     template< typename S, std::size_t N, std::size_t M,
-        typename = std::enable_if_t< matrix<S, N, M>::is_vector(2)> >
+      typename = std::enable_if_t< matrix<S, N, M>::is_vector(2)> >
     auto rotate90(const matrix<S, N, M>& v)
     {
       return matrix<S, N, M>(-v.y(), v.x());
@@ -1031,11 +1039,11 @@ namespace owl
       T t28 = m(2, 1) * m(1, 3);
       T t30 = m(1, 1) * m(3, 0);
       T t31 = m(0, 3) * m(2, 2);
-      T t33 = m(2,0) * m(0, 3);
-      T t35 = m(0,2) * m(2, 3);
-      T t37 = m(2,0) * m(0, 2);
-      T t39 = m(3,0) * m(0, 2);
-      T t41 = m(3,1) * m(1, 0);
+      T t33 = m(2, 0) * m(0, 3);
+      T t35 = m(0, 2) * m(2, 3);
+      T t37 = m(2, 0) * m(0, 2);
+      T t39 = m(3, 0) * m(0, 2);
+      T t41 = m(3, 1) * m(1, 0);
       T t43 = t14 * m(3, 3) * m(2, 2) - t14 * m(3, 2) * m(2, 3) - t19 * t20 +
       t22 * t23 - t22 * t25 + t27 * t28 - t30 * t31 + t3 * t33 + t30 * t35
       - t1 * t37 - t39 * t28 - t41 * t35;
@@ -1050,7 +1058,7 @@ namespace owl
       T t64 = m(0, 1) * m(1, 3);
       T t66 = m(1, 0) * m(0, 3);
       T t68 = -t7 * t33 - t45 * t23 - t47 * m(0, 1) * m(2, 2) + t50 * t51 + t53 *
-      m(0,1) * m(2,3) + t47 * t56 + t58 * t20 + t9 * t37 + t41 * t31 + t45 *
+      m(0, 1) * m(2, 3) + t47 * t56 + t58 * t20 + t9 * t37 + t41 * t31 + t45 *
       t25 - t63 * t64 - t11 * t66;
       T t70 = (T)1.0 / (t43 + t68);
       T t72 = m(3, 3) * m(0, 1);
@@ -1160,13 +1168,13 @@ namespace owl
     }
   
     template <typename T,std::size_t M, std::size_t N,
-        typename Mat = matrix<T, M, N>, typename = std::enable_if_t<Mat::is_vector(3)> >
+      typename Mat = matrix<T, M, N>, typename = std::enable_if_t<Mat::is_vector(3)> >
     square_matrix<T, 3> cross_mat(matrix<T, M, N>& v)
     {
       square_matrix<T, 3> m;
       m <<     0, -v(2),  v(1),
             v(2),     0, -v(0),
-           -v(1),  v(0),     0;
+           -v(1),  v(0),    0;
       return m;
     }
   
@@ -1205,21 +1213,20 @@ namespace owl
       return random_matrix<T, M, M, Engine, Distribution>();
     }
   
-    
     template <typename T>
     matrix<T,4,4> projection_matrix_from_intrinsics(const matrix<T, 3, 3>& K, int img_width, int img_height, T znear, T zfar)
     {
       T fx = K(0, 0);
       T fy = K(1, 1);
       T skew = K(0, 1);
-      assert(skew == 1); //not rectangular pixel case is ignored 
+      assert(skew == 1); //not rectangular pixel case is not supported
       T u0 = K(0, 2);
       T v0 = K(1, 2);
       
-      T l = -znear  * u0 / fx;
-      T r = znear  *(img_width - u0) / fx;
-      T b = -znear  *v0 / fy;
-      T t = znear  *( img_height - v0) / fy;
+      T l = -znear * u0 / fx;
+      T r = znear  * (img_width - u0) / fx;
+      T b = -znear * v0 / fy;
+      T t = znear  *(img_height - v0) / fy;
       return frustrum(l, r, b, t, znear, zfar);
     }
   }
