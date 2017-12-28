@@ -12,7 +12,6 @@
 
 #include "owl/color/colors.hpp"
 
-
 namespace owl
 {
   namespace color

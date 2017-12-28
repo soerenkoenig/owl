@@ -238,8 +238,8 @@ namespace owl
     class bgr : public color<T, 3, bgr>
     {
     public:
-      using base_type = color<T, 3, owl::color::rgb>;
-      using color<T, 3, owl::color::rgb>::color;
+      using base_type = color<T, 3, owl::color::bgr>;
+      using color<T, 3, owl::color::bgr>::color;
       using typename base_type::value_type;
       using typename base_type::reference;
       using typename base_type::const_reference;

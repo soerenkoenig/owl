@@ -16,110 +16,165 @@ namespace owl
 {
   namespace color
   {
+    template <typename ColorDestination, typename ColorSource>
+    ColorDestination convert(const ColorSource& col);
   
   namespace detail
   {
     template <typename ColorDestination, typename ColorSource>
     struct color_conversion;
   
-    template <typename T, typename T2>
-    struct color_conversion<rgb<T>, rgb<T2>>
+    template <typename T1, typename T2>
+    struct color_conversion<rgb<T2>, rgb<T1>>
     {
-      static rgb<T> convert(const rgb<T2>& col)
+      static rgb<T2> convert(const rgb<T1>& col)
       {
-        return rgb<T> {channel_traits<T>::convert(col(0)),
-          channel_traits<T>::convert(col(1)),
-          channel_traits<T>::convert(col(2))};
+        return rgb<T2> {channel_traits<T2>::convert(col(0)),
+          channel_traits<T2>::convert(col(1)),
+          channel_traits<T2>::convert(col(2))};
       }
     };
   
-    template <typename T, typename T2>
-    struct color_conversion<bgr<T>, bgr<T2>>
+    template <typename T1, typename T2>
+    struct color_conversion<bgr<T2>, bgr<T1>>
     {
-      static bgr<T> convert(const bgr<T2>& col)
+      static bgr<T2> convert(const bgr<T1>& col)
       {
-        return bgr<T> {channel_traits<T>::convert(col(0)),
-          channel_traits<T>::convert(col(1)),
-          channel_traits<T>::convert(col(2))};
+        return bgr<T2> {channel_traits<T2>::convert(col(0)),
+          channel_traits<T2>::convert(col(1)),
+          channel_traits<T2>::convert(col(2))};
       }
     };
   
-    template <typename T, typename T2>
-    struct color_conversion<hsv<T>, hsv<T2>>
+    template <typename T1, typename T2>
+    struct color_conversion<hsv<T2>, hsv<T1>>
     {
-      static hsv<T> convert(const hsv<T2>& col)
+      static hsv<T2> convert(const hsv<T1>& col)
       {
-        return hsv<T> {channel_traits<T>::convert(col(0)),
-          channel_traits<T>::convert(col(1)),
-          channel_traits<T>::convert(col(2))};
+        return hsv<T2> {channel_traits<T2>::convert(col(0)),
+          channel_traits<T2>::convert(col(1)),
+          channel_traits<T2>::convert(col(2))};
       }
     };
   
-    template <typename T, typename T2>
-    struct color_conversion<cmyk<T>, cmyk<T2>>
+    template <typename T1, typename T2>
+    struct color_conversion<cmyk<T2>, cmyk<T1>>
     {
-      static cmyk<T> convert(const cmyk<T2>& col)
+      static cmyk<T2> convert(const cmyk<T1>& col)
       {
-        return cmyk<T> {channel_traits<T>::convert(col(0)),
-          channel_traits<T>::convert(col(1)),
-          channel_traits<T>::convert(col(2)),
-          channel_traits<T>::convert(col(3))};
+        return cmyk<T2> {channel_traits<T2>::convert(col(0)),
+          channel_traits<T2>::convert(col(1)),
+          channel_traits<T2>::convert(col(2)),
+          channel_traits<T2>::convert(col(3))};
       }
     };
   
-    template <typename T>
-    struct color_conversion<rgb<T>, cmyk<T>>
+    template <typename T1, typename T2>
+    struct color_conversion<rgb<T2>, cmyk<T1>>
     {
-      static rgb<T> convert(const cmyk<T>& col)
+      static rgb<T2> convert(const cmyk<T1>& col)
       {
-        constexpr T one = channel_traits<T>::max();
-        constexpr T one_minus_k = one - col.k();
+         double one_minus_k = 1.0 - channel_traits<double>::convert(col.k());
+         double r = (1.0 - channel_traits<double>::convert(col.c())) * one_minus_k;
+         double g = (1.0 - channel_traits<double>::convert(col.c())) * one_minus_k;
+         double b = (1.0 - channel_traits<double>::convert(col.c())) * one_minus_k;
+         return { channel_traits<T2>::convert(r),
+          channel_traits<T2>::convert(g),
+          channel_traits<T2>::convert(b) };
+      }
+    };
+  
+    template <typename T1, typename T2>
+    struct color_conversion<cmyk<T2>, rgb<T1>>
+    {
+      static cmyk<T2> convert(const rgb<T1>& col)
+      {
+        double r = channel_traits<double>::convert(col.r());
+        double g = channel_traits<double>::convert(col.g());
+        double b = channel_traits<double>::convert(col.b());
       
-         return { (one - col.c()) * one_minus_k,
-          (one - col.m()) * one_minus_k,
-          (one - col.y()) * one_minus_k };
-      }
-    };
-  
-    template <typename T>
-    struct color_conversion<cmyk<T>, rgb<T>>
-    {
-      static cmyk<T> convert(const rgb<T>& col)
-      {
-        constexpr T one = channel_traits<T>::max();
-        constexpr T zero = channel_traits<T>::min();
-        T one_minus_k = std::max({ col.r(), col.g(), col.b() });
-        if(one_minus_k == zero)
+        double one_minus_k = std::max({ r, g, b });
+        T2 zero = channel_traits<T2>::convert(0.0);
+        T2 one = channel_traits<T2>::convert(1.0);
+        if(one_minus_k == 0)
           return {zero, zero, zero, one};
       
-        T K  = one - one_minus_k;
-        return {(one_minus_k - col.r())/one_minus_k,
-                (one_minus_k - col.g())/one_minus_k,
-                (one_minus_k - col.b())/one_minus_k, K};
+        double K  = 1.0 - one_minus_k;
+        double C = (one_minus_k - col.r())/one_minus_k;
+        double M = (one_minus_k - col.g())/one_minus_k;
+        double Y = (one_minus_k - col.b())/one_minus_k;
+      
+        return {channel_traits<T2>::convert(C),
+         channel_traits<T2>::convert(M),
+         channel_traits<T2>::convert(Y),
+         channel_traits<T2>::convert(K)};
       }
     };
-
-    template <typename T>
-    struct color_conversion<rgb<T>, hsv<T>>
+  
+  template <typename T1, typename T2>
+    struct color_conversion<bgr<T2>, cmyk<T1>>
     {
-      static rgb<T> convert(const hsv<T>& col)
+      static bgr<T2> convert(const cmyk<T1>& col)
       {
-        T hue = col.h;
-        T sat = col.s;
-        T val = col.v;
+         double one_minus_k = 1.0 - channel_traits<double>::convert(col.k());
+         double r = (1.0 - channel_traits<double>::convert(col.c())) * one_minus_k;
+         double g = (1.0 - channel_traits<double>::convert(col.c())) * one_minus_k;
+         double b = (1.0 - channel_traits<double>::convert(col.c())) * one_minus_k;
+         return { channel_traits<T2>::convert(b),
+          channel_traits<T2>::convert(g),
+          channel_traits<T2>::convert(r) };
+      }
+    };
+  
+    template <typename T1, typename T2>
+    struct color_conversion<cmyk<T2>, bgr<T1>>
+    {
+      static cmyk<T2> convert(const bgr<T1>& col)
+      {
+        double r = channel_traits<double>::convert(col.r());
+        double g = channel_traits<double>::convert(col.g());
+        double b = channel_traits<double>::convert(col.b());
+      
+        double one_minus_k = std::max({ r, g, b });
+        T2 zero = channel_traits<T2>::convert(0.0);
+        T2 one = channel_traits<T2>::convert(1.0);
+        if(one_minus_k == 0)
+          return {zero, zero, zero, one};
+      
+        double K  = 1.0 - one_minus_k;
+        double C = (one_minus_k - col.r())/one_minus_k;
+        double M = (one_minus_k - col.g())/one_minus_k;
+        double Y = (one_minus_k - col.b())/one_minus_k;
+      
+        return {channel_traits<T2>::convert(C),
+         channel_traits<T2>::convert(M),
+         channel_traits<T2>::convert(Y),
+         channel_traits<T2>::convert(K)};
+      }
+    };
+  
+  
+    template <typename T1, typename T2>
+    struct color_conversion<rgb<T2>, hsv<T1>>
+    {
+      static rgb<T2> convert(const hsv<T1>& col)
+      {
+        double hue = channel_traits<double>::convert(col.h);
+        double sat = channel_traits<double>::convert(col.s);
+        double val = channel_traits<double>::convert(col.v);
 
-        T x = 0.0f, y = 0.0f, z = 0.0f;
+        double x = 0.0, y = 0.0, z = 0.0;
       
         if(hue == 1)
           hue = 0;
         else
           hue *= 6;
 
-        int i = static_cast<int>( floorf( hue ) );
-        T f = hue - i;
-        T p = val * ( 1 - sat );
-        T q = val * ( 1 - ( sat * f ) );
-        T t = val * ( 1 - ( sat * ( 1 - f ) ) );
+        int i = static_cast<int>(std::floor(hue));
+        double f = hue - i;
+        double p = val * ( 1 - sat );
+        double q = val * ( 1 - ( sat * f ) );
+        double t = val * ( 1 - ( sat * ( 1 - f ) ) );
 
         switch(i)
         {
@@ -142,102 +197,116 @@ namespace owl
           x = val; y = p; z = q;
           break;
         }
-        return rgb<T>(x, y, z);
+        return rgb<T2>(channel_traits<T2>::convert(x),
+         channel_traits<T2>::convert(y),
+         channel_traits<T2>::convert(z));
       }
     };
   
-    template <typename T>
-    struct color_conversion<hsv<T>, rgb<T>>
+    template <typename T1, typename T2>
+    struct color_conversion<hsv<T2>, rgb<T1>>
     {
-      static hsv<T> convert(const rgb<T>& col)
+      static hsv<T2> convert(const rgb<T1>& col)
       {
-      const T &x = col.r();
-      const T &y = col.g();
-      const T &z = col.b();
+        double x = channel_traits<double>::convert(col.r());
+        double y = channel_traits<double>::convert(col.g());
+        double z = channel_traits<double>::convert(col.b());
 
-      T max = (x > y) ? ((x > z) ? x : z) : ((y > z) ? y : z);
-      T min = (x < y) ? ((x < z) ? x : z) : ((y < z) ? y : z);
-      T range = max - min;
-      T val = max;
-      T sat = 0;
-      T hue = 0;
+        double max = (x > y) ? ((x > z) ? x : z) : ((y > z) ? y : z);
+        double min = (x < y) ? ((x < z) ? x : z) : ((y < z) ? y : z);
+        double range = max - min;
+        double val = max;
+        double sat = 0;
+        double hue = 0;
   
-      if( max != 0 )
-        sat = range/max;
+        if(max != 0)
+          sat = range / max;
     
-      if( sat != 0 )
-      {
-        T h;
+        if(sat != 0)
+        {
+          double h;
 
-        if( x == max )
-          h = (y - z) / range;
-        else if( y == max )
-          h = 2 + ( z - x ) / range;
-        else
-          h = 4 + ( x - y ) / range;
+          if(x == max)
+            h = (y - z) / range;
+          else if( y == max )
+            h = 2.0 + (z - x) / range;
+          else
+            h = 4.0 + (x - y) / range;
 
-        hue = h / 6.0f;
+          hue = h / 6.0;
 
-        if( hue < 0.0f )
-          hue += 1.0f;
-      }
-      return {hue, sat, val};
-      }
-    };
-  
-    template <typename T>
-    struct color_conversion<rgb<T>, bgr<T>>
-    {
-      static rgb<T> convert(const bgr<T>& col)
-      {
-        return {col.r(), col.g(), col.b()};
+          if(hue < 0.0)
+            hue += 1.0;
+        }
+        return {channel_traits<T2>::convert(hue),
+         channel_traits<T2>::convert(sat),
+         channel_traits<T2>::convert(val)};
       }
     };
   
-    template <typename T>
-    struct color_conversion<rgb<T>, gray<T>>
+    template <typename T1, typename T2>
+    struct color_conversion<rgb<T2>, bgr<T1>>
     {
-      static rgb<T> convert(const gray<T>& col)
+      static rgb<T2> convert(const bgr<T1>& col)
       {
-        return {col, col, col};
+        return {channel_traits<T2>::convert(col.r()),
+         channel_traits<T2>::convert(col.g()),
+         channel_traits<T2>::convert(col.b())};
       }
     };
   
-    template <typename T>
-    struct color_conversion<bgr<T>, gray<T>>
+    template <typename T1, typename T2>
+    struct color_conversion<rgb<T2>, gray<T1>>
     {
-      static bgr<T> convert(const gray<T>& col)
+      static rgb<T2> convert(const gray<T1>& col)
       {
-        return {col, col, col};
+        T2 v = channel_traits<T2>::convert(col);
+        return {v, v, v};
       }
     };
   
-    template <typename T>
-    struct color_conversion<bgr<T>, rgb<T>>
+    template <typename T1, typename T2>
+    struct color_conversion<bgr<T1>, gray<T2>>
     {
-      static bgr<T> convert(const rgb<T>& col)
+      static bgr<T2> convert(const gray<T1>& col)
       {
-        return {col.b(), col.g(), col.r()};
+        T2 v = channel_traits<T2>::convert(col);
+        return {v, v, v};
       }
     };
   
-    template <typename T>
-    struct color_conversion<gray<T>, rgb<T>>
+    template <typename T1, typename T2>
+    struct color_conversion<bgr<T2>, rgb<T1>>
     {
-      static gray<T> convert(const rgb<T>& col)
+      static bgr<T2> convert(const rgb<T1>& col)
       {
-        return 0.2989 * col.r() + 0.5870 * col.g() + 0.1140 * col.b();
+        return {channel_traits<T2>::convert(col.b()),
+         channel_traits<T2>::convert(col.g()),
+         channel_traits<T2>::convert(col.r())};
       }
     };
   
-    template <typename T>
-    struct color_conversion<gray<T>, bgr<T>>
+    template <typename T1, typename T2>
+    struct color_conversion<gray<T2>, rgb<T1>>
     {
-      static gray<T> convert(const bgr<T>& col)
+      static gray<T2> convert(const rgb<T1>& col)
       {
-        return 0.2989 * col.r() + 0.5870 * col.g() + 0.1140 * col.b();
+        rgb<double> cold = owl::color::convert<rgb<double>>(col);
+        return convert<gray<T2>(0.2989 * cold.r() + 0.5870 * cold.g() + 0.1140 * cold.b());
       }
     };
+  
+    template <typename T1, typename T2>
+    struct color_conversion<gray<T2>, bgr<T1>>
+    {
+      static gray<T2> convert(const bgr<T1>& col)
+      {
+        bgr<double> cold = owl::color::convert<bgr<double>>(col);
+        return convert<gray<T2>(0.2989 * cold.r() + 0.5870 * cold.g() + 0.1140 * cold.b());
+      }
+    };
+  
+  
   
    /* template <typename T>
     struct color_conversion<rgba<T>, bgra<T>>
@@ -263,17 +332,10 @@ namespace owl
   //(r,g,b,a) <-> (ar, ag, ab, a);
   
   
-  template <typename ColorDestination, typename ColorSource>
-  ColorDestination convert(const ColorSource& col)
-  {
-    return detail::color_conversion<ColorDestination, ColorSource>::convert(col);
-  }
-  
-  
-
-  
-  
-  
-  
+    template <typename ColorDestination, typename ColorSource>
+    ColorDestination convert(const ColorSource& col)
+    {
+      return detail::color_conversion<ColorDestination, ColorSource>::convert(col);
+    }
   }
 }
