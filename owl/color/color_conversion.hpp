@@ -215,6 +215,8 @@ namespace owl
   
   //strait rgba <-> premultiplied rgba
   //(r,g,b,a) <-> (ar, ag, ab, a);
+  
+  
   template <typename ColorDestination, typename ColorSource>
   ColorDestination convert(const ColorSource& col)
   {

@@ -1,19 +1,18 @@
 #pragma once
+#include <iostream>
+#include <string>
+#include <vector>
+#include <type_traits>
 
 #include "owl/math/matrix.hpp"
 #include "owl/color/colors.hpp"
 #include "owl/utils/lin_space.hpp"
-#include <iostream>
-#include <string>
-#include <vector>
+
 
 namespace owl
 {
   namespace color
-  {
-  
-    ///create a linearly spaced vector with N values starting at first_val and ending ant last_val
-  
+  {  
     namespace colormaps
     {
       /// possible colormaps are
@@ -25,182 +24,169 @@ namespace owl
       /// "hsv" red .. yellow .. green .. cyan .. blue .. magenta .. red
     
       //a linear grayscale colormap.
-      template <typename T>
-      rgb<T> gray(float x)
+      template <typename Channel, typename Scalar, typename = std::enable_if_t<std::is_floating_point<Scalar>::value>>
+      rgb<Channel> grayscale(Scalar x)
       {
-        return rgb<T>( x, x, x);
+        return rgb<Channel>{channel_traits<Channel>::convert(x),
+          channel_traits<Channel>::convert(x),
+          channel_traits<Channel>::convert(x)};
       }
     
       //bone
       //is a grayscale colormap with a higher value for the blue component.
       //This colormap is useful for adding an "electronic" look to grayscale images.
-      template <typename T>
-      rgb<T> bone(float x)
+      template <typename Channel, typename Scalar, typename = std::enable_if_t<std::is_floating_point<Scalar>::value>>
+      rgb<Channel> bone(Scalar x)
       {
-        rgb<T> col(0,0,0);
+        rgb<Channel> col(0, 0, 0);
         if(x < 3.0f / 4.0f)
-          col(0) = (7.0f / 8.0f * x);
+          col(0) = channel_traits<Channel>::convert(7.0f / 8.0f * x);
         else
-          col(0) = (11.0f / 8.0f * x - 3.0f / 8.0f);
+          col(0) = channel_traits<Channel>::convert(11.0f / 8.0f * x - 3.0f / 8.0f);
       
         if(x < 3.0f / 8.0f)
-          col(1) = (7.0f / 8.0f * x);
+          col(1) = channel_traits<Channel>::convert(7.0f / 8.0f * x);
         else if(x < 3.0f / 4.0f)
-          col(1) = (29.0f / 24.0f * x - 1.0f / 8.0f);
+          col(1) = channel_traits<Channel>::convert(29.0f / 24.0f * x - 1.0f / 8.0f);
         else
-          col(1) = (7.0f / 8.0f * x + 1.0f / 8.0f);
+          col(1) = channel_traits<Channel>::convert(7.0f / 8.0f * x + 1.0f / 8.0f);
 
         if(x < 3.0f / 8.0f)
-          col(2) = (29.0f / 24.0f * x);
+          col(2) = channel_traits<Channel>::convert(29.0f / 24.0f * x);
         else
-          col(2) = (7.0f / 8.0f * x + 1.0f / 8.0f);
+          col(2) = channel_traits<Channel>::convert(7.0f / 8.0f * x + 1.0f / 8.0f);
       
         return col;
       }
     
-      template <typename T>
-      rgb<T> jet(float x)
+      template <typename Channel, typename Scalar, typename = std::enable_if_t<std::is_floating_point<Scalar>::value>>
+      rgb<Channel> jet(Scalar x)
       {
-        rgb<T> col;
-        col(0) = col(1) = col(2) = 0.0f;
+        rgb<Channel> col{0,0,0};
 
         if((x >= 3.0f / 8.0f) && (x < 5.0f / 8.0f))
-          col(0) = (4.0f * x - 3.0f / 2.0f);
+          col(0) = channel_traits<Channel>::convert(4.0f * x - 3.0f / 2.0f);
+        else if((x >= 5.0f / 8.0f) && (x < 7.0f / 8.0f))
+          col(0) = channel_traits<Channel>::convert(1.0f);
+        else
+          col(0) = channel_traits<Channel>::convert(-4.0f * x + 9.0f / 2.0f);
       
-        if((x >= 5.0f / 8.0f) && (x < 7.0f / 8.0f))
-        {
-          col(0) = 1.0f;
-        }
-        if(x >= 7.0f / 8.0f)
-          col(0) += -4.0f * x + 9.0f / 2.0f;
-      
-        if(x >= 1.0f/8.0f && x < 3.0f / 8.0f)
-          col(1)= (4.0f * x - 1.0f / 2.0f);
-
-        if(x >= 3.0f/8.0f && x < 5.0f / 8.0f)
-        {
-          col(1)=1;
-        }
-        if(x >= 5.0f / 8.0f && x < 7.0f / 8.0f)
-            col(1) += (-4.0f * x + 7.0f / 2.0f);
+        if(x >= 1.0f / 8.0f && x < 3.0f / 8.0f)
+          col(1) = channel_traits<Channel>::convert(4.0f * x - 1.0f / 2.0f);
+        else if(x >= 3.0f/8.0f && x < 5.0f / 8.0f)
+          col(1) = channel_traits<Channel>::convert(1.0f);
+        else if(x >= 5.0f / 8.0f && x < 7.0f / 8.0f)
+          col(1) = channel_traits<Channel>::convert(-4.0f * x + 7.0f / 2.0f);
       
         if(x < 1.0f / 8.0f)
-          col(2) = (4.0f * x + 1.0f / 2.0f);
-
-        if(x >= 1.0f / 8.0f && x < 3.0f / 8.0f)
-        {
-          col(2) = 1.0;
-        }
-        if(x >= 3.0f / 8.0f && x < 5.0f / 8.0f)
-          col(2) += -4.0f * x + 5.0f / 2.0f;
-          return col;
-      }
-    
-      template <typename T>
-      rgb<T> hot(float x)
-      {
-        rgb<T> col;
-        col(0) = col(1) = col(2) = 0.0f;
-
-        if(x <= 1.0f/3.0f)
-          col(0) = 3.0f * x;
-        else
-          col(0) = 1.0f;
+          col(2) = channel_traits<Channel>::convert(4.0f * x + 1.0f / 2.0f);
+        else if(x >= 1.0f / 8.0f && x < 3.0f / 8.0f)
+          col(2) = channel_traits<Channel>::convert(1.0f);
+        else if(x >= 3.0f / 8.0f && x < 5.0f / 8.0f)
+          col(2) = channel_traits<Channel>::convert(-4.0f * x + 5.0f / 2.0f);
       
-      
-        if(x > 1.0f/3.0f && x < 2.0f/3.0f)
-          col(1)= 3.0f*x -1.0f;
-        if(x >=2.0/3.0f)
-          col(1)=1.0f;
-      
-      
-        if(x >= 2.0f/3.0f)
-          col(2)=3.0f*x-2.0f;
-          return col;
-      }
-    
-    
-      template <typename T>
-      rgb<T> hsv(float x)
-      {
-        rgb<T> col;
-        col(0) = col(1) = col(2) = 0.0f;
-
-        if(x <= 1.0f/5.0f)
-          col(0) =  1.0f;
-        if(x > 1.0f/5.0f && x <=2.0f/5.0f)
-          col(0) =  -5.0f*x + 2.0f;
-        if(x > 4.0f/5.0f)
-          col(0) = 5.0f*x - 4.0f;
-
-        if(x <= 1.0f/5.0f)
-          col(1) =  5.0f*x;
-        if(x > 1.0f/5.0f && x <=3.0f/5.0f)
-          col(1) =  1.0f;
-        if(x > 3.0f/5.0f && x <= 4.0f/5.0f)
-          col(1) = -5.0f*x+4.0f;
-
-        if(x > 2.0f/5.0f && x <=3.0f/5.0f)
-          col(2) =  5.0f*x-2.0f;
-        if(x > 3.0f/5.0f && x <= 4.0f / 5.0f)
-          col(2) = 1.0f;
-        if(x >4.0f/5.0f)
-          col(2) =  -5.0f*x + 5.0f;
         return col;
       }
     
-      template <typename T>
-      rgb<T> thermo(float x)
+      template <typename Channel, typename Scalar, typename = std::enable_if_t<std::is_floating_point<Scalar>::value>>
+      rgb<Channel> hot(Scalar x)
       {
-        rgb<T> col;
-        col(0) = col(1) = col(2) = 0.0f;
+        rgb<Channel> col{0, 0, 0};
+
+        if(x <= 1.0f / 3.0f)
+          col(0) = channel_traits<Channel>::convert(3.0f * x);
+        else
+          col(0) = channel_traits<Channel>::convert(1.0f);
+      
+      
+        if(x > 1.0f / 3.0f && x < 2.0f / 3.0f)
+          col(1) = channel_traits<Channel>::convert(3.0f * x - 1.0f);
+        else if(x >= 2.0 / 3.0f)
+          col(1) = channel_traits<Channel>::convert(1.0f);
+        else if(x >= 2.0f/3.0f)
+          col(2) = channel_traits<Channel>::convert(3.0f * x - 2.0f);
+      
+        return col;
+      }
     
-        if(x <= 1.0f/7.0f)
-          col(0) =  7.0f*x;
-        if(x > 1.0f/7.0f && x <=2.0f/7.0f)
-          col(0) =  -7.0f*x + 2.0f;
-        if(x > 4.0f/7.0f && x <=5.0f/7.0f)
-          col(0) = 7.0f*x-4.0f;
-        if(x >5.0f/7.0f)
-          col(0) = 1.0f;
+    
+      template <typename Channel, typename Scalar, typename = std::enable_if_t<std::is_floating_point<Scalar>::value>>
+      rgb<Channel> hsv(Scalar x)
+      {
+        rgb<Channel> col{0, 0, 0};
 
-        if(x >=2.0f/7.0f && x <= 3.0f/7.0f)
-          col(1) =  7.0f*x-2.0f;
-        else if(x > 3.0f/7.0f && x <=5.0f/7.0f)
-          col(1) =  1.0f;
-        else if(x > 5.0f/7.0f && x <=6.0f/7.0f)
-          col(1) = -7.0f*x+6.0f;
+        if(x <= 1.0f / 5.0f)
+          col(0) = channel_traits<Channel>::convert(1.0f);
+        else if(x > 1.0f / 5.0f && x <= 2.0f / 5.0f)
+          col(0) = -5.0f * x + 2.0f;
+        else if(x > 4.0f / 5.0f)
+          col(0) = channel_traits<Channel>::convert(5.0f * x - 4.0f);
+
+        if(x <= 1.0f/5.0f)
+          col(1) = channel_traits<Channel>::convert(5.0f * x);
+        else if(x > 1.0f/5.0f && x <=3.0f / 5.0f)
+          col(1) = channel_traits<Channel>::convert(1.0f);
+        else if(x > 3.0f/5.0f && x <= 4.0f / 5.0f)
+          col(1) = channel_traits<Channel>::convert(-5.0f * x + 4.0f);
+
+        if(x > 2.0f / 5.0f && x <= 3.0f / 5.0f)
+          col(2) = channel_traits<Channel>::convert(5.0f * x - 2.0f);
+        else if(x > 3.0f / 5.0f && x <= 4.0f / 5.0f)
+          col(2) = channel_traits<Channel>::convert(1.0f);
+        else if(x > 4.0f / 5.0f)
+          col(2) = channel_traits<Channel>::convert(-5.0f * x + 5.0f);
+        return col;
+      }
+    
+      template <typename Channel, typename Scalar, typename = std::enable_if_t<std::is_floating_point<Scalar>::value>>
+      rgb<Channel> thermo(Scalar x)
+      {
+        rgb<Channel> col{0, 0, 0};
+    
+        if(x <= 1.0f / 7.0f)
+          col(0) =  channel_traits<Channel>::convert(7.0f * x);
+        else if(x > 1.0f / 7.0f && x <= 2.0f / 7.0f)
+          col(0) =  channel_traits<Channel>::convert(-7.0f * x + 2.0f);
+        if(x > 4.0f / 7.0f && x <= 5.0f / 7.0f)
+          col(0) = channel_traits<Channel>::convert(7.0f * x - 4.0f);
+        if(x > 5.0f / 7.0f)
+          col(0) = channel_traits<Channel>::convert(1.0f);
+
+        if(x >= 2.0f / 7.0f && x <= 3.0f / 7.0f)
+          col(1) = channel_traits<Channel>::convert(7.0f * x - 2.0f);
+        else if(x > 3.0f / 7.0f && x <= 5.0f / 7.0f)
+          col(1) = channel_traits<Channel>::convert(1.0f);
+        else if(x > 5.0f / 7.0f && x <= 6.0f / 7.0f)
+          col(1) = channel_traits<Channel>::convert(-7.0f * x + 6.0f);
         else if(x > 6.0f/7.0f)
-          col(1) = 7.0f*x-6.0f;
+          col(1) = channel_traits<Channel>::convert(7.0f * x - 6.0f);
 
-        if(x <= 1.0f/7.0f)
-          col(2) = 7.0f*x;
-        if(x > 1.0f/7.0f && x <=3.0f / 7.0f)
-          col(2) =  1.0f;
-        if(x > 3.0f/7.0f && x <=4.0f / 7.0f)
-          col(2) = -7.0f*x + 4.0f;
+        if(x <= 1.0f / 7.0f)
+          col(2) = channel_traits<Channel>::convert(7.0f * x);
+        if(x > 1.0f / 7.0f && x <= 3.0f / 7.0f)
+          col(2) = channel_traits<Channel>::convert(1.0f);
+        if(x > 3.0f / 7.0f && x <= 4.0f / 7.0f)
+          col(2) = channel_traits<Channel>::convert(-7.0f * x + 4.0f);
         if(x > 6.0f/7.0f)
-          col(2) = 7.0f* - 6.0f;
+          col(2) = channel_traits<Channel>::convert(7.0f * x - 6.0f);
         return col;
       }
     }
 
-  
-   enum class colormap
-   {
-     gray, bone, jet, hot, hsv, thermo
-   };
-  
-  
-    template <typename T>
-    std::vector<rgb<T>> create_color_map(std::size_t steps = 256, colormap name = colormap::jet)
+    enum class colormap
     {
-      using color_type = rgb<T>;
+      gray, bone, jet, hot, hsv, thermo
+    };
+  
+    template <typename Channel>
+    std::optional<std::vector<rgb<Channel>>> create_color_map(std::size_t steps = 256, colormap name = colormap::jet)
+    {
+      using color_type = rgb<Channel>;
     
       std::vector<color_type> map;
       map.resize(steps);
     
-      std::vector<T> x(steps);
+      std::vector<float> x(steps);
       utils::lin_space(x.begin(),x.end(), 0, 1);
     
         for(std::size_t i = 0; i < steps; i++)
@@ -208,43 +194,31 @@ namespace owl
         switch(name)
         {
         case colormap::gray:
-          map[i] = colormaps::gray<T>(x[i]);
+          map[i] = colormaps::grayscale<Channel>(x[i]);
           break;
         case colormap::bone:
-          map[i] = colormaps::bone<T>(x[i]);
+          map[i] = colormaps::bone<Channel>(x[i]);
           break;
         case colormap::jet:
-          map[i] = colormaps::jet<T>(x[i]);
+          map[i] = colormaps::jet<Channel>(x[i]);
           break;
         case colormap::hot:
-          map[i] = colormaps::hot<T>(x[i]);
+          map[i] = colormaps::hot<Channel>(x[i]);
           break;
         case colormap::hsv:
-          map[i] = colormaps::hsv<T>(x[i]);
+          map[i] = colormaps::hsv<Channel>(x[i]);
           break;
         case colormap::thermo:
-          map[i] = colormaps::thermo<T>(x[i]);
+          map[i] = colormaps::thermo<Channel>(x[i]);
           break;
         default:
-          assert(false);//colormap not found
+          return std::nullopt;
           break;
         }
       }
       return map;
     }
     
-    std::vector<rgb8u> create_color_map_u8(std::size_t steps, colormap name)
-    {
-      auto colmap = create_color_map<float>(steps, name);
-    
-      std::vector<rgb8u> colmap2;
-      colmap2.resize(colmap.size());
-    
-      std::transform(colmap.begin(), colmap.end(),
-        colmap2.begin(), [](const auto& v){ return rgb8u(v[0]*255, v[1]*255, v[2]*255);});
-    
-      return colmap2;
-    }
 
   }
 }
