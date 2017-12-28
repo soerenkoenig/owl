@@ -40,12 +40,12 @@ namespace owl
       color& operator=(const color&) = default;
       color& operator=(color&&) = default;
     
-      explicit color(const math::vector<T,N>& other)
+      color(const math::vector<T,N>& other)
         : channels_{other}
       {
       }
     
-      explicit color(vector_type&& other)
+      color(vector_type&& other)
         : channels_{std::forward<vector_type>(other)}
       {
       }
@@ -69,12 +69,12 @@ namespace owl
         return *this;
       }
     
-      explicit operator const vector_type&() const
+      operator const vector_type&() const
       {
         return channels_;
       }
     
-      explicit operator vector_type&()
+      operator vector_type&()
       {
         return channels_;
       }
@@ -270,7 +270,7 @@ namespace owl
       reference v() { return (*this)[2]; }
     };
 
-  
+  /*
     template<typename T>
     class rgba : public color<T, 4, rgba>
     {
@@ -310,50 +310,38 @@ namespace owl
       const_reference a() const { return (*this)[3];}
       reference a() { return (*this)[3]; }
     };
-  
+  */
     template <typename T>
     using gray = T;
   
     using gray8u = gray<std::uint8_t>;
     using rgb8u = rgb<std::uint8_t>;
     using bgr8u = bgr<std::uint8_t>;
-    using rgba8u = rgba<std::uint8_t>;
-    using bgra8u = bgra<std::uint8_t>;
     using cmyk8u = cmyk<std::uint8_t>;
-
+    //using rgba8u = rgba<std::uint8_t>;
+    //using bgra8u = bgra<std::uint8_t>;
+  
     using gray16u = gray<std::uint16_t>;
     using rgb16u = rgb<std::uint16_t>;
     using bgr16u = bgr<std::uint16_t>;
-    using rgba16u = rgba<std::uint16_t>;
-    using bgra16u = bgra<std::uint16_t>;
     using cmyk16u = cmyk<std::uint16_t>;
+    //using rgba16u = rgba<std::uint16_t>;
+    //using bgra16u = bgra<std::uint16_t>;
 
     using gray32f = gray<float>;
     using rgb32f = rgb<float>;
-    using rgba32f = rgba<float>;
-    using bgra32f = bgra<float>;
     using cmyk32f = cmyk<float>;
     using hsv32f = hsv<float>;
+   // using rgba32f = rgba<float>;
+   // using bgra32f = bgra<float>;
 
     using gray64f = gray<double>;
     using rgb64f = rgb<double>;
-    using rgba64f = rgba<double>;
-    using bgra64f = bgra<double>;
     using cmyk64f = cmyk<double>;
     using hsv64f = hsv<double>;
+    //using rgba64f = rgba<double>;
+    //using bgra64f = bgra<double>;
   
-    struct svg_colors
-    {
-      static std::vector<std::string> color_names;
-      static std::vector<rgb8u> color_values;
-
-      static std::optional<rgb8u> lookup(const std::string& name)
-      {
-        auto it = std::lower_bound(color_names.begin(), color_names.end(), name);
-        if(*it != name)
-          return std::nullopt;
-        return *std::next(color_values.begin(),std::distance(color_names.begin(), it));
-      }
-    };
+    
   }
 }

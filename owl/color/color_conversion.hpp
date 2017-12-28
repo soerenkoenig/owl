@@ -16,10 +16,56 @@ namespace owl
 {
   namespace color
   {
+  
   namespace detail
   {
     template <typename ColorDestination, typename ColorSource>
     struct color_conversion;
+  
+    template <typename T, typename T2>
+    struct color_conversion<rgb<T>, rgb<T2>>
+    {
+      static rgb<T> convert(const rgb<T2>& col)
+      {
+        return rgb<T> {channel_traits<T>::convert(col(0)),
+          channel_traits<T>::convert(col(1)),
+          channel_traits<T>::convert(col(2))};
+      }
+    };
+  
+    template <typename T, typename T2>
+    struct color_conversion<bgr<T>, bgr<T2>>
+    {
+      static bgr<T> convert(const bgr<T2>& col)
+      {
+        return bgr<T> {channel_traits<T>::convert(col(0)),
+          channel_traits<T>::convert(col(1)),
+          channel_traits<T>::convert(col(2))};
+      }
+    };
+  
+    template <typename T, typename T2>
+    struct color_conversion<hsv<T>, hsv<T2>>
+    {
+      static hsv<T> convert(const hsv<T2>& col)
+      {
+        return hsv<T> {channel_traits<T>::convert(col(0)),
+          channel_traits<T>::convert(col(1)),
+          channel_traits<T>::convert(col(2))};
+      }
+    };
+  
+    template <typename T, typename T2>
+    struct color_conversion<cmyk<T>, cmyk<T2>>
+    {
+      static cmyk<T> convert(const cmyk<T2>& col)
+      {
+        return cmyk<T> {channel_traits<T>::convert(col(0)),
+          channel_traits<T>::convert(col(1)),
+          channel_traits<T>::convert(col(2)),
+          channel_traits<T>::convert(col(3))};
+      }
+    };
   
     template <typename T>
     struct color_conversion<rgb<T>, cmyk<T>>
@@ -193,7 +239,7 @@ namespace owl
       }
     };
   
-    template <typename T>
+   /* template <typename T>
     struct color_conversion<rgba<T>, bgra<T>>
     {
       static rgba<T> convert(const bgra<T>& col)
@@ -209,7 +255,7 @@ namespace owl
       {
       return {col.b(), col.g(), col.r(), col.a()};
       }
-    };
+    };*/
 
   }
   

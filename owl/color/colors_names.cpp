@@ -1,11 +1,11 @@
-#include "owl/color/colors.hpp"
+#include "owl/color/color_names.hpp"
 
 namespace owl
 {
   namespace color
   {
   
-     std::vector<std::string> svg_colors::color_names  =
+     std::vector<std::string> color_names::names  =
       {
       "aliceblue","antiquewhite","aqua","aquamarine","azure","beige","bisque","black",
       "blanchedalmond","blue","blueviolet","brown","burlywood","cadetblue","chartreuse",
@@ -32,7 +32,7 @@ namespace owl
       "yellowgreen"
       };
 
-   std::vector<rgb8u> svg_colors::color_values = {{240,248,255},{250,235,215},{0,255,255},{127,255,212},{240,255,255},{245,245,220
+  std::vector<rgb8u> color_names::values = {{240,248,255},{250,235,215},{0,255,255},{127,255,212},{240,255,255},{245,245,220
 },{255,228,196},{0,0,0},{255,235,205},{0,0,255},{138,43,226},{165,42,42},{222,
 184,135},{95,158,160},{127,255,0},{210,105,30},{255,127,80},{100,149,237},{255,
 248,220},{220,20,60},{0,255,255},{0,0,139},{0,139,139},{184,132,11},{169,169,169

@@ -1,5 +1,6 @@
 #include "owl/color/colors.hpp"
 #include "owl/color/color_conversion.hpp"
+#include "owl/color/color_names.hpp"
 #include "owl/color/gamma_correction.hpp"
 #include "owl/math/approx.hpp"
 #include "catch/catch.hpp"
@@ -11,7 +12,7 @@ namespace test
   TEST_CASE( "colors", "[color]" )
   {
     using namespace owl::color;
-    auto cred = svg_colors::lookup("red");
+    auto cred = color_names::lookup<unsigned char>("red");
     rgb32f red(1.0f, 0.0f, 0.0f);
     rgb32f green(0.0f, 1.0f, 0.0f);
     rgb32f blue(0.0f, 0.0f, 1.0f);
@@ -30,7 +31,7 @@ namespace test
     auto red2g = linear_2_gamma_corrected(darkred, gamma_correction_model::s_rgb{});
   }
   
-  TEST_CASE("convert","[color]")
+  TEST_CASE("convert", "[color]")
   {
     using namespace owl::color;
     std::vector<rgb32f> rgbs = {

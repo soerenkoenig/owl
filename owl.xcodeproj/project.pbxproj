@@ -23,7 +23,7 @@
 		284C09CB1F9B0B370062BFF1 /* step_iterator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 284C09CA1F9B0B370062BFF1 /* step_iterator.cpp */; };
 		2857F02B1FEF280700DEF030 /* colors.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2857F02A1FEF280700DEF030 /* colors.cpp */; };
 		2857F0301FF128B200DEF030 /* gamma_correction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2857F02F1FF128B200DEF030 /* gamma_correction.cpp */; };
-		2857F0321FF2F54C00DEF030 /* colors.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2857F0311FF2F54C00DEF030 /* colors.cpp */; };
+		2857F0321FF2F54C00DEF030 /* colors_names.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2857F0311FF2F54C00DEF030 /* colors_names.cpp */; };
 		285D63941FC8C67D007EBB23 /* angle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 285D63931FC8C67D007EBB23 /* angle.cpp */; };
 		286563CE1FE86A73003758E1 /* color_maps.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 286563CD1FE86A73003758E1 /* color_maps.cpp */; };
 		286F1DF11F9E67A500FCC209 /* map_iterator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 286F1DF01F9E67A500FCC209 /* map_iterator.cpp */; };
@@ -133,7 +133,7 @@
 		2857F02C1FF0596B00DEF030 /* lin_space.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = lin_space.hpp; sourceTree = "<group>"; };
 		2857F02E1FF1281500DEF030 /* gamma_correction.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = gamma_correction.hpp; sourceTree = "<group>"; };
 		2857F02F1FF128B200DEF030 /* gamma_correction.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = gamma_correction.cpp; sourceTree = "<group>"; };
-		2857F0311FF2F54C00DEF030 /* colors.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = colors.cpp; sourceTree = "<group>"; };
+		2857F0311FF2F54C00DEF030 /* colors_names.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = colors_names.cpp; sourceTree = "<group>"; };
 		2857F0331FF3E4C800DEF030 /* color_conversion.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = color_conversion.hpp; sourceTree = "<group>"; };
 		2857F0341FF3E5CA00DEF030 /* channel_traits.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = channel_traits.hpp; sourceTree = "<group>"; };
 		285D63921FC8C4C7007EBB23 /* angle.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = angle.hpp; sourceTree = "<group>"; };
@@ -153,6 +153,7 @@
 		2883C2531F91BAFA007DDB3C /* test */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = test; sourceTree = BUILT_PRODUCTS_DIR; };
 		2883C2551F91BAFA007DDB3C /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		2883C25E1F91BD38007DDB3C /* catch.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = catch.hpp; sourceTree = "<group>"; };
+		288407B51FF51E190022A590 /* color_names.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = color_names.hpp; sourceTree = "<group>"; };
 		288410B61FA6006A00CE68DA /* obj.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = obj.hpp; sourceTree = "<group>"; };
 		288410B71FA600E800CE68DA /* obj.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = obj.cpp; sourceTree = "<group>"; };
 		288410BA1FA606BE00CE68DA /* cube.obj */ = {isa = PBXFileReference; lastKnownFileType = text; path = cube.obj; sourceTree = "<group>"; };
@@ -325,9 +326,10 @@
 				286563CC1FE864AC003758E1 /* color_maps.hpp */,
 				2857F02E1FF1281500DEF030 /* gamma_correction.hpp */,
 				2857F02F1FF128B200DEF030 /* gamma_correction.cpp */,
-				2857F0311FF2F54C00DEF030 /* colors.cpp */,
+				2857F0311FF2F54C00DEF030 /* colors_names.cpp */,
 				2857F0331FF3E4C800DEF030 /* color_conversion.hpp */,
 				2857F0341FF3E5CA00DEF030 /* channel_traits.hpp */,
+				288407B51FF51E190022A590 /* color_names.hpp */,
 			);
 			path = color;
 			sourceTree = "<group>";
@@ -611,7 +613,7 @@
 				2816E6A91FA139AB00CCE00A /* file_utils.cpp in Sources */,
 				2857F0301FF128B200DEF030 /* gamma_correction.cpp in Sources */,
 				D1993BCF1FBB1D94005737F9 /* buffer.cpp in Sources */,
-				2857F0321FF2F54C00DEF030 /* colors.cpp in Sources */,
+				2857F0321FF2F54C00DEF030 /* colors_names.cpp in Sources */,
 				D1993BCA1FBAD8B0005737F9 /* base64.cpp in Sources */,
 				D1536A3C1FA7649B004B7905 /* uuid.cpp in Sources */,
 			);
