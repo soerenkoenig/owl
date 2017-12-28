@@ -20,7 +20,7 @@ namespace owl
         auto it = std::lower_bound(names.begin(), names.end(), name);
         if(*it != name)
           return std::nullopt;
-        return convert<rgb<Channel> >(*std::next(values.begin(),std::distance(names.begin(), it)));
+        return convert<rgb<Channel> >(*std::next(values.begin(), std::distance(names.begin(), it)));
       }
     };
   }
