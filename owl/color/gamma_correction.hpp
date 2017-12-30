@@ -10,7 +10,7 @@
 
 #pragma once
 
-#include "owl/color/colors.hpp"
+#include "owl/color/color.hpp"
 
 namespace owl
 {
@@ -32,10 +32,10 @@ namespace owl
     double gamma_corrected_2_linear(double u, gamma_correction_model::adobe_rgb cm);
   
   
-    template <typename T, std::size_t N,template <typename> typename Derived>
-    auto linear_2_gamma_corrected(const color<T, N, Derived>& col, gamma_correction_model::s_rgb cm)
+    template <typename T, std::size_t N, bool HasAlpha, template <typename, bool> typename Derived>
+    auto linear_2_gamma_corrected(const color<T, N, HasAlpha, Derived>& col, gamma_correction_model::s_rgb cm)
     {
-      Derived<T> res(static_cast<const math::vector<T,N>&>(col));
+      Derived<T, HasAlpha> res(static_cast<const math::vector<T,N>&>(col));
     
       for(auto& ch : res)
         ch = linear_2_gamma_corrected(ch, cm);

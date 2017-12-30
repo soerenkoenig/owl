@@ -100,7 +100,7 @@ namespace owl
     using const_column_range = owl::utils::iterator_range<const_column_iterator>;
     
     template <typename S1, typename S2 = value_type>
-    using enable_if_scalar_t = std::enable_if_t<std::is_convertible<S1, S2>::value >;
+    using enable_if_scalar_t = std::enable_if_t<std::is_convertible<S1, S2>::value>;
     
     constexpr static size_type size()
     {

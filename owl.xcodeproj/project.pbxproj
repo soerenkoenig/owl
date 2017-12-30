@@ -128,7 +128,7 @@
 		284C09C81F968F5C0062BFF1 /* container_traits.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = container_traits.cpp; sourceTree = "<group>"; };
 		284C09CA1F9B0B370062BFF1 /* step_iterator.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = step_iterator.cpp; sourceTree = "<group>"; };
 		284C09CC1F9E54220062BFF1 /* filter_iterator.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = filter_iterator.hpp; sourceTree = "<group>"; };
-		2857F0291FEA978B00DEF030 /* colors.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = colors.hpp; sourceTree = "<group>"; };
+		2857F0291FEA978B00DEF030 /* color.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = color.hpp; sourceTree = "<group>"; };
 		2857F02A1FEF280700DEF030 /* colors.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = colors.cpp; sourceTree = "<group>"; };
 		2857F02C1FF0596B00DEF030 /* lin_space.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = lin_space.hpp; sourceTree = "<group>"; };
 		2857F02E1FF1281500DEF030 /* gamma_correction.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = gamma_correction.hpp; sourceTree = "<group>"; };
@@ -322,7 +322,7 @@
 		2857F02D1FF1252200DEF030 /* color */ = {
 			isa = PBXGroup;
 			children = (
-				2857F0291FEA978B00DEF030 /* colors.hpp */,
+				2857F0291FEA978B00DEF030 /* color.hpp */,
 				286563CC1FE864AC003758E1 /* color_maps.hpp */,
 				2857F02E1FF1281500DEF030 /* gamma_correction.hpp */,
 				2857F02F1FF128B200DEF030 /* gamma_correction.cpp */,

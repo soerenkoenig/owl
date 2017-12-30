@@ -1,4 +1,4 @@
-#include "owl/color/colors.hpp"
+#include "owl/color/color.hpp"
 #include "owl/color/color_conversion.hpp"
 #include "owl/color/color_names.hpp"
 #include "owl/color/gamma_correction.hpp"
@@ -12,7 +12,7 @@ namespace test
   TEST_CASE( "colors", "[color]" )
   {
     using namespace owl::color;
-    auto cred = color_names::lookup<unsigned char>("red");
+    CHECK( color_names::lookup<unsigned char>("red") == rgb8u(255,0,0));
     rgb32f red(1.0f, 0.0f, 0.0f);
     rgb32f green(0.0f, 1.0f, 0.0f);
     rgb32f blue(0.0f, 0.0f, 1.0f);
@@ -52,7 +52,7 @@ namespace test
    };
   
    for(std::size_t i = 0; i  < rgbs.size(); ++i)
-    CHECK(convert<hsv32f>(rgbs[i]) == hsvs[i]);
+    CHECK(owl::math::approx(convert<hsv32f>(rgbs[i])).margin(0.0001) == hsvs[i]);
   
   }
   

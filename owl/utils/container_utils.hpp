@@ -138,9 +138,14 @@ namespace owl
     using is_associative_container = std::conditional_t<is_ordered_associative_container<T>::value ||
       is_unordered_associative_container<T>::value, std::true_type, std::false_type>;
 
+
+
+    /*template <typename T>
+    struct is_container : std::integral_constant<bool, has_begin<T>::value && has_end<T>::value> {};*/
+  
     template <typename T>
-    struct is_container : std::integral_constant<bool, has_begin<T>::value && has_end<T>::value> {};
-    
+    struct is_container : is_iterable<T>{};
+  
     template <typename T, std::size_t N>
     struct is_container<T[N]> : std::true_type {};
 

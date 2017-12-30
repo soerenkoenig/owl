@@ -12,6 +12,7 @@
 #include <cstdint>
 #include <algorithm>
 #include <array>
+#include <type_traits>
 #include "owl/math/matrix.hpp"
 #include "owl/optional.hpp"
 #include "owl/color/channel_traits.hpp"
@@ -20,11 +21,12 @@ namespace owl
 {
   namespace color
   {
-    template <typename T, std::size_t N, template <typename> typename Derived>
+    template <typename T, std::size_t N, bool HasAlpha, template <typename, bool> typename Derived>
     class color
     {
     public:
-      using vector_type = math::vector<T, N>;
+    
+      using vector_type = std::conditional_t<HasAlpha, math::vector<T, N + 1>, math::vector<T, N>>;
       using value_type = T;
       using reference = T&;
       using pointer = T*;
@@ -33,6 +35,8 @@ namespace owl
       using size_type = typename vector_type::size_type;
       using iterator = typename vector_type::iterator;
       using const_iterator = typename vector_type::const_iterator;
+    
+      static constexpr std::size_t num_channels() { return  HasAlpha ? N + 1 : N; }
     
       color() = default;
       color(const color&) = default;
@@ -146,65 +150,73 @@ namespace owl
     
       auto operator+(const color& other) const
       {
-       return Derived<T>(channels_ + other.channels_);
+       return Derived<T, HasAlpha>(channels_ + other.channels_);
       }
     
       auto operator-(const color& other) const
       {
-       return Derived<T>(channels_ - other.channels_);
+       return Derived<T, HasAlpha>(channels_ - other.channels_);
       }
     
       auto operator*(const color& other) const
       {
-        return Derived<T>(comp_mult(channels_, other.channels_));
+        return Derived<T, HasAlpha>(comp_mult(channels_, other.channels_));
       }
     
       auto operator*(color&& other) const
       {
-        return Derived<T>(comp_mult(channels_, other.channels_));
+        return Derived<T, HasAlpha>(comp_mult(channels_, other.channels_));
       }
     
       auto operator/(const color& other) const
       {
-        return Derived<T>(comp_div(channels_, other.channels_));
+        return Derived<T, HasAlpha>(comp_div(channels_, other.channels_));
       }
     
       auto operator/(color&& other) const
       {
-        return Derived<T>(comp_div(channels_, other.channels_));
+        return Derived<T, HasAlpha>(comp_div(channels_, other.channels_));
       }
     
       template <typename Scalar, typename = typename vector_type::template enable_if_scalar_t<Scalar> >
       auto operator*(Scalar s)
       {
-        return Derived<decltype(std::declval<T>() * std::declval<Scalar>())>(channels_ * s);
+        return Derived<decltype(std::declval<T>() * std::declval<Scalar>()), HasAlpha>(channels_ * s);
       }
+    
+      template<bool Dummy = true, typename = std::enable_if_t<Dummy && HasAlpha>>
+      const_reference a() const { return (*this)[N]; }
+    
+      template<bool Dummy = true, typename = std::enable_if_t<Dummy && HasAlpha>>
+      reference a() { return (*this)[N]; }
     
     private:
       vector_type channels_;
     };
   
-    template <typename Scalar,typename T, std::size_t N, template <typename> typename Derived, typename = typename math::vector<T,N>::template enable_if_scalar_t<Scalar> >
-    auto operator*(Scalar s, color<T, N, Derived>& col)
+    template <typename Scalar,typename T, std::size_t N, bool HasAlpha, template <typename, bool> typename Derived, typename = typename math::vector<T,N>::template enable_if_scalar_t<Scalar> >
+    auto operator*(Scalar s, color<T, N, HasAlpha, Derived>& col)
     {
       return col * s;
     }
   
-    template <typename T, std::size_t N, template <typename> typename Derived>
-    std::ostream& operator<<(std::ostream& out, const color<T,N,Derived>& col)
+    template <typename T, std::size_t N, bool HasAlpha, template <typename, bool> typename Derived>
+    std::ostream& operator<<(std::ostream& out, const color<T, N, HasAlpha, Derived>& col)
     {
       return out << static_cast<const math::vector<T,N>&>(col);
     }
   
-    template<typename T>
-    class cmyk : public color<T, 4, cmyk>
+    template<typename T, bool HasAlpha = false>
+    class cmyk : public color<T, 4, HasAlpha, cmyk>
     {
     public:
-      using base_type = color<T, 4, owl::color::cmyk>;
-      using color<T, 4, owl::color::cmyk>::color;
+      using base_type = color<T, 4, HasAlpha, owl::color::cmyk>;
+      using color<T, 4, HasAlpha, owl::color::cmyk>::color;
       using typename base_type::value_type;
       using typename base_type::reference;
       using typename base_type::const_reference;
+      using typename base_type::iterator;
+      using typename base_type::const_iterator;
    
       const_reference c() const { return (*this)[0];}
       reference c() { return (*this)[0]; }
@@ -216,15 +228,21 @@ namespace owl
       reference k() { return (*this)[3]; }
     };
   
-    template<typename T>
-    class rgb : public color<T, 3, rgb>
+  
+  
+  
+    template<typename Channel, bool HasAlpha = false>
+    class rgb : public color<Channel, 3, HasAlpha, rgb>
     {
     public:
-      using base_type = color<T, 3, owl::color::rgb>;
-      using color<T, 3, owl::color::rgb>::color;
+  
+      using base_type = color<Channel, 3, HasAlpha,  owl::color::rgb>;
+      using color<Channel, 3, HasAlpha, owl::color::rgb>::color;
       using typename base_type::value_type;
       using typename base_type::reference;
       using typename base_type::const_reference;
+      using typename base_type::iterator;
+      using typename base_type::const_iterator;
    
       const_reference r() const { return (*this)[0];}
       reference r() { return (*this)[0]; }
@@ -234,15 +252,17 @@ namespace owl
       reference b() { return (*this)[2]; }
     };
   
-    template<typename T>
-    class bgr : public color<T, 3, bgr>
+    template<typename Channel, bool HasAlpha = false>
+    class bgr : public color<Channel, 3, HasAlpha, bgr>
     {
     public:
-      using base_type = color<T, 3, owl::color::bgr>;
-      using color<T, 3, owl::color::bgr>::color;
+      using base_type = color<Channel, 3, HasAlpha, owl::color::bgr>;
+      using color<Channel, 3, HasAlpha, owl::color::bgr>::color;
       using typename base_type::value_type;
       using typename base_type::reference;
       using typename base_type::const_reference;
+      using typename base_type::iterator;
+      using typename base_type::const_iterator;
    
       const_reference b() const { return (*this)[0];}
       reference b() { return (*this)[0]; }
@@ -252,15 +272,17 @@ namespace owl
       reference r() { return (*this)[2]; }
     };
   
-    template<typename T>
-    class hsv : public color<T, 3, hsv>
+    template<typename Channel, bool HasAlpha = false>
+    class hsv : public color<Channel, 3, HasAlpha, hsv>
     {
     public:
-      using base_type = color<T, 3, owl::color::hsv>;
-      using color<T, 3, owl::color::hsv>::color;
+      using base_type = color<Channel, 3, HasAlpha, owl::color::hsv>;
+      using color<Channel, 3, HasAlpha, owl::color::hsv>::color;
       using typename base_type::value_type;
       using typename base_type::reference;
       using typename base_type::const_reference;
+      using typename base_type::iterator;
+      using typename base_type::const_iterator;
    
       const_reference h() const { return (*this)[0];}
       reference h() { return (*this)[0]; }
@@ -269,6 +291,11 @@ namespace owl
       const_reference v() const { return (*this)[2];}
       reference v() { return (*this)[2]; }
     };
+  
+  
+  
+  
+  
 
   /*
     template<typename T>
@@ -332,8 +359,8 @@ namespace owl
     using rgb32f = rgb<float>;
     using cmyk32f = cmyk<float>;
     using hsv32f = hsv<float>;
-   // using rgba32f = rgba<float>;
-   // using bgra32f = bgra<float>;
+    using rgba32f = rgb<float, true>;
+    using bgra32f = bgr<float, true>;
 
     using gray64f = gray<double>;
     using rgb64f = rgb<double>;

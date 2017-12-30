@@ -2,7 +2,7 @@
 
 #include <vector>
 #include "owl/optional.hpp"
-#include "owl/color/colors.hpp"
+#include "owl/color/color.hpp"
 #include "owl/color/color_conversion.hpp"
 
 namespace owl

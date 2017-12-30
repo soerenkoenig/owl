@@ -10,7 +10,7 @@
 
 #pragma once
 
-#include "owl/color/colors.hpp"
+#include "owl/color/color.hpp"
 
 namespace owl
 {

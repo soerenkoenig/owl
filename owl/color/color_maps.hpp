@@ -5,7 +5,7 @@
 #include <type_traits>
 
 #include "owl/math/matrix.hpp"
-#include "owl/color/colors.hpp"
+#include "owl/color/color.hpp"
 #include "owl/utils/lin_space.hpp"
 
 
