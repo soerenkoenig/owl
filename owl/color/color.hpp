@@ -243,6 +243,7 @@ namespace owl
       using typename base_type::const_reference;
       using typename base_type::iterator;
       using typename base_type::const_iterator;
+    
    
       const_reference r() const { return (*this)[0];}
       reference r() { return (*this)[0]; }
@@ -250,6 +251,17 @@ namespace owl
       reference g() { return (*this)[1]; }
       const_reference b() const { return (*this)[2];}
       reference b() { return (*this)[2]; }
+    
+      static rgb hex(std::uint32_t hexValue)
+      {
+        rgb c;
+        if constexpr(HasAlpha)
+          c.a() = channel_traits<Channel>::convert(std::uint8_t(( hexValue >> 24 ) & 255));
+        c.r() = channel_traits<Channel>::convert(std::uint8_t(( hexValue >> 16 ) & 255));
+        c.g() = channel_traits<Channel>::convert(std::uint8_t(( hexValue >> 8 ) & 255));
+        c.b() = channel_traits<Channel>::convert(std::uint8_t(hexValue & 255));
+        return c;
+      }
     };
   
     template<typename Channel, bool HasAlpha = false>
@@ -292,68 +304,33 @@ namespace owl
       reference v() { return (*this)[2]; }
     };
   
-  
-  
-  
-  
-
   /*
-    template<typename T>
-    class rgba : public color<T, 4, rgba>
-    {
-    public:
-      using base_type = color<T, 4, owl::color::rgba>;
-      using color<T, 4, owl::color::rgba>::color;
-      using typename base_type::value_type;
-      using typename base_type::reference;
-      using typename base_type::const_reference;
-   
-      const_reference r() const { return (*this)[0];}
-      reference r() { return (*this)[0]; }
-      const_reference g() const { return (*this)[1];}
-      reference g() { return (*this)[1]; }
-      const_reference b() const { return (*this)[2];}
-      reference b() { return (*this)[2]; }
-      const_reference a() const { return (*this)[3];}
-      reference a() { return (*this)[3]; }
-    };
   
-    template<typename T>
-    class bgra : public color<T, 4, bgra>
-    {
-    public:
-      using base_type = color<T, 4, owl::color::bgra>;
-      using color<T, 4, owl::color::bgra>::color;
-      using typename base_type::value_type;
-      using typename base_type::reference;
-      using typename base_type::const_reference;
-   
-      const_reference b() const { return (*this)[0];}
-      reference b() { return (*this)[0]; }
-      const_reference g() const { return (*this)[1];}
-      reference g() { return (*this)[1]; }
-      const_reference r() const { return (*this)[2];}
-      reference r() { return (*this)[2]; }
-      const_reference a() const { return (*this)[3];}
-      reference a() { return (*this)[3]; }
-    };
   */
+  
+  
     template <typename T>
     using gray = T;
+  
+    template <typename T>
+    using rgba = rgb<T, true>;
+  
+    template <typename T>
+    using bgra = bgr<T, true>;
   
     using gray8u = gray<std::uint8_t>;
     using rgb8u = rgb<std::uint8_t>;
     using bgr8u = bgr<std::uint8_t>;
     using cmyk8u = cmyk<std::uint8_t>;
-    //using rgba8u = rgba<std::uint8_t>;
-    //using bgra8u = bgra<std::uint8_t>;
+    using rgba8u = rgb<std::uint8_t, true>;
+    using bgra8u = bgr<std::uint8_t, true>;
   
     using gray16u = gray<std::uint16_t>;
     using rgb16u = rgb<std::uint16_t>;
     using bgr16u = bgr<std::uint16_t>;
     using cmyk16u = cmyk<std::uint16_t>;
-    //using rgba16u = rgba<std::uint16_t>;
-    //using bgra16u = bgra<std::uint16_t>;
+    using rgba16u = rgb<std::uint16_t, true>;
+    using bgra16u = bgr<std::uint16_t, true>;
 
     using gray32f = gray<float>;
     using rgb32f = rgb<float>;
@@ -366,8 +343,8 @@ namespace owl
     using rgb64f = rgb<double>;
     using cmyk64f = cmyk<double>;
     using hsv64f = hsv<double>;
-    //using rgba64f = rgba<double>;
-    //using bgra64f = bgra<double>;
+    using rgba64f = rgb<double, true>;
+    using bgra64f = bgr<double, true>;
   
     
   }

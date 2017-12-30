@@ -12,9 +12,12 @@ namespace test
   TEST_CASE( "colors", "[color]" )
   {
     using namespace owl::color;
-    CHECK( color_names::lookup<unsigned char>("red") == rgb8u(255,0,0));
+  
+    CHECK( rgb8u::hex(0x64b91b) == rgb8u(100, 185, 27));
+  
+    CHECK( color_names::lookup<unsigned char>("red") == rgb8u(255, 0, 0));
     rgb32f red(1.0f, 0.0f, 0.0f);
-    rgb32f green(0.0f, 1.0f, 0.0f);
+    rgb32f verygreen(0.0f, 1.0f, 0.0f);
     rgb32f blue(0.0f, 0.0f, 1.0f);
     rgb32f white(1.0f, 1.0f, 1.0f);
     rgb32f black(0.0f, 0.0f, 0.0f);
@@ -25,7 +28,6 @@ namespace test
     CHECK(convert<cmyk32f>(black) == cmyk32f(0.0f, 0.0f, 0.0f, 1.0f));
     CHECK(convert<cmyk32f>(white) == cmyk32f(0.0f,0.0f,0.0f,0.0f));
   
-   // CHECK(convert<hsvu8>(rgbu8(86, 84, 3)) == );
   
     auto darkred = 0.5f*red;
     auto red2g = linear_2_gamma_corrected(darkred, gamma_correction_model::s_rgb{});
