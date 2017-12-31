@@ -11,8 +11,8 @@ namespace test
   
     auto colors1 = create_color_map<std::uint8_t>(100, colormap::gray);
     REQUIRE(colors1->size() == 100);
-    REQUIRE(colors1->front() == owl::math::vector<unsigned char,3>(0,0,0));
-    REQUIRE(colors1->back() == owl::math::vector<unsigned char,3>(255,255,255));
+    REQUIRE(colors1->front() == rgb8u(0,0,0));
+    REQUIRE(colors1->back() == rgb8u(255,255,255));
   }
 }
 

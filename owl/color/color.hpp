@@ -44,12 +44,12 @@ namespace owl
       color& operator=(const color&) = default;
       color& operator=(color&&) = default;
     
-      color(const math::vector<T,N>& other)
+      explicit color(const math::vector<T,N>& other)
         : channels_{other}
       {
       }
     
-      color(vector_type&& other)
+      explicit color(vector_type&& other)
         : channels_{std::forward<vector_type>(other)}
       {
       }
@@ -73,12 +73,12 @@ namespace owl
         return *this;
       }
     
-      operator const vector_type&() const
+      explicit operator const vector_type&() const
       {
         return channels_;
       }
     
-      operator vector_type&()
+      explicit operator vector_type&()
       {
         return channels_;
       }
@@ -148,19 +148,28 @@ namespace owl
         return channels_ != other.channels_;
       }
     
-      auto operator+(const color& other) const
+      template <typename T2>
+      auto operator+(const color<T2, N, HasAlpha, Derived>& other) const
       {
-       return Derived<T, HasAlpha>(channels_ + other.channels_);
+        owl::math::vector<T,N> v1;
+        owl::math::vector<T2,N> v2;
+        auto res = v1 + v2;
+      
+      //  auto res = channels_ + static_cast<const owl::math::vector<T2,N>&>(other);
+      
+      return Derived<decltype(std::declval<T>() * std::declval<T2>()), HasAlpha>(res);
       }
     
-      auto operator-(const color& other) const
+      template <typename T2>
+      auto operator-(const color<T2, N, HasAlpha, Derived>& other) const
       {
-       return Derived<T, HasAlpha>(channels_ - other.channels_);
+       return Derived<decltype(std::declval<T>() * std::declval<T2>()), HasAlpha>(channels_ - static_cast<const owl::math::vector<T2,N>&>(other));
       }
     
-      auto operator*(const color& other) const
+      template <typename T2>
+      auto operator*(const color<T2,N,HasAlpha,Derived>& other) const
       {
-        return Derived<T, HasAlpha>(comp_mult(channels_, other.channels_));
+        return Derived<decltype(std::declval<T>() * std::declval<T2>()), HasAlpha>(comp_mult(channels_, other.channels_));
       }
     
       auto operator*(color&& other) const
@@ -168,9 +177,10 @@ namespace owl
         return Derived<T, HasAlpha>(comp_mult(channels_, other.channels_));
       }
     
+      template <typename T2>
       auto operator/(const color& other) const
       {
-        return Derived<T, HasAlpha>(comp_div(channels_, other.channels_));
+        return Derived<decltype(std::declval<T>() * std::declval<T2>()), HasAlpha>(comp_div(channels_, other.channels_));
       }
     
       auto operator/(color&& other) const
@@ -179,7 +189,7 @@ namespace owl
       }
     
       template <typename Scalar, typename = typename vector_type::template enable_if_scalar_t<Scalar> >
-      auto operator*(Scalar s)
+      auto operator*(Scalar s) const
       {
         return Derived<decltype(std::declval<T>() * std::declval<Scalar>()), HasAlpha>(channels_ * s);
       }
@@ -195,7 +205,7 @@ namespace owl
     };
   
     template <typename Scalar,typename T, std::size_t N, bool HasAlpha, template <typename, bool> typename Derived, typename = typename math::vector<T,N>::template enable_if_scalar_t<Scalar> >
-    auto operator*(Scalar s, color<T, N, HasAlpha, Derived>& col)
+    auto operator*(Scalar s, const color<T, N, HasAlpha, Derived>& col)
     {
       return col * s;
     }
@@ -205,6 +215,7 @@ namespace owl
     {
       return out << static_cast<const math::vector<T,N>&>(col);
     }
+  
   
     template<typename T, bool HasAlpha = false>
     class cmyk : public color<T, 4, HasAlpha, cmyk>

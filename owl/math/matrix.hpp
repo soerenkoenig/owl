@@ -102,6 +102,9 @@ namespace owl
     template <typename S1, typename S2 = value_type>
     using enable_if_scalar_t = std::enable_if_t<std::is_convertible<S1, S2>::value>;
     
+    template <typename S1, std::size_t R = Rows, std::size_t C = Cols, typename S2 = value_type>
+    using result_matrix_t = matrix<decltype(std::declval<S1>()*std::declval<S2>()),R, C>;
+    
     constexpr static size_type size()
     {
       return Rows * Cols;
@@ -526,11 +529,12 @@ namespace owl
       return *this;
     }
     
-    template<typename S, typename T, std::size_t N, std::size_t M>
-    friend matrix operator+( matrix<S, N, M> lhs, const matrix<T, N, M>& rhs )
+    template<typename S>
+    auto operator+(const matrix<S, Rows, Cols>& other) const
     {
-      lhs += rhs;
-      return lhs;
+      result_matrix_t<S> res;
+      std::transform(begin(), end(), other.begin(), res.begin(), std::plus<value_type>());
+      return res;
     }
     
     template <typename S2>
@@ -540,16 +544,17 @@ namespace owl
       return *this;
     }
     
-    template< typename  S, typename T, std::size_t N, std::size_t M>
-    friend matrix operator-(matrix<S, N, M> lhs, const matrix<T, N, M>& rhs )
+    template<typename S>
+    auto operator-(const matrix<S, Rows, Cols>& other) const
     {
-      lhs -= rhs;
-      return lhs;
+      result_matrix_t<S> res;
+      std::transform(begin(), end(), other.begin(), res.begin(), std::minus<value_type>());
+      return res;
     }
     
-    matrix operator-() const
+    auto operator-() const
     {
-        return *this * value_type{-1};
+      return *this * -1;
     }
     
     matrix operator+() const
@@ -560,7 +565,7 @@ namespace owl
     template <typename S2, std::size_t Cols2, std::size_t R = Rows, std::size_t C = Cols, typename = std::enable_if_t<R != 1 && C != 1>>
     auto operator*(const matrix<S2, Cols, Cols2>& other) const
     {
-      matrix<decltype(std::declval<Scalar>() * std::declval<S2>()), Rows, Cols2> prod{};
+      result_matrix_t<S2, Rows, Cols2> prod{};
   
       for(size_type i = 0; i < Rows; ++i)
         for(size_type k = 0; k < Cols2; ++k)
@@ -584,7 +589,7 @@ namespace owl
     template <typename S2, std::size_t Cols2, std::size_t R = Rows, typename = std::enable_if_t<R == 1>>
     auto operator*(const matrix<S2, Cols, Cols2>& other) const
     {
-      matrix<decltype(std::declval<Scalar>() * std::declval<S2>()), 1, Cols2> prod{};
+      result_matrix_t<S2, 1, Cols2> prod{};
   
       for(size_type k = 0; k < Cols2; ++k)
         for(size_type j = 0; j < Cols; ++j)
@@ -597,7 +602,7 @@ namespace owl
      typename = std::enable_if_t<C == 1>, typename = void>
     auto operator*(const matrix<S2, 1, Cols2>& other) const
     {
-      matrix<decltype(std::declval<Scalar>() * std::declval<S2>()), Rows, Cols2> prod{};
+      result_matrix_t<S2, Rows, Cols2> prod{};
   
       for(size_type i = 0; i < Rows; ++i)
         for(size_type k = 0; k < Cols2; ++k)
@@ -610,7 +615,7 @@ namespace owl
     template <typename S2, std::size_t C = Cols, size_t R = Rows, typename = std::enable_if_t<C != 1 && R != 1>, typename = void>
     auto operator*(const matrix<S2, Cols, 1>& other) const
     {
-      matrix<decltype(std::declval<Scalar>() * std::declval<S2>()), Rows, 1> prod{};
+      result_matrix_t<S2, Rows, 1> prod{};
   
       for(size_type i = 0; i < Rows; ++i)
           for(size_type j = 0; j < Cols; ++j)
@@ -808,7 +813,7 @@ namespace owl
   
     template< typename  S, std::size_t N, std::size_t M,
       typename = std::enable_if_t< matrix<S,N,M>::is_vector()> >
-    S dot( const matrix<S, N, M>& lhs, const matrix<S, N, M>& rhs)
+    S dot(const matrix<S, N, M>& lhs, const matrix<S, N, M>& rhs)
     {
       return std::inner_product(lhs.cbegin(), lhs.cend(), rhs.cbegin(), S{0});
     }
@@ -911,7 +916,6 @@ namespace owl
   
       if(cosasqr < 0)
         return {reflect(v,n), true};
-      
       else
         return {c * v + (c * NdotV - sqrt(cosasqr) / dot(n, n) ) * n, false};
     }
@@ -934,8 +938,17 @@ namespace owl
       return out;
     }
   
+    template <std::size_t N, std::size_t M>
+    std::ostream& operator<<(std::ostream& out, const matrix<std::uint8_t, N, M>& m)
+    {
+      for(std::size_t i = 0; i < N; ++i)
+        for(std::size_t j = 0; j < M; ++j)
+          out << static_cast<int>(m(i, j)) << ((j == M - 1) ? "\n" : " ");
+      return out;
+    }
+  
     template <typename S, std::size_t M, std::size_t N>
-    std::istream& operator>>(std::istream& in, matrix<S,M,N>& m)
+    std::istream& operator>>(std::istream& in, matrix<S, M, N>& m)
     {
       for(std::size_t i = 0; i < M; ++i)
         for(std::size_t j = 0; j < N; ++j)
@@ -1169,7 +1182,7 @@ namespace owl
   
     template <typename T,std::size_t M, std::size_t N,
       typename Mat = matrix<T, M, N>, typename = std::enable_if_t<Mat::is_vector(3)> >
-    square_matrix<T, 3> cross_mat(matrix<T, M, N>& v)
+    square_matrix<T, 3> cross_mat(const matrix<T, M, N>& v)
     {
       square_matrix<T, 3> m;
       m <<     0, -v(2),  v(1),
@@ -1195,7 +1208,13 @@ namespace owl
         r(i, i) = v(i);
       return r;
     }
-    
+  
+    template <typename T, typename S, typename = std::enable_if_t<std::is_convertible<S, double>::value> >
+    auto lerp(T start, T end, S alpha)
+    {
+      return start + (end - start) * alpha;
+    }
+  
     template <typename T, std::size_t M, std::size_t N,
       typename Engine = std::mt19937, typename Distribution = std::normal_distribution<T>>
     matrix<T, M, N> random_matrix()

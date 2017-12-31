@@ -22,6 +22,7 @@ namespace test
     rgb32f white(1.0f, 1.0f, 1.0f);
     rgb32f black(0.0f, 0.0f, 0.0f);
     rgb8u x(1,2,3);
+    auto col = owl::math::lerp(white, black, 0.5);
   
     CHECK(convert<cmyk32f>(red) == cmyk32f(0.0f,1.0f,1.0f,0.0f));
     auto black2 = convert<cmyk32f>(black);
