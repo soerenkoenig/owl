@@ -1212,7 +1212,7 @@ namespace owl
     template <typename T, typename S, typename = std::enable_if_t<std::is_convertible<S, double>::value> >
     auto lerp(T start, T end, S alpha)
     {
-      return start + (end - start) * alpha;
+      return start + (end-start) * alpha;
     }
   
     template <typename T, std::size_t M, std::size_t N,

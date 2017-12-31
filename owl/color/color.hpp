@@ -151,13 +151,8 @@ namespace owl
       template <typename T2>
       auto operator+(const color<T2, N, HasAlpha, Derived>& other) const
       {
-        owl::math::vector<T,N> v1;
-        owl::math::vector<T2,N> v2;
-        auto res = v1 + v2;
-      
-      //  auto res = channels_ + static_cast<const owl::math::vector<T2,N>&>(other);
-      
-      return Derived<decltype(std::declval<T>() * std::declval<T2>()), HasAlpha>(res);
+        auto res = channels_ + static_cast<const owl::math::vector<T2,N>&>(other);
+        return Derived<decltype(std::declval<T>() * std::declval<T2>()), HasAlpha>(res);
       }
     
       template <typename T2>
