@@ -1,4 +1,4 @@
-#include "owl/graphics/image.hpp"
+#include "owl/graphics/image_temp.hpp"
 #include "catch/catch.hpp"
 
 

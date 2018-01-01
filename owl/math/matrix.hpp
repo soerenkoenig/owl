@@ -200,8 +200,6 @@ namespace owl
       return matrix{owl::utils::make_array<size()>(detail::eye<Scalar,Rows>)};
     }
     
-    //iterator interface
-    
     iterator begin() { return data_.begin(); }
     iterator end() { return data_.end(); }
     
@@ -220,7 +218,6 @@ namespace owl
     const_reverse_iterator crbegin() const { return data_.crbegin(); }
     const_reverse_iterator crend() const { return data_.crend(); }
     
-
     iterator iterator_at(size_type row_index, size_type column_index)
     {
       return begin() + linear_index(row_index, column_index);
@@ -291,7 +288,6 @@ namespace owl
        return const_column_iterator{iterator_at(nrows(), c)};
     }
     
-    // range interface
     row_range row(size_type r)
     {
       return owl::utils::make_iterator_range(row_begin(r), row_end(r));
@@ -312,24 +308,19 @@ namespace owl
       return owl::utils::make_iterator_range(column_begin(c), column_end(c));
     }
     
-    //constructors
-    
     constexpr matrix() = default;
     
-   
     template<typename M = matrix, typename = std::enable_if_t<M::is_vector()>>
     matrix(std::initializer_list<Scalar> list)
     {
       std::copy(list.begin(), list.end(), data_.begin());
     }
 
-    
     constexpr matrix(std::array<Scalar, Rows * Cols> arr)
       : data_{arr}
     {
     }
     
-      //elements in column major order !!!
     template<typename M = matrix, typename S, typename... Args, typename = std::enable_if_t<M::is_vector()>>
     explicit matrix(S&& a, Args&&... args)
       : data_{static_cast<value_type>(std::forward<S>(a)), static_cast<value_type>(std::forward<Args>(args))...}
@@ -351,8 +342,6 @@ namespace owl
           operator()(i, j) = other(i, j);
     }
     
-    //assignment operators
-    
     matrix& operator=(const matrix& other) = default;
     
     matrix& operator=(matrix&& other) = default;
@@ -360,10 +349,10 @@ namespace owl
     template <typename S2>
     matrix& operator=(const matrix<S2, Rows, Cols>& other)
     {
-        for(size_type i = 0; i < Rows;++i)
-            for(size_type j = 0; j < Cols; ++j)
-                operator()(i, j) = other(i, j);
-        return *this;
+      for(size_type i = 0; i < Rows;++i)
+        for(size_type j = 0; j < Cols; ++j)
+          operator()(i, j) = other(i, j);
+      return *this;
     }
     
     //component accessors
@@ -452,8 +441,6 @@ namespace owl
     {
       return data_[linear_index(r, c)];
     }
-    
-    //comparison operators
     
     template< typename S, std::size_t N, std::size_t M>
     friend bool operator==(const matrix<S, N, M>& lhs, const matrix<S, N, M>& rhs)
@@ -710,7 +697,7 @@ namespace owl
         comma_initializer(matrix_type& m, S2&& s)
           : mat_(m), row_{0}, col_{0}
         {
-          *this,(std::forward<S2>(s));
+          *this, (std::forward<S2>(s));
         }
         
         ~comma_initializer()
@@ -785,8 +772,6 @@ namespace owl
   
     using matrix44f = square_matrix<float, 4>;
   
-
-    //implementation
   
     template< typename  S, std::size_t N, std::size_t M,
     typename = std::enable_if_t< matrix<S, N, M>::is_vector()> >
@@ -809,7 +794,6 @@ namespace owl
     {
       return v.length();
     }
-  
   
     template< typename  S, std::size_t N, std::size_t M,
       typename = std::enable_if_t< matrix<S,N,M>::is_vector()> >
@@ -1086,7 +1070,7 @@ namespace owl
       T t156 = m(0, 0) * m(2, 1);
       T t158 = m(0, 0) * m(2, 3);
       T t161 = m(2, 0) * m(0, 1);
-      square_matrix<T, 4> minv; //todo transpose
+      square_matrix<T, 4> minv;
       minv << (t1 * m(2, 2) - t3 * m(2, 3) - m(3, 3) * m(1, 2) * m(2, 1) +
               t7 * m(2, 3) - t9 * m(2, 2) + t11 * m(1, 3)) * t70,
       
@@ -1144,8 +1128,8 @@ namespace owl
     {
       matrix<T, M, N> m;
       for(std::size_t j = 0; j < N; ++j)
-          for(std::size_t i = 0; i < M; ++i)
-              m(i, j) = v1(i) * v2(j);
+        for(std::size_t i = 0; i < M; ++i)
+          m(i, j) = v1(i) * v2(j);
       return m;
     }
   
@@ -1226,7 +1210,7 @@ namespace owl
     }
     
     template <typename T, std::size_t M,
-    typename Engine = std::mt19937, typename Distribution = std::normal_distribution<T>>
+      typename Engine = std::mt19937, typename Distribution = std::normal_distribution<T>>
     square_matrix<T, M> random_square_matrix()
     {
       return random_matrix<T, M, M, Engine, Distribution>();
