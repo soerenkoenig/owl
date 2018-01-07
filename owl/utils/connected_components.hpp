@@ -22,22 +22,30 @@ namespace owl
 {
   namespace utils
   {
-
-    class connected_components
+  
+    namespace detail
     {
-      struct node
-      {
-        std::size_t id;
-        std::size_t count;
-      };
-    
-    public:
-    
       struct component_tag{};
       using component_handle = owl::utils::handle<component_tag>;
    
       struct element_tag{};
       using element_handle = owl::utils::handle<element_tag>;
+    }
+
+    template <typename ElementHandle = detail::element_handle, typename ComponentHandle = detail::component_handle>
+    class connected_components
+    {
+      struct node
+      {
+        std::size_t parent;
+        std::size_t count;
+      };
+    
+    public:
+    
+      using element_handle = ElementHandle;
+      using component_handle = ComponentHandle;
+    
     
       struct const_iterator
       {
@@ -58,14 +66,14 @@ namespace owl
       
         component_handle operator*() const
         {
-          return current_;
+          return component_handle(current_);
         }
   
         const_iterator& operator++()
         {
           current_++;
-          while(current_.index() < connected_components_->num_elements() &&
-                current_.index() != connected_components_->id(current_.index()))
+          while(current_ < connected_components_->num_elements() &&
+                current_ != connected_components_->nodes_[current_].parent)
             current_++;
 
           return *this;
@@ -90,7 +98,7 @@ namespace owl
 
       private:
         const connected_components* connected_components_ = nullptr;
-        component_handle current_;
+        std::size_t current_;
       };
     
     
@@ -101,7 +109,7 @@ namespace owl
       {
         for(std::size_t i = 0; i < N; ++i)
         {
-          nodes_[i].id = i;
+          nodes_[i].parent = i;
           nodes_[i].count = 1;
         }
       }
@@ -127,7 +135,7 @@ namespace owl
       const_iterator begin() const
       {
        std::size_t x = 0;
-       while(x != id(x))
+       while(x != nodes_[x].parent)
          x++;
        return const_iterator(this, x);
       }
@@ -155,17 +163,17 @@ namespace owl
       component_handle component(element_handle e) const
       {
         std::size_t x = e.index();
-        while(x != id(x))
+        while(x != nodes_[x].parent)
         {
-          nodes_[x].id = id(id(x));
-          x = id(x);
+          nodes_[x].parent = nodes_[nodes_[x].parent].parent;
+          x = nodes_[x].parent;
         }
         return component_handle(x);
       }
 
       bool same_component(element_handle p, element_handle q) const
       {
-        return find(p).id == find(q).id;
+        return find(p).parent == find(q).parent;
       }
     
       component_handle unite(element_handle p, element_handle q)
@@ -187,21 +195,21 @@ namespace owl
       {
         auto& ni = find(p);
         auto& nj = find(q);
-        if (ni.id == nj.id)
-          return component_handle(ni.id);
+        if (ni.parent == nj.parent)
+          return component_handle(ni.parent);
 
         if(ni.count < nj.count)
         {
-          ni.id = nj.id;
+          ni.parent = nj.parent;
           nj.count += ni.count;
         }
         else
         {
-          nj.id = ni.id;
+          nj.parent = ni.parent;
           ni.count += nj.count;
         }
         num_components_--;
-        return component_handle(ni.id);
+        return component_handle(ni.parent);
       }
 
     
@@ -224,16 +232,6 @@ namespace owl
       const node& find(component_handle c) const
       {
         return nodes_[c.index()];
-      }
-    
-      inline std::size_t& id(std::size_t x)
-      {
-        return nodes_[x].id;
-      }
-    
-      inline const std::size_t& id(std::size_t x) const
-      {
-        return nodes_[x].id;
       }
     
       mutable std::vector<node> nodes_;
