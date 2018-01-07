@@ -154,6 +154,7 @@
 		2883C2551F91BAFA007DDB3C /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		2883C25E1F91BD38007DDB3C /* catch.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = catch.hpp; sourceTree = "<group>"; };
 		288407B51FF51E190022A590 /* color_names.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = color_names.hpp; sourceTree = "<group>"; };
+		288407B61FFAC7BB0022A590 /* image.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = image.hpp; sourceTree = "<group>"; };
 		288410B61FA6006A00CE68DA /* obj.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = obj.hpp; sourceTree = "<group>"; };
 		288410B71FA600E800CE68DA /* obj.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = obj.cpp; sourceTree = "<group>"; };
 		288410BA1FA606BE00CE68DA /* cube.obj */ = {isa = PBXFileReference; lastKnownFileType = text; path = cube.obj; sourceTree = "<group>"; };
@@ -240,6 +241,7 @@
 			children = (
 				2816E6A11FA12F8600CCE00A /* image_temp.hpp */,
 				288410B61FA6006A00CE68DA /* obj.hpp */,
+				288407B61FFAC7BB0022A590 /* image.hpp */,
 			);
 			path = graphics;
 			sourceTree = "<group>";
