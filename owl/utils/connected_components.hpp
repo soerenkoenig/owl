@@ -51,11 +51,11 @@ namespace owl
       {
         // these typedefs are needed if you want to be STL compatible
         using iterator_category = std::forward_iterator_tag;
-        using value_type = std::size_t;
+        using value_type = component_handle;
         using pointer = void;
         using reference = void;
         using size_type =  std::size_t;
-        using difference_type = std::ptrdiff_t ;
+        using difference_type = std::ptrdiff_t;
 
         const_iterator() = default;
       
@@ -171,27 +171,27 @@ namespace owl
         return component_handle(x);
       }
 
-      bool same_component(element_handle p, element_handle q) const
+      bool is_connected(element_handle p, element_handle q) const
       {
         return find(p).parent == find(q).parent;
       }
     
-      component_handle unite(element_handle p, element_handle q)
+      component_handle connect(element_handle p, element_handle q)
       {
-        return unite(component(p), component(q));
+        return connect(component(p), component(q));
       }
     
-      component_handle unite(element_handle p, component_handle q)
+      component_handle connect(element_handle p, component_handle q)
       {
-        return unite(component(p), q);
+        return connect(component(p), q);
       }
     
-      component_handle unite(component_handle p, element_handle q)
+      component_handle connect(component_handle p, element_handle q)
       {
-        return unite(p, component(q));
+        return connect(p, component(q));
       }
     
-      component_handle unite(component_handle p, component_handle q)
+      component_handle connect(component_handle p, component_handle q)
       {
         auto& ni = find(p);
         auto& nj = find(q);
@@ -212,7 +212,6 @@ namespace owl
         return component_handle(ni.parent);
       }
 
-    
   private:
       node& find(element_handle e)
       {
