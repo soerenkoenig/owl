@@ -32,7 +32,8 @@ namespace owl
       using element_handle = owl::utils::handle<element_tag>;
     }
 
-    template <typename ElementHandle = detail::element_handle, typename ComponentHandle = detail::component_handle>
+    template <typename ElementHandle = detail::element_handle,
+      typename ComponentHandle = detail::component_handle>
     class connected_components
     {
       struct node
@@ -49,7 +50,6 @@ namespace owl
     
       struct const_iterator
       {
-        // these typedefs are needed if you want to be STL compatible
         using iterator_category = std::forward_iterator_tag;
         using value_type = component_handle;
         using pointer = void;
@@ -101,10 +101,8 @@ namespace owl
         std::size_t current_;
       };
     
-    
       connected_components() = default;
    
-      ///N number of all elements
       connected_components(std::size_t N) : nodes_(N), num_components_(N)
       {
         for(std::size_t i = 0; i < N; ++i)
@@ -114,7 +112,6 @@ namespace owl
         }
       }
     
-      ///number of components (initially number of all elements)
       std::size_t num_components() const
       {
         return num_components_;
@@ -125,7 +122,6 @@ namespace owl
         return nodes_.size();
       }
     
-      //return the number of elements in the component containing c
       std::size_t num_elements(component_handle c) const
       {
        assert(c.index() < num_elements());
@@ -234,7 +230,7 @@ namespace owl
       }
     
       mutable std::vector<node> nodes_;
-      std::size_t num_components_; // number of components
+      std::size_t num_components_;
     };
   }
 }
