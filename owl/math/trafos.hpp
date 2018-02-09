@@ -175,20 +175,44 @@ namespace owl
   
   
     template <typename T>
-    square_matrix<T,4> rotateX(const angle<T>& theta)
+    square_matrix<T,4> rotateXH(const angle<T>& theta)
     {
       T Cos = cos(theta);
       T Sin = sin(theta);
       square_matrix<T,4> m;
       m << 1, 0, 0, 0,
-           0, Cos, Sin,0,
-           0, -Sin, Cos, 0,
+           0, Cos, -Sin,0,
+           0, Sin, Cos, 0,
            0, 0, 0, 1;
       return m;
     }
   
     template <typename T>
-    square_matrix<T,4> rotateY(const angle<T>& theta)
+    square_matrix<T,3> rotateX(const angle<T>& theta)
+    {
+      T Cos = cos(theta);
+      T Sin = sin(theta);
+      square_matrix<T,3> m;
+      m << 1, 0, 0,
+           0, Cos, -Sin,
+           0, Sin, Cos;
+      return m;
+    }
+  
+    template <typename T>
+    square_matrix<T,3> rotateY(const angle<T>& theta)
+    {
+      T Cos = cos(theta);
+      T Sin = sin(theta);
+      square_matrix<T,3> m;
+      m <<  Cos, 0, Sin,
+              0, 1, 0,
+           -Sin, 0,  Cos;
+      return m;
+    }
+  
+    template <typename T>
+    square_matrix<T,4> rotateYH(const angle<T>& theta)
     {
       T Cos = cos(theta);
       T Sin = sin(theta);
@@ -201,7 +225,7 @@ namespace owl
     }
   
     template <typename T>
-    square_matrix<T,4> rotateZ(const angle<T>& theta)
+    square_matrix<T,4> rotateZH(const angle<T>& theta)
     {
       T Cos = cos(theta);
       T Sin = sin(theta);
@@ -210,6 +234,58 @@ namespace owl
            Sin,  Cos, 0, 0,
              0,    0, 1, 0,
              0,    0, 0, 1;
+      return m;
+    }
+  
+    template <typename T>
+    square_matrix<T,3> rotateZ(const angle<T>& theta)
+    {
+      T Cos = cos(theta);
+      T Sin = sin(theta);
+      square_matrix<T,3> m;
+      m << Cos, -Sin, 0,
+           Sin,  Cos, 0,
+             0,    0, 1;
+      return m;
+    }
+  
+  
+  
+    template<typename Scalar>
+    struct euler_angles
+    {
+      angle<Scalar> pitch; //X
+      angle<Scalar> yaw; //Y
+      angle<Scalar> roll; //Z
+      //RxRyRz
+    };
+  
+    template <typename Scalar>
+    euler_angles<Scalar> rotm2eulXYZ(const square_matrix<Scalar,3>& m)
+    {
+      Scalar pitch = atan2(-m(1,2),m(2,2));
+      Scalar c2 = sqrt(m(0,0)*m(0,0) + m(0,1)*m(0,1));
+      Scalar yaw = atan2(m(0,2), c2);
+      Scalar s1 = sin(pitch);
+      Scalar c1 = cos(pitch);
+      Scalar roll = atan2(s1*m(2,0) + c1*m(1,0), c1* m(1,1) + s1*m(2,1));
+      return {radians<Scalar>(pitch), radians<Scalar>(yaw), radians<Scalar>(roll)};
+    }
+  
+  template<typename Scalar>
+    square_matrix<Scalar,3> eulXYZ2rotm(const euler_angles<Scalar>& eul)
+    {
+      Scalar c1 = cos(eul.pitch);
+      Scalar s1 = sin(eul.pitch);
+      Scalar c2 = cos(eul.yaw);
+      Scalar s2 = sin(eul.yaw);
+      Scalar c3 = cos(eul.roll);
+      Scalar s3 = sin(eul.roll);
+    
+      square_matrix<Scalar,3> m;
+      m <<            c2*c3,           -c2*s3,     s2,
+           s1*s2*c3 + c1*s3, c1*c3 - s1*s2*s3, -s1*c2,
+           s1*s3 - c1*c3*s2, c1*s2*s3 + s1*c3,  c1*c2;
       return m;
     }
   
@@ -228,9 +304,6 @@ namespace owl
                0,     0,     0,            1;
       return m;
     }
-  
-  
-    
   
   
   }

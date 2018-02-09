@@ -74,7 +74,7 @@ namespace test
     using namespace owl::math;
     auto tr = translate<float>(vector3f(0,0,0),vector3f(1,2,3));
     CHECK(approx(tr * vector4f(0,0,0,1)) == vector4f(1,2,3,1));
-    CHECK(approx(rotateX(degrees<float>(0))) == matrix44f::identity());
+    CHECK(approx(rotateX(degrees<float>(0))) == matrix33f::identity());
     CHECK(approx(det(rotateY(degrees<float>(4.9)))) == 1);
     CHECK(approx(det(rotateZ(degrees<float>(4.9)))) == 1);
       
@@ -82,7 +82,7 @@ namespace test
 
     CHECK(approx(trt*vector4f(0,0,0,1)) == vector4f(1,0,1,1));
     
-    CHECK(approx(rotateX(degrees<float>(3.6)) * rotateX(degrees<float>(-3.6))) == matrix44f::identity());
+    CHECK(approx(rotateX(degrees<float>(3.6)) * rotateX(degrees<float>(-3.6))) == matrix33f::identity());
   
     auto I = matrix44f::identity();
     auto V = vector4f{1,2,3,4};
@@ -90,6 +90,22 @@ namespace test
     
     auto m = random_matrix<double,4,4>();
     CHECK(approx(invert(m)*m).margin(0.00000001) == matrix44f::identity());
-    
+  
+    matrix33f R;
+    R << 0.973076000000000  , 0.230486000000000,  -0.000000000061821,
+  -0.008435560000000,   0.035613700000000 ,  0.999330000000000 ,
+   0.230331000000000 , -0.972424000000000,   0.036599100000000;
+  
+  
+   auto eul = rotm2eulXYZ(R);
+   auto mat = eulXYZ2rotm(eul);
+   CHECK(approx(mat).margin(0.000001) == R);
+  
+   euler_angles<float> eul2{radians<float>(-1.53419), radians<float>(-1.68913e-09), radians<float>(-0.232577)};
+   auto R2 = rotateX(eul2.pitch) * rotateY(radians<float>(eul2.yaw)) * rotateZ(radians<float>(eul2.roll));
+   auto mat2 = eulXYZ2rotm(eul2);
+   CHECK(approx(mat2).margin(0.000001) == R2);
+   auto RX = rotateX(degrees<float>(30));
+  
   }
 }
