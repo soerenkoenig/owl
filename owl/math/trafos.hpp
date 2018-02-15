@@ -251,44 +251,6 @@ namespace owl
   
   
   
-    template<typename Scalar>
-    struct euler_angles
-    {
-      angle<Scalar> pitch; //X
-      angle<Scalar> yaw; //Y
-      angle<Scalar> roll; //Z
-      //RxRyRz
-    };
-  
-    template <typename Scalar>
-    euler_angles<Scalar> rotm2eulXYZ(const square_matrix<Scalar,3>& m)
-    {
-      Scalar pitch = atan2(-m(1,2),m(2,2));
-      Scalar c2 = sqrt(m(0,0)*m(0,0) + m(0,1)*m(0,1));
-      Scalar yaw = atan2(m(0,2), c2);
-      Scalar s1 = sin(pitch);
-      Scalar c1 = cos(pitch);
-      Scalar roll = atan2(s1*m(2,0) + c1*m(1,0), c1* m(1,1) + s1*m(2,1));
-      return {radians<Scalar>(pitch), radians<Scalar>(yaw), radians<Scalar>(roll)};
-    }
-  
-  template<typename Scalar>
-    square_matrix<Scalar,3> eulXYZ2rotm(const euler_angles<Scalar>& eul)
-    {
-      Scalar c1 = cos(eul.pitch);
-      Scalar s1 = sin(eul.pitch);
-      Scalar c2 = cos(eul.yaw);
-      Scalar s2 = sin(eul.yaw);
-      Scalar c3 = cos(eul.roll);
-      Scalar s3 = sin(eul.roll);
-    
-      square_matrix<Scalar,3> m;
-      m <<            c2*c3,           -c2*s3,     s2,
-           s1*s2*c3 + c1*s3, c1*c3 - s1*s2*s3, -s1*c2,
-           s1*s3 - c1*c3*s2, c1*s2*s3 + s1*c3,  c1*c2;
-      return m;
-    }
-  
     template<typename S>
     square_matrix<S,4> lookat(const vector<S,3>& eye, const vector<S,3>& target, vector<S,3> up)
     {

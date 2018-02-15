@@ -1,6 +1,7 @@
 
 #include "owl/math/matrix.hpp"
 #include "owl/math/trafos.hpp"
+#include "owl/math/euler_angles.hpp"
 #include "owl/math/approx.hpp"
 #include "catch/catch.hpp"
 
@@ -97,13 +98,13 @@ namespace test
    0.230331000000000 , -0.972424000000000,   0.036599100000000;
   
   
-   auto eul = rotm2eulXYZ(R);
-   auto mat = eulXYZ2rotm(eul);
+   auto eul = euler_angles<float>(R);
+   auto mat = matrix33f(eul);
    CHECK(approx(mat).margin(0.000001) == R);
   
    euler_angles<float> eul2{radians<float>(-1.53419), radians<float>(-1.68913e-09), radians<float>(-0.232577)};
    auto R2 = rotateX(eul2.pitch) * rotateY(radians<float>(eul2.yaw)) * rotateZ(radians<float>(eul2.roll));
-   auto mat2 = eulXYZ2rotm(eul2);
+   auto mat2 = matrix33f(eul2);
    CHECK(approx(mat2).margin(0.000001) == R2);
    auto RX = rotateX(degrees<float>(30));
   
