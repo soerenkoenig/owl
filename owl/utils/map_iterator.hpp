@@ -116,7 +116,7 @@ namespace owl
       
       bool operator==(const map_iterator &other) const
       {
-        return base_ == other._base;
+        return base_ == other.base_;
       }
     
       bool operator!=(const map_iterator &other) const
@@ -126,12 +126,12 @@ namespace owl
     
       bool operator<(const map_iterator &other) const
       {
-        return base_ < other._base;
+        return base_ < other.base_;
       }
       
       difference_type operator-(const map_iterator &other) const
       {
-        return base_ - other.base;
+        return base_ - other.base_;
       }
     
   private:

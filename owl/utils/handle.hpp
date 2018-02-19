@@ -71,6 +71,16 @@ namespace owl
         operator--();
         return tmp;
       }
+    
+      auto operator-(const handle& other) const
+      {
+        return index_ - other.index_;
+      }
+    
+      auto operator+(const handle& other) const
+      {
+        return index_ + other.index_;
+      }
       
       bool operator==(const handle& other) const
       {
