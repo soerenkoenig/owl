@@ -113,42 +113,75 @@ namespace owl
       return translate<T>(dest - source);
     }
   
-    template <typename S, typename T>
-    square_matrix<S,3> scale(const T& sx,const T& sy, const T& sz)
+    template <typename S, std::size_t N, typename T>
+    square_matrix<S,N> scale(const T& sx, const T& sy, const T& sz)
     {
-      square_matrix<S,4> m;
-      m << sx,  0,  0, 0,
-            0, sy,  0, 0,
-            0,  0, sz, 0,
-            0,  0,  0, 1;
+      static_assert(N == 3 || N == 4, "only 3 or 4 is allowed for template parameter N");
+       square_matrix<S,N> m;
+       if constexpr(N == 3)
+       {
+         m << sx,  0,  0,
+               0, sy,  0,
+               0,  0, sz;
+       }
+       if constexpr(N == 4)
+       {
+         m << sx,  0,  0, 0,
+              0, sy,  0, 0,
+              0,  0, sz, 0,
+              0,  0,  0, 1;
+       }
+
+      return m;
+    
+    }
+  
+    template <typename T, std::size_t N>
+    square_matrix<T,N> scale(const vector<T, 3>& s)
+    {
+      static_assert(N == 3 || N == 4, "only 3 or 4 is allowed for template parameter N");
+      square_matrix<T,N> m;
+      if constexpr (N == 3)
+      {
+        m << s.x(),    0,     0,
+                 0,s.y(),     0,
+                 0,    0, s.z();
+      }
+      if constexpr (N == 4)
+      {
+        m << s.x(),    0,     0, 0,
+                 0,s.y(),     0, 0,
+                 0,    0, s.z(), 0,
+                 0,    0,     0, 1;
+      }
       return m;
     }
   
-    template <typename T>
-    square_matrix<T,4> scale(const vector<T, 3>& s)
+    template <typename S, std::size_t N, typename T>
+    square_matrix<S,N> uniform_scale(const T& s)
     {
-      square_matrix<T,4> m;
-      m << s.x(),    0,     0, 0,
-               0,s.y(),     0, 0,
-               0,    0, s.z(), 0,
-               0,    0,     0, 1;
+      static_assert(N == 3 || N == 4, "only 3 or 4 is allowed for template parameter N");
+      square_matrix<S,N> m;
+      if constexpr (N == 3)
+      {
+        m << s, 0, 0,
+             0, s, 0,
+             0, 0, s;
+      }
+      if constexpr (N == 4)
+      {
+        m << s, 0, 0, 0,
+             0, s, 0, 0,
+             0, 0, s, 0,
+             0, 0, 0, 1;
+      }
       return m;
     }
   
-    template <typename S, typename T>
-    square_matrix<S,3> uniform_scale(const T& s)
+    template<typename T, std::size_t N>
+    square_matrix<T,N> rotate(const vector<T, 3> axis, const angle<T>& theta)
     {
-      square_matrix<S,4> m;
-      m << s, 0, 0, 0,
-           0, s, 0, 0,
-           0, 0, s, 0,
-           0, 0, 0, 1;
-      return m;
-    }
-  
-    template<typename T>
-    square_matrix<T,4> rotate(const vector<T, 3> axis, const angle<T>& theta)
-    {
+      static_assert(N == 3 || N == 4, "only 3 or 4 is allowed for template parameter N");
       if(theta == 0)
         return eye<T,4>();
     
@@ -157,98 +190,101 @@ namespace owl
       dirn.normalize();
       square_matrix<T,3> omega = cross_mat(dirn);
   
-      R += sin(theta)*omega + (1.0f-cos(theta))*(omega*omega);
-      square_matrix<T,4> m;
-      m << R(0,0), R(0,1), R(0,2), 0,
-           R(1,0), R(1,1), R(1,2), 0,
-           R(2,0), R(2,1), R(2,2), 0,
-                0,      0,      0, 1;
-      return m;
+      R += sin(theta)*omega + (1.0 - cos(theta)) * (omega * omega);
+      if constexpr (N == 3)
+        return R;
+    
+      if constexpr(N == 4)
+      {
+        square_matrix<T,4> m;
+        m << R(0,0), R(0,1), R(0,2), 0,
+            R(1,0), R(1,1), R(1,2), 0,
+            R(2,0), R(2,1), R(2,2), 0,
+                  0,      0,      0, 1;
+        return m;
+      }
     }
   
     template<typename T>
     square_matrix<T,4> rotate(const vector<T, 3>& axis_start, const vector<T, 3>& axis_end, const angle<T>& theta)
     {
       vector<T,3> axis = axis_end - axis_start;
-      return translate<T>(axis_start) * rotate<T>(axis,theta) * translate<T>(-axis_start);
+      return translate<T>(axis_start) * rotate<T,4>(axis,theta) * translate<T>(-axis_start);
     }
   
   
-    template <typename T>
-    square_matrix<T,4> rotateXH(const angle<T>& theta)
+    template <typename T, std::size_t N>
+    square_matrix<T,N> rotate_x(const angle<T>& theta)
     {
+      static_assert(N == 3 || N == 4, "only 3 or 4 is allowed for template parameter N");
       T Cos = cos(theta);
       T Sin = sin(theta);
-      square_matrix<T,4> m;
-      m << 1, 0, 0, 0,
-           0, Cos, -Sin,0,
-           0, Sin, Cos, 0,
-           0, 0, 0, 1;
+      square_matrix<T,N> m;
+      if constexpr (N == 3)
+      {
+        m << 1,   0, 0,
+             0, Cos, -Sin,
+             0, Sin, Cos;
+      }
+      if constexpr (N == 4)
+      {
+        m << 1,   0,    0, 0,
+             0, Cos, -Sin, 0,
+             0, Sin,  Cos, 0,
+             0,   0,    0, 1;
+      }
       return m;
     }
   
-    template <typename T>
-    square_matrix<T,3> rotateX(const angle<T>& theta)
+  
+  
+    template <typename T, std::size_t N>
+    square_matrix<T,N> rotate_y(const angle<T>& theta)
     {
+      static_assert(N == 3 || N == 4, "only 3 or 4 is allowed for template parameter N");
       T Cos = cos(theta);
       T Sin = sin(theta);
-      square_matrix<T,3> m;
-      m << 1, 0, 0,
-           0, Cos, -Sin,
-           0, Sin, Cos;
+      square_matrix<T,N> m;
+      if constexpr( N == 3)
+      {
+        m <<  Cos, 0, Sin,
+                0, 1, 0,
+             -Sin, 0,  Cos;
+      }
+      if constexpr(N == 4)
+      {
+        m <<  Cos, 0,  Sin, 0,
+                0, 1,    0, 0,
+             -Sin, 0,  Cos, 0,
+                0, 0,    0, 1;
+      }
       return m;
     }
   
-    template <typename T>
-    square_matrix<T,3> rotateY(const angle<T>& theta)
+  
+  
+    template <typename T, std::size_t N>
+    square_matrix<T,N> rotate_z(const angle<T>& theta)
     {
+      static_assert(N == 3 || N == 4, "only 3 or 4 is allowed for template parameter N");
       T Cos = cos(theta);
       T Sin = sin(theta);
-      square_matrix<T,3> m;
-      m <<  Cos, 0, Sin,
-              0, 1, 0,
-           -Sin, 0,  Cos;
+      square_matrix<T,N> m;
+      if constexpr(N == 3)
+      {
+        m << Cos, -Sin, 0,
+             Sin,  Cos, 0,
+               0,    0, 1;
+      }
+      if constexpr(N == 4)
+      {
+        m << Cos, -Sin, 0, 0,
+             Sin,  Cos, 0, 0,
+               0,    0, 1, 0,
+               0,    0, 0, 1;
+      }
       return m;
     }
-  
-    template <typename T>
-    square_matrix<T,4> rotateYH(const angle<T>& theta)
-    {
-      T Cos = cos(theta);
-      T Sin = sin(theta);
-      square_matrix<T,4> m;
-      m <<  Cos, 0, Sin, 0,
-              0, 1, 0,0,
-           -Sin, 0,  Cos, 0,
-              0,0,0,1;
-      return m;
-    }
-  
-    template <typename T>
-    square_matrix<T,4> rotateZH(const angle<T>& theta)
-    {
-      T Cos = cos(theta);
-      T Sin = sin(theta);
-      square_matrix<T,4> m;
-      m << Cos, -Sin, 0, 0,
-           Sin,  Cos, 0, 0,
-             0,    0, 1, 0,
-             0,    0, 0, 1;
-      return m;
-    }
-  
-    template <typename T>
-    square_matrix<T,3> rotateZ(const angle<T>& theta)
-    {
-      T Cos = cos(theta);
-      T Sin = sin(theta);
-      square_matrix<T,3> m;
-      m << Cos, -Sin, 0,
-           Sin,  Cos, 0,
-             0,    0, 1;
-      return m;
-    }
-  
   
   
     template<typename S>

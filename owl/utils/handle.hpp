@@ -10,6 +10,9 @@
 #pragma once
 
 #include <limits>
+#include <iterator>
+#include <tuple>
+#include <iostream>
 
 namespace owl
 {
@@ -20,6 +23,7 @@ namespace owl
     {
     public:
       using index_type = Index;
+      using difference_type = decltype(std::declval<Index>() - std::declval<Index>());
       
       constexpr explicit handle(const index_type& index = invalid())
         : index_{index}
@@ -77,9 +81,9 @@ namespace owl
         return index_ - other.index_;
       }
     
-      auto operator+(const handle& other) const
+      auto operator+(const difference_type& other) const
       {
-        return index_ + other.index_;
+        return handle{index_ + other};
       }
       
       bool operator==(const handle& other) const
@@ -120,6 +124,118 @@ namespace owl
       
       index_type index_;
     };
+  
+    template <typename Tag, typename Index>
+    std::ostream& operator<<(std::ostream& out,const handle<Tag,Index>& h)
+    {
+      if(h.is_valid())
+        return out << h.index();
+      return out << "invalid";
+    }
+  
+  
+    struct default_deref
+    {
+      template <typename T>
+      T operator()(T&& val) const
+      {
+        return std::forward<T>(val);
+      }
+    };
+
+  
+    template <typename Handle, typename Next, typename Deref = default_deref>
+    class handle_iterator
+    {
+    public:
+      using iterator_category = typename std::forward_iterator_tag;
+      using value_type = decltype(std::declval<Deref>()(std::declval<Handle>()));
+      using difference_type = decltype(std::declval<std::size_t>() - std::declval<std::size_t>());
+      using pointer = void;
+      using reference = void;
+      using size_type = std::size_t;
+    
+    
+      template<typename N, typename D>
+      handle_iterator(const Handle& current, N&& n, D&& d, std::size_t lab_count = 0)
+        : current_{current}
+        , initial_{current}
+        , next(std::forward<N>(n))
+        , deref(std::forward<D>(d))
+        , lab_count_{lab_count}
+      {
+      }
+    
+    
+      auto operator*() const
+      {
+        return deref(current_);
+      }
+    
+    
+      handle_iterator& operator++()
+      {
+        current_ = next(current_);
+        if(current_ == initial_)
+          ++lab_count_;
+        return *this;
+      }
+    
+    
+    
+      handle_iterator operator++(int)
+      {
+        auto tmp = *this;
+        operator++();
+        return tmp;
+      }
+    
+    
+    
+      bool operator==(const handle_iterator &other) const
+      {
+        return std::tie(current_, lab_count_) == std::tie(other.current_, other.lab_count_);
+      }
+    
+      bool operator!=(const handle_iterator &other) const
+      {
+        return std::tie(current_, lab_count_) != std::tie(other.current_, other.lab_count_);
+      }
+    
+      bool operator<(const handle_iterator &other) const
+      {
+        return std::tie(current_, lab_count_) < std::tie(other.current_, other.lab_count_);
+      }
+    
+      bool operator>(const handle_iterator &other) const
+      {
+        return std::tie(current_, lab_count_) > std::tie(other.current_, other.lab_count_);
+      }
+    
+      bool operator<=(const handle_iterator &other) const
+      {
+        return std::tie(current_, lab_count_) <= std::tie(other.current_, other.lab_count_);
+      }
+    
+      bool operator>=(const handle_iterator &other) const
+      {
+        return std::tie(current_, lab_count_) >= std::tie(other.current_, other.lab_count_);
+      }
+    private:
+      Handle current_;
+      Handle initial_;
+      Next next;
+      Deref deref;
+      std::size_t lab_count_;
+    };
+  
+  
+  
+    template <typename Handle, typename Next, typename Deref>
+    handle_iterator<Handle,Next,Deref> make_handle_iterator(Handle current, Next&& next, Deref&& deref = default_deref{}, std::size_t lab_count = 0)
+    {
+      return handle_iterator<Handle,Next,Deref>(current, std::forward<Next>(next),std::forward<Deref>(deref),lab_count);
+    }
 
   }
 }

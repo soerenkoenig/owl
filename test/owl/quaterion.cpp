@@ -9,7 +9,7 @@ namespace test
   TEST_CASE( "quaternion", "[math]" )
   {
     using namespace owl::math;
-    matrix33f R = rotateX(degrees<float>(30));
+    matrix33f R = rotate_x<float,3>(degrees<float>(30));
     quaternionf q = R;
     matrix33f R2 = q;
     CHECK(approx(R2) == R);
