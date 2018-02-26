@@ -165,7 +165,10 @@ namespace owl
         , lab_count_{lab_count}
       {
       }
+      
+      handle_iterator(const handle_iterator& other) = default;
     
+      handle_iterator& operator=(const handle_iterator& other) = default;
     
       auto operator*() const
       {
@@ -229,12 +232,10 @@ namespace owl
       std::size_t lab_count_;
     };
   
-  
-  
     template <typename Handle, typename Next, typename Deref>
-    handle_iterator<Handle,Next,Deref> make_handle_iterator(Handle current, Next&& next, Deref&& deref = default_deref{}, std::size_t lab_count = 0)
+    handle_iterator<Handle,Next,Deref> make_handle_iterator(Handle current, Next next, Deref deref = default_deref{}, std::size_t lab_count = 0)
     {
-      return handle_iterator<Handle,Next,Deref>(current, std::forward<Next>(next),std::forward<Deref>(deref),lab_count);
+      return handle_iterator<Handle,Next,Deref>(current, next,deref,lab_count);
     }
 
   }

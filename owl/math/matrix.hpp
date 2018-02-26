@@ -918,7 +918,7 @@ namespace owl
     {
       for(std::size_t i = 0; i < N; ++i)
         for(std::size_t j = 0; j < M; ++j)
-          out << m(i, j) << ((j == M - 1) ? "\n" : " ");
+          out << m(i, j) << ((j == M - 1) ? (i < N-1 ? "\n" : "") : " ");
       return out;
     }
   
@@ -927,7 +927,7 @@ namespace owl
     {
       for(std::size_t i = 0; i < N; ++i)
         for(std::size_t j = 0; j < M; ++j)
-          out << static_cast<int>(m(i, j)) << ((j == M - 1) ? "\n" : " ");
+          out << static_cast<int>(m(i, j)) << ((j == M - 1) ? (i < N-1 ? "\n": "") : " ");
       return out;
     }
   

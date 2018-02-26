@@ -39,14 +39,9 @@ namespace owl
       using size_type = std::size_t;
   
       adjacent_iterator(Iterator first, Iterator last)
-        : first_(first), last_(last), prev_(first)
+        : first_(first), last_(last), prev_(std::distance(first,last) < 3 ? last :first), current_(std::next(first)), next_(std::next(std::next(first)))
       {
-        if(std::distance(first,last) < 3)
-        {
-          prev_ = last;
-        }
-        current_ = std::next(first);
-        next_ = std::next(current_);
+ 
       
       }
 
