@@ -81,15 +81,33 @@ namespace owl
     }
   
     template<typename Scalar>
+    angle<Scalar> degrees(const angle<Scalar>& value)
+    {
+      return value;
+    }
+  
+    template<typename Scalar>
     angle<Scalar> radians(const typename utils::identity<Scalar>::type& value)
     {
       return angle<Scalar>(value, typename angle<Scalar>::radian_tag());
     }
   
     template<typename Scalar>
+    angle<Scalar> radians(const angle<Scalar>& value)
+    {
+      return value;
+    }
+  
+    template<typename Scalar>
     angle<Scalar> gons(const typename utils::identity<Scalar>::type& value)
     {
       return angle<Scalar>(value, typename angle<Scalar>::gon_tag());
+    }
+  
+    template<typename Scalar>
+    angle<Scalar> gons(const angle<Scalar>& value)
+    {
+      return value;
     }
   
     template <typename Scalar>

@@ -20,13 +20,6 @@ namespace test
     CHECK(b.is_quad_mesh());
     CHECK(b.is_closed());
   
-    for(auto f : b.faces())
-    {
-      for(auto uv: b.texcoords(b.halfedges(f)))
-        std::cout << transpose(uv) <<" ";
-      std::cout << std::endl;
-    }
-  
     mesh<float> tet = create_tetradedron<float>();
     CHECK(std::size(tet.faces()) == 4);
     CHECK(std::size(tet.vertices()) == 4);

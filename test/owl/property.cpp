@@ -34,16 +34,13 @@ namespace test
   {
     using namespace owl::utils;
   
-   sphere s;
+    sphere s;
   
-   sphere s2 = s;
+    sphere s2 = s;
   
-   s.diameter() = 4;
-   std::cout << s.diameter() <<std::endl;
-   std::cout << s2.diameter() <<std::endl;
-  
-  
-  
+    s.diameter() = 4;
+    CHECK(s.diameter() == 4);
+    CHECK(s2.diameter() == 2);
   }
 }
 

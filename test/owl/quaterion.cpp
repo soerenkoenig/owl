@@ -22,16 +22,16 @@ namespace test
     euler_angles<float> euler(degrees<float>(14), degrees<float>(25), degrees<float>(70));
     matrix33f RR = euler;
 
-    matrix33f RR2 =
-       rotate_x<float,3>(euler.pitch) *rotate_y<float,3>(euler.yaw) *rotate_z<float,3>(euler.roll);
-     CHECK(approx(RR2) == RR);
+    matrix33f RR2 = rotate_x<float,3>(euler.pitch)
+      * rotate_y<float,3>(euler.yaw) * rotate_z<float,3>(euler.roll);
+    CHECK(approx(RR2) == RR);
   
     quaternion<float> q3 = euler;
     matrix33f RR3 = q3;
-     CHECK(approx(RR3) == RR);
+    CHECK(approx(RR3) == RR);
   
-  
-  //  euler_angles<float> euler2 = q3;
+    euler_angles<float> euler2 = q3;
+    CHECK(approx(euler) == euler2);
   
   
   

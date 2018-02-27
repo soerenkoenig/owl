@@ -89,6 +89,14 @@ namespace owl
     };
   
     template <typename Scalar>
+    bool compare_equal(const euler_angles<Scalar>& lhs, const euler_angles<Scalar>& rhs, double margin, double epsilon, double scale)
+    {
+      return compare_equal(lhs.pitch, rhs.pitch, margin, epsilon, scale) &&
+        compare_equal(lhs.yaw, rhs.yaw, margin, epsilon, scale) &&
+        compare_equal(lhs.roll, rhs.roll, margin, epsilon, scale);
+    }
+  
+    template <typename Scalar>
     std::ostream& operator<<(std::ostream& out,const euler_angles<Scalar>& euler)
     {
       return out << euler.pitch << " " << euler.yaw << " "<< euler.roll;

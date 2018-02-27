@@ -22,6 +22,7 @@
 #include "owl/utils/step_iterator.hpp"
 #include "owl/utils/container_utils.hpp"
 #include "owl/utils/random_utils.hpp"
+#include "owl/math/approx.hpp"
 
 namespace owl
 {

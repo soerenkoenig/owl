@@ -140,22 +140,27 @@ namespace owl
     
         matrix<Scalar,4,4> m;
       
-        m << 1.0l - q11 - q22,        q01 - q23,        q02 + q13, 0,
-                    q01 + q23, 1.0l - q22 - q00,        q12 - q03, 0,
-                    q02 - q13,        q12 + q03, 1.0l - q11 - q00, 0,
-                            0,                0,                   1;
+        m << 1.0 - q11 - q22,       q01 - q23,       q02 + q13, 0,
+                   q01 + q23, 1.0 - q22 - q00,       q12 - q03, 0,
+                   q02 - q13,       q12 + q03, 1.0 - q11 - q00, 0,
+                           0,               0,               0, 1;
       
         return m;
       }
     
-     /* operator euler_angles<Scalar>() const
+      operator euler_angles<Scalar>() const
       {
         euler_angles<Scalar> euler;
-     
+        auto r11 = -2*(y()*z() - w()*x());
+        auto r12 =  w()*w() - x()*x() - y()*y() + z()*z();
+        auto r21 =  2*(x()*z() + w()*y());
+        auto r31 = -2*(x()*y() - w()*z());
+        auto r32 =  w()*w() + x()*x() - y()*y() - z()*z();
+        euler.roll = radians<Scalar>(std::atan2( r31, r32 ));
+        euler.yaw = radians<Scalar>(std::asin ( r21 ));
+        euler.pitch = radians<Scalar>(std::atan2( r11, r12 ));
         return euler;
-      }*/
-    
-    
+      }
     
       quaternion inverse() const
       {
@@ -347,6 +352,14 @@ namespace owl
     std::ostream& operator<<(std::ostream& out,const quaternion<Scalar>& q)
     {
       return out << q.w() << " + " << q.x() << "i + "<< q.y() << "j + " << q.z() << "k";
+    }
+  
+    template <typename Scalar>
+    bool compare_equal(const quaternion<Scalar>& lhs, const quaternion<Scalar>& rhs, double margin, double epsilon, double scale)
+    {
+      return compare_equal(lhs.real(), rhs.real(), margin, epsilon, scale) &&
+        compare_equal(lhs.imag(), rhs.imag(), margin, epsilon, scale);
+    
     }
   
     using quaternionf = quaternion<float>;
