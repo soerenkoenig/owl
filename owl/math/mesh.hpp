@@ -173,13 +173,13 @@ namespace owl
         {
           return target(he);
         };
+      
         halfedge_handle he = halfedge(v);
         return make_iterator_range(
           make_handle_iterator(he, step, deref, he.is_valid() ? 0 : 1),
           make_handle_iterator(he, step, deref, 1));
       }
     
-
       auto incoming_halfedges(vertex_handle v) const
       {
         auto step = [this](halfedge_handle he)
@@ -229,13 +229,13 @@ namespace owl
         };
         halfedge_handle he = halfedge(f);
         return make_iterator_range(
-          make_handle_iterator(he,step,deref,he.is_valid() ? 0 : 1),
-          make_handle_iterator(he,step,deref,1));
+          make_handle_iterator(he, step, deref,he.is_valid() ? 0 : 1),
+          make_handle_iterator(he, step, deref, 1));
       }
     
       auto halfedges(face_handle f) const
       {
-        return halfedges(f,halfedge(f));
+        return halfedges(f, halfedge(f));
       }
     
       auto halfedges(face_handle f, halfedge_handle he_start) const
@@ -253,8 +253,8 @@ namespace owl
         while(he != he_start)
           he = next(he);
         return make_iterator_range(
-          make_handle_iterator(he,step,deref,he.is_valid() ? 0 : 1),
-          make_handle_iterator(he,step,deref,1));
+          make_handle_iterator(he, step, deref, he.is_valid() ? 0 : 1),
+          make_handle_iterator(he, step, deref, 1));
       }
     
       auto halfedges(halfedge_handle he) const
@@ -269,11 +269,10 @@ namespace owl
           return he;
         };
         return make_iterator_range(
-          make_handle_iterator(he,step,deref,he.is_valid() ? 0 : 1),
-          make_handle_iterator(he,step,deref,1));
+          make_handle_iterator(he, step, deref, he.is_valid() ? 0 : 1),
+          make_handle_iterator(he, step, deref, 1));
       }
     
-
       auto outer_halfedges(face_handle f) const
       {
         auto step = [this](halfedge_handle he)
@@ -287,8 +286,8 @@ namespace owl
         };
         halfedge_handle he = halfedge(f);
         return make_iterator_range(
-          make_handle_iterator(he,step,deref,he.is_valid() ? 0 : 1),
-          make_handle_iterator(he,step,deref,1));
+          make_handle_iterator(he, step, deref, he.is_valid() ? 0 : 1),
+          make_handle_iterator(he, step, deref, 1));
       }
 
       const math::vector<Scalar,3>& position(vertex_handle v) const
@@ -310,7 +309,6 @@ namespace owl
       {
         return operator[](he).texcoord;
       }
-
 
       template<typename Handle>
       const math::vector<Scalar,3>& normal(Handle h) const
@@ -402,7 +400,21 @@ namespace owl
           std::forward<VertexRange>(vertices));
       }
     
-     template <typename HalfEdgeRange, typename = std::enable_if_t<is_halfedge_range<HalfEdgeRange>::value>>
+      template <typename HalfEdgeRange, typename = std::enable_if_t<is_halfedge_range<HalfEdgeRange>::value>, typename = void, typename = void>
+      auto normals(HalfEdgeRange&& halfedges) const
+      {
+        return utils::map_range([this](halfedge_handle he)->const auto&{ return normal(he);},
+          std::forward<HalfEdgeRange>(halfedges));
+      }
+    
+      template <typename HalfEdgeRange, typename = std::enable_if_t<is_halfedge_range<HalfEdgeRange>::value>, typename = void, typename = void>
+      auto normals(HalfEdgeRange&& halfedges)
+      {
+        return utils::map_range([this](halfedge_handle he)->auto&{ return normal(he);},
+          std::forward<HalfEdgeRange>(halfedges));
+      }
+    
+      template <typename HalfEdgeRange, typename = std::enable_if_t<is_halfedge_range<HalfEdgeRange>::value>>
       auto texcoords(HalfEdgeRange&& halfedges) const
       {
         return utils::map_range([this](halfedge_handle he)->const auto&{ return texcoord(he);},
@@ -415,7 +427,6 @@ namespace owl
         return utils::map_range([this](halfedge_handle he)->auto&{ return texcoord(he);},
           std::forward<HalfEdgeRange>(halfedges));
       }
-    
     
       std::size_t num_vertices() const
       {
@@ -706,7 +717,6 @@ namespace owl
         return angle<Scalar>(da_sin_sign >= 0 ? acos(da_cos) : -acos(da_cos));
       }
     
-    
       vector<Scalar, 3> compute_sector_normal(halfedge_handle he, bool normalize = true) const
       {
         auto nml = cross(direction(next(he)), direction(opposite(he)));
@@ -872,6 +882,8 @@ namespace owl
         }
         faces_.emplace_back(hes.back());
         normal(f) = compute_normal(f);
+        for(auto he : halfedges(f))
+          normal(he) = normal(f);
         return f;
       }
     
@@ -1252,21 +1264,20 @@ namespace owl
     template <typename Scalar>
     mesh<Scalar> create_tetradedron()
     {
-     std::array<math::vector<Scalar,3>,4> positions = {math::vector<Scalar,3>{0,0,0},
-     math::vector<Scalar,3>{1,0,0},
-     math::vector<Scalar,3>{0,1,0},
-     math::vector<Scalar,3>{0,0,1}};
+      std::array<math::vector<Scalar,3>,4> positions = {math::vector<Scalar,3>{0,0,0},
+      math::vector<Scalar,3>{1,0,0},
+      math::vector<Scalar,3>{0,1,0},
+      math::vector<Scalar,3>{0,0,1}};
    
-     mesh<float> m;
-     auto vertices = m.add_vertices(positions);
+      mesh<float> m;
+      auto vertices = m.add_vertices(positions);
     
-     m.add_face(vertices[0], vertices[2], vertices[1]);
-     m.add_face(vertices[0], vertices[3], vertices[2]);
-     m.add_face(vertices[0], vertices[1], vertices[3]);
-     m.add_face(vertices[1], vertices[2], vertices[3]);
-     m.update_face_normals();
-     return m;
-    
+      m.add_face(vertices[0], vertices[2], vertices[1]);
+      m.add_face(vertices[0], vertices[3], vertices[2]);
+      m.add_face(vertices[0], vertices[1], vertices[3]);
+      m.add_face(vertices[1], vertices[2], vertices[3]);
+  
+      return m;
     }
   
     template <typename Scalar>
@@ -1278,7 +1289,7 @@ namespace owl
       Scalar h = (Scalar)cos(2.0 * asin(a/(2.0 * radius))) * radius;
       Scalar r2 = (Scalar)sqrt(radius * radius - h * h);
     
-      std::array<vector<Scalar,3>,12> points;
+      std::array<vector<Scalar,3>, 12> points;
       int k = 0;
       points[k++] =  vector<Scalar,3>(0,radius,0);
       for(int i = 0; i < 5; i++)
@@ -1312,6 +1323,11 @@ namespace owl
     
       for(auto& pos: m.positions(make_iterator_range(verts).advance_begin(n_old)))
         pos = radius * normalize(pos);
+    }
+    for(auto v: m.vertices())
+    {
+      for(auto& nml : m.normals(m.incoming_halfedges(v)))
+        nml = normalize(m.position(v));
     }
     return m;
   }
@@ -1364,6 +1380,12 @@ namespace owl
       m.add_face(vhandles[1 + slices * (stacks - 1)],
           vhandles[1 + (stacks - 2) * slices + i % slices],
           vhandles[1 + (stacks - 2) * slices + (1 + i) % slices]);
+    }
+  
+    for(auto v: m.vertices())
+    {
+      for(auto& nml : m.normals(m.incoming_halfedges(v)))
+        nml = normalize(m.position(v));
     }
 
     return m;

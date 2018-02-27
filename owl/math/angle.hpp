@@ -127,5 +127,11 @@ namespace owl
     {
       return a > degrees<Scalar>(180) && a < degrees<Scalar>(360);
     }
+  
+    template <typename Scalar>
+    Scalar cotan(const angle<Scalar>& a)
+    {
+      return Scalar{1}/tan(a);
+    }
   }
 }
