@@ -14,6 +14,7 @@
 #include "owl/utils/iterator_range.hpp"
 #include "owl/utils/map_iterator.hpp"
 #include "owl/utils/adjacent_iterator.hpp"
+#include "owl/utils/range_algorithm.hpp"
 #include "owl/math/matrix.hpp"
 #include "owl/math/angle.hpp"
 
@@ -134,8 +135,7 @@ namespace owl
          halfedge_iterator(halfedge_handle(num_halfedges())));
       }
     
-
-      auto vertices(face_handle f) const
+      auto vertices(face_handle f, vertex_handle v_start) const
       {
         auto step = [this](halfedge_handle he)
         {
@@ -146,10 +146,19 @@ namespace owl
         {
           return target(he);
         };
+      
         halfedge_handle he = halfedge(f);
+        while(target(he) != v_start)
+          he = next(he);
+      
         return make_iterator_range(
           make_handle_iterator(he, step, deref, he.is_valid() ? 0 : 1),
           make_handle_iterator(he, step, deref, 1));
+      }
+
+      auto vertices(face_handle f) const
+      {
+        return vertices(f,target(halfedge(f)));
       }
 
       auto vertices(vertex_handle v) const
@@ -225,6 +234,11 @@ namespace owl
     
       auto halfedges(face_handle f) const
       {
+        return halfedges(f,halfedge(f));
+      }
+    
+      auto halfedges(face_handle f, halfedge_handle he_start) const
+      {
         auto step = [this](halfedge_handle he)
         {
           return next(he);
@@ -235,6 +249,8 @@ namespace owl
           return he;
         };
         halfedge_handle he = halfedge(f);
+        while(he != he_start)
+          he = next(he);
         return make_iterator_range(
           make_handle_iterator(he,step,deref,he.is_valid() ? 0 : 1),
           make_handle_iterator(he,step,deref,1));
@@ -790,6 +806,7 @@ namespace owl
          return add_face(std::array<vertex_handle, sizeof...(vertices)> { std::forward<VertexHandles>(vertices)... });
       }
     
+      //ensures the first vertex of returned face is the vertices.front()
       template <typename VertexRange, typename = std::enable_if_t<is_vertex_range<VertexRange>::value>>
       face_handle add_face(VertexRange&& vertices)
       {
@@ -800,9 +817,9 @@ namespace owl
       
         for(auto v : owl::utils::make_adjacent_range(vertices))
         {
-          auto he = find_halfedge(v.current, v.next);
+          auto he = find_halfedge(v.prev, v.current);
           if (!he.is_valid())
-            he = halfedge(add_edge(v.current, v.next));
+            he = halfedge(add_edge(v.prev, v.current));
           else
             assert(is_boundary(he));
           hes.push_back(he);
@@ -837,35 +854,21 @@ namespace owl
             adjust_halfedge(v);
           }
         }
-        faces_.emplace_back(hes.front());
+        faces_.emplace_back(hes.back());
         normal(f) = compute_normal(f);
         return f;
       }
     
       template <typename TexCoordRange, typename = std::enable_if_t<is_vector_range<TexCoordRange,2>::value>>
-      void set_face_texcoords(face_handle f, vertex_handle v, TexCoordRange&& texcoords)
+      void set_face_texcoords(face_handle f, TexCoordRange&& texcoords)
       {
-        auto he = halfedge(f);
-        while(target(he) != v)
-          he = next(he);
-        for(const auto& uv : texcoords)
-        {
-          texcoord(he) = uv;
-          he = next(he);
-        }
+        owl::utils::copy(texcoords,this->texcoords(halfedges(f)).begin());
       }
     
       template <typename NormalRange, typename = std::enable_if_t<is_vector_range<NormalRange,3>::value>>
-      void set_face_normals(face_handle f, vertex_handle v, NormalRange&& normals)
+      void set_face_normals(face_handle f, NormalRange&& normals)
       {
-        auto he = halfedge(f);
-        while(target(he) != v)
-          he = next(he);
-        for(const auto& nml : normals)
-        {
-          normal(he) = nml;
-          he = next(he);
-        }
+        owl::utils::copy(normals, this->normals(halfedges(f)).begin());
       }
     
       //ensure halfedge of v is a boundary halfedge if v is on boundary
@@ -1136,8 +1139,8 @@ namespace owl
       math::vector<Scalar,2>{0.75,0.5},
       math::vector<Scalar,2>{0.75,0.25}
      };
-     m.set_face_texcoords(m.add_face(vertices[1],vertices[3],vertices[7],vertices[5]),
-       vertices[1],texcoord_right);
+     m.set_face_texcoords(m.add_face(vertices[1],vertices[3],vertices[7],vertices[5]), texcoord_right);
+
     
     
      std::array<math::vector<Scalar,2>,4> texcoord_left =
@@ -1147,8 +1150,7 @@ namespace owl
       math::vector<Scalar,2>{0.25,0.25},
       math::vector<Scalar,2>{0,0.25}
      };
-    m.set_face_texcoords(m.add_face(vertices[0],vertices[4],vertices[6],vertices[2]),
-      vertices[0], texcoord_left);
+    m.set_face_texcoords(m.add_face(vertices[0],vertices[4],vertices[6],vertices[2]),texcoord_left);
     
     
      std::array<math::vector<Scalar,2>,4> texcoord_top =
@@ -1158,8 +1160,7 @@ namespace owl
       math::vector<Scalar,2>{0.5,0.25},
       math::vector<Scalar,2>{0.5,0.0}
      };
-     m.set_face_texcoords(m.add_face(vertices[2], vertices[6], vertices[7], vertices[3]),
-     vertices[2],texcoord_top);
+     m.set_face_texcoords(m.add_face(vertices[2], vertices[6], vertices[7], vertices[3]), texcoord_top);
     
      std::array<math::vector<Scalar,2>,4> texcoord_bottom =
      {
@@ -1168,8 +1169,7 @@ namespace owl
       math::vector<Scalar,2>{0.5,0.5},
       math::vector<Scalar,2>{0.25,0.5}
      };
-     m.set_face_texcoords(m.add_face(vertices[0], vertices[1], vertices[5], vertices[4]),
-       vertices[0], texcoord_bottom);
+     m.set_face_texcoords(m.add_face(vertices[0], vertices[1], vertices[5], vertices[4]), texcoord_bottom);
     
       std::array<math::vector<Scalar,2>,4> texcoord_front =
      {
@@ -1178,8 +1178,7 @@ namespace owl
       math::vector<Scalar,2>{0.5,0.25},
       math::vector<Scalar,2>{0.25,0.25}
      };
-     m.set_face_texcoords(m.add_face(vertices[4], vertices[5], vertices[7], vertices[6]),
-       vertices[4], texcoord_front);
+     m.set_face_texcoords(m.add_face(vertices[4], vertices[5], vertices[7], vertices[6]), texcoord_front);
     
      std::array<math::vector<Scalar,2>,4> texcoord_back =
      {
@@ -1188,8 +1187,7 @@ namespace owl
       math::vector<Scalar,2>{0.75,0.25},
       math::vector<Scalar,2>{0.75,0.5}
      };
-     m.set_face_texcoords(m.add_face(vertices[0],vertices[2],vertices[3],vertices[1]),
-       vertices[0], texcoord_back);
+     m.set_face_texcoords(m.add_face(vertices[0],vertices[2],vertices[3],vertices[1]), texcoord_back);
     
      return m;
     
@@ -1230,17 +1228,17 @@ namespace owl
       for(int i = 0; i < 5; i++)
         points[k++] = vector<Scalar,3>(cos(i * degrees<Scalar>(72)) * r2, h, -sin(i * degrees<Scalar>(72)) * r2);
       for(int i = 0; i < 5; i++)
-       points[k++] = vector<Scalar,3>(cos(degrees<Scalar>(36) + i * degrees<Scalar>(72)) * r2, -h, -sin(degrees<Scalar>(36) + i * degrees<Scalar>(72))*r2);
-      points[k] = vector<Scalar,3>(0,-radius,0);
+       points[k++] = vector<Scalar,3>(cos(degrees<Scalar>(36) + i * degrees<Scalar>(72)) * r2, -h, -sin(degrees<Scalar>(36) + i * degrees<Scalar>(72)) * r2);
+      points[k] = vector<Scalar,3>(0, -radius, 0);
 
       auto vhandles = m.add_vertices(points);
     
-      for(int i = 0; i < 5;i++)
+      for(int i = 0; i < 5; i++)
       {
-        m.add_face(vhandles[0], vhandles[i+1], vhandles[(i+1)%5+1]);
-        m.add_face(vhandles[11], vhandles[(i+1)%5+6], vhandles[i+6]);
-        m.add_face(vhandles[i+1], vhandles[i+6], vhandles[(i+1)%5+1]);
-        m.add_face(vhandles[(i+1)%5+1], vhandles[i+6], vhandles[(i+1)%5+6]);
+        m.add_face(vhandles[0], vhandles[i+1], vhandles[(i + 1) % 5 + 1]);
+        m.add_face(vhandles[11], vhandles[(i + 1) % 5 + 6], vhandles[i + 6]);
+        m.add_face(vhandles[i + 1], vhandles[i + 6], vhandles[(i + 1) % 5 + 1]);
+        m.add_face(vhandles[(i + 1) % 5 + 1], vhandles[i + 6], vhandles[(i + 1) % 5 + 6]);
       }
       return m;
     }
@@ -1248,11 +1246,15 @@ namespace owl
   template <typename Scalar>
   mesh<Scalar> create_geodesic_sphere(Scalar radius = 1, std::size_t levels = 2)
   {
-    mesh<Scalar> m = create_icosaeder<Scalar>();
+    mesh<Scalar> m = create_icosaeder<Scalar>(radius);
+  
     for(std::size_t i = 0; i < levels; ++i)
     {
+      auto n_old  = m.vertices().size();
       m.loop_subdivide();
-      for(auto& pos: m.positions(m.vertices()))
+      auto verts = m.vertices();
+    
+      for(auto& pos: m.positions(make_iterator_range(verts).advance_begin(n_old)))
         pos = radius * normalize(pos);
     }
     return m;

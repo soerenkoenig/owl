@@ -85,6 +85,21 @@ namespace owl
       {
         return handle{index_ + other};
       }
+    
+      handle& operator+=(const difference_type& n)
+      {
+        index_ += n;
+        return *this;
+      }
+    
+      handle& operator-=(const handle& h)
+      {
+        index_ -= h.index_;
+        return *this;
+      }
+    
+      
+    
       
       bool operator==(const handle& other) const
       {

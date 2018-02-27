@@ -203,6 +203,7 @@
 		28C66FAD1FC5643A00F9C0D1 /* variant.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = variant.hpp; sourceTree = "<group>"; };
 		28CA4D3D1FAA6F4E00C753D6 /* uuid.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = uuid.cpp; sourceTree = "<group>"; };
 		28CA4D3F1FAAF95A00C753D6 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
+		28E3DA5A20455FA500D6CAFE /* range_algorithm.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = range_algorithm.hpp; sourceTree = "<group>"; };
 		D15138AF1FB196E9009D3414 /* non_copyable.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = non_copyable.cpp; sourceTree = "<group>"; };
 		D1536A3A1FA7649B004B7905 /* uuid.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = uuid.cpp; sourceTree = "<group>"; };
 		D1536A3B1FA7649B004B7905 /* uuid.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = uuid.hpp; sourceTree = "<group>"; };
@@ -340,6 +341,7 @@
 				285D63971FCCA33A007EBB23 /* connected_components.hpp */,
 				2857F02C1FF0596B00DEF030 /* lin_space.hpp */,
 				286FE415203C5B9E006BF193 /* adjacent_iterator.hpp */,
+				28E3DA5A20455FA500D6CAFE /* range_algorithm.hpp */,
 			);
 			path = utils;
 			sourceTree = "<group>";
