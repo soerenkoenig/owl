@@ -73,10 +73,26 @@ namespace owl
         return m;
       }
     
+      bool operator==(const euler_angles& other) const
+      {
+        return pitch == other.pitch && yaw == other.yaw && roll == other.roll;
+      }
+      
+      bool operator!=(const euler_angles& other) const
+      {
+        return !(*this == other);
+      }
+    
       angle<Scalar> pitch; //X
       angle<Scalar> yaw; //Y
       angle<Scalar> roll; //Z
     };
+  
+    template <typename Scalar>
+    std::ostream& operator<<(std::ostream& out,const euler_angles<Scalar>& euler)
+    {
+      return out << euler.pitch << " " << euler.yaw << " "<< euler.roll;
+    }
   
   }
 }

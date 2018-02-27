@@ -10,6 +10,7 @@
 #pragma once
 
 #include "owl/math/matrix.hpp"
+#include "owl/math/euler_angles.hpp"
 #include "owl/math/angle.hpp"
 
 namespace owl
@@ -40,9 +41,31 @@ namespace owl
         *this = m;
       }
     
+      quaternion(const euler_angles<Scalar>& other)
+      {
+        *this = other;
+      }
+    
       quaternion(const vector<Scalar,3>& axis, const angle<Scalar> &theta)
       {
         set_from_axis_angle(axis, theta);
+      }
+    
+      quaternion& operator=(const euler_angles<Scalar>& other)
+      {
+        Scalar cy = cos(other.yaw * Scalar(0.5));
+        Scalar sy = sin(other.yaw * Scalar(0.5));
+        Scalar cz = cos(other.roll * Scalar(0.5));
+        Scalar sz = sin(other.roll * Scalar(0.5));
+        Scalar cx = cos(other.pitch * Scalar(0.5));
+        Scalar sx = sin(other.pitch * Scalar(0.5));
+    
+        w() = cx*cy*cz - sx*sy*sz;
+        x() = sx*cy*cz + cx*sy*sz;
+        y() = cx*sy*cz - sx*cy*sz;
+        z() = cx*cy*sz + sx*sy*cz;
+    
+        return *this;
       }
     
       template <typename Matrix, typename = std::enable_if_t<Matrix::is_square(3) || Matrix::is_square(4)> >
@@ -124,6 +147,13 @@ namespace owl
       
         return m;
       }
+    
+     /* operator euler_angles<Scalar>() const
+      {
+        euler_angles<Scalar> euler;
+     
+        return euler;
+      }*/
     
     
     
@@ -312,6 +342,12 @@ namespace owl
     private:
       vector<Scalar, 4> data_;
     };
+  
+    template <typename Scalar>
+    std::ostream& operator<<(std::ostream& out,const quaternion<Scalar>& q)
+    {
+      return out << q.w() << " + " << q.x() << "i + "<< q.y() << "j + " << q.z() << "k";
+    }
   
     using quaternionf = quaternion<float>;
     using quaterniond = quaternion<double>;

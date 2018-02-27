@@ -46,6 +46,7 @@
 		28BB756C1FB3D030009A6290 /* signal.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28BB756B1FB3D030009A6290 /* signal.cpp */; };
 		28C66FA71FC1BF1D00F9C0D1 /* handle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28C66FA61FC1BF1D00F9C0D1 /* handle.cpp */; };
 		28CA4D3E1FAA6F4E00C753D6 /* uuid.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28CA4D3D1FAA6F4E00C753D6 /* uuid.cpp */; };
+		28E3DA5D204580D600D6CAFE /* property.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28E3DA5C204580D600D6CAFE /* property.cpp */; };
 		D15138B01FB196E9009D3414 /* non_copyable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D15138AF1FB196E9009D3414 /* non_copyable.cpp */; };
 		D1536A3C1FA7649B004B7905 /* uuid.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1536A3A1FA7649B004B7905 /* uuid.cpp */; };
 		D1536A3D1FA7649B004B7905 /* uuid.hpp in Headers */ = {isa = PBXBuildFile; fileRef = D1536A3B1FA7649B004B7905 /* uuid.hpp */; };
@@ -204,6 +205,8 @@
 		28CA4D3D1FAA6F4E00C753D6 /* uuid.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = uuid.cpp; sourceTree = "<group>"; };
 		28CA4D3F1FAAF95A00C753D6 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		28E3DA5A20455FA500D6CAFE /* range_algorithm.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = range_algorithm.hpp; sourceTree = "<group>"; };
+		28E3DA5B204580BB00D6CAFE /* property.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = property.hpp; sourceTree = "<group>"; };
+		28E3DA5C204580D600D6CAFE /* property.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = property.cpp; sourceTree = "<group>"; };
 		D15138AF1FB196E9009D3414 /* non_copyable.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = non_copyable.cpp; sourceTree = "<group>"; };
 		D1536A3A1FA7649B004B7905 /* uuid.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = uuid.cpp; sourceTree = "<group>"; };
 		D1536A3B1FA7649B004B7905 /* uuid.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = uuid.hpp; sourceTree = "<group>"; };
@@ -305,6 +308,7 @@
 				2896D08F20343A5E00E9241D /* quaterion.cpp */,
 				2896D093203613BA00E9241D /* physical_properties.cpp */,
 				286FE413203AC81F006BF193 /* mesh.cpp */,
+				28E3DA5C204580D600D6CAFE /* property.cpp */,
 			);
 			path = owl;
 			sourceTree = "<group>";
@@ -342,6 +346,7 @@
 				2857F02C1FF0596B00DEF030 /* lin_space.hpp */,
 				286FE415203C5B9E006BF193 /* adjacent_iterator.hpp */,
 				28E3DA5A20455FA500D6CAFE /* range_algorithm.hpp */,
+				28E3DA5B204580BB00D6CAFE /* property.hpp */,
 			);
 			path = utils;
 			sourceTree = "<group>";
@@ -696,6 +701,7 @@
 				28175DB51F91FD0B004ECB87 /* binary_serialization.cpp in Sources */,
 				2857F02B1FEF280700DEF030 /* colors.cpp in Sources */,
 				28175DBC1F95BEF0004ECB87 /* stop_watch.cpp in Sources */,
+				28E3DA5D204580D600D6CAFE /* property.cpp in Sources */,
 				284C09CB1F9B0B370062BFF1 /* step_iterator.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

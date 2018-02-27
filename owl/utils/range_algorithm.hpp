@@ -23,16 +23,16 @@ namespace owl
     }
   
     template<typename Range>
-    Range& sort(Range& rng)
+    inline Range& sort(Range& rng)
     {
-      std::sort(std::begin(rng),std::end(rng));
+      std::sort(std::begin(rng), std::end(rng));
       return rng;
     }
-    
+  
     template<typename Range, typename Pred>
-    Range& sort(Range& rng, Pred&& less)
+    inline Range& sort(Range& rng, Pred&& less)
     {
-      std::sort(std::begin(rng),std::end(rng),std::forward<Pred>(less));
+      std::sort(std::begin(rng), std::end(rng), std::forward<Pred>(less));
       return rng;
     }
   
