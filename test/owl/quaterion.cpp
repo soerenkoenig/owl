@@ -33,9 +33,6 @@ namespace test
     euler_angles<float> euler2 = q3;
     CHECK(approx(euler) == euler2);
   
-  
-  
-  
   }
   
 }

@@ -6,6 +6,9 @@
 
 namespace test
 {
+  
+  
+
   TEST_CASE( "primitives", "[math]" )
   {
     using namespace owl::math;
@@ -13,30 +16,63 @@ namespace test
   
   
     mesh<float> b = create_box<float>();
-    CHECK(std::size(b.faces()) == 6);
-    CHECK(std::size(b.vertices()) == 8);
-    CHECK(std::size(b.edges()) == 12);
-    CHECK(std::size(b.halfedges()) == 24);
+    CHECK(b.num_faces() == 6);
+    CHECK(b.num_vertices() == 8);
+    CHECK(b.num_edges() == 12);
+    CHECK(b.num_halfedges() == 24);
     CHECK(b.is_quad_mesh());
     CHECK(b.is_closed());
   
     mesh<float> tet = create_tetradedron<float>();
-    CHECK(std::size(tet.faces()) == 4);
-    CHECK(std::size(tet.vertices()) == 4);
-    CHECK(std::size(tet.edges()) == 6);
-    CHECK(std::size(tet.halfedges()) == 12);
+    CHECK(tet.num_faces() == 4);
+    CHECK(tet.num_vertices() == 4);
+    CHECK(tet.num_edges() == 6);
     CHECK(tet.is_triangle_mesh());
     CHECK(tet.is_closed());
   
+    auto ico = create_icosaeder<float>();
+    CHECK(check_mesh(ico) == 0);
+    CHECK(ico.num_vertices() == 12);
+    CHECK(ico.num_faces() == 20);
+    CHECK(ico.num_edges() == 30);
+    CHECK(ico.is_closed());
   
+    auto geo_sphere = create_geodesic_sphere<float>(2, 2);
+    CHECK(geo_sphere.num_faces() == 20 * 4 * 4);
+    CHECK(geo_sphere.is_closed());
   
-    auto geo_sphere = create_geodesic_sphere<float>(2,2);
-    CHECK(geo_sphere.num_faces() == 20*4*4);
+    auto sph = create_sphere<float>(2);
+    CHECK(sph.num_faces() == 48 * 48);
+    CHECK(sph.num_vertices() == 2258);
+    CHECK(sph.num_edges() == 4560);
+    CHECK(sph.is_closed());
   
-    
+    auto cylinder = create_cylinder<float>(1, 2, 48, 48);
+    CHECK(cylinder.num_faces() == 2400);
+    CHECK(cylinder.num_vertices() == 2354);
+    CHECK(cylinder.num_edges() == 4752);
+    CHECK(cylinder.is_closed());
   
+    auto torus = create_torus<float>(1, 2, 48, 48);
+    CHECK(torus.num_faces() == 48 * 48);
+    CHECK(torus.num_vertices() == 48 * 48);
+    CHECK(torus.num_edges() == 4608);
+    CHECK(torus.is_closed());
+    CHECK(torus.is_quad_mesh());
   
+    auto octaeder = create_octaeder<float>(1);
+    CHECK(octaeder.num_faces() == 8);
+    CHECK(octaeder.num_vertices() == 6);
+    CHECK(octaeder.num_edges() == 12);
+    CHECK(octaeder.is_closed());
+    CHECK(octaeder.is_triangle_mesh());
   
-    
+    auto disc = create_disk<float>(1, 48);
+    CHECK(disc.num_faces() == 48);
+    CHECK(disc.num_vertices() == 48 + 1);
+    CHECK(disc.num_edges() == 2 * 48);
+    CHECK(disc.is_open());
+    CHECK(disc.is_triangle_mesh());
+  
   }
 }

@@ -75,12 +75,32 @@ namespace owl
     
       bool operator==(const euler_angles& other) const
       {
-        return pitch == other.pitch && yaw == other.yaw && roll == other.roll;
+        return std::tie(pitch, yaw, roll) == std::tie(other.pitch, other.yaw, other.roll);
       }
-      
+    
       bool operator!=(const euler_angles& other) const
       {
-        return !(*this == other);
+        return std::tie(pitch, yaw, roll) != std::tie(other.pitch, other.yaw, other.roll);
+      }
+    
+      bool operator<(const euler_angles& other) const
+      {
+        return std::tie(pitch, yaw, roll) < std::tie(other.pitch, other.yaw, other.roll);
+      }
+    
+      bool operator<=(const euler_angles& other) const
+      {
+        return std::tie(pitch, yaw, roll) <= std::tie(other.pitch, other.yaw, other.roll);
+      }
+    
+      bool operator>(const euler_angles& other) const
+      {
+        return std::tie(pitch, yaw, roll) > std::tie(other.pitch, other.yaw, other.roll);
+      }
+    
+      bool operator>=(const euler_angles& other) const
+      {
+        return std::tie(pitch, yaw, roll) >= std::tie(other.pitch, other.yaw, other.roll);
       }
     
       angle<Scalar> pitch; //X
@@ -97,9 +117,9 @@ namespace owl
     }
   
     template <typename Scalar>
-    std::ostream& operator<<(std::ostream& out,const euler_angles<Scalar>& euler)
+    std::ostream& operator<<(std::ostream& out, const euler_angles<Scalar>& euler)
     {
-      return out << euler.pitch << " " << euler.yaw << " "<< euler.roll;
+      return out << euler.pitch.degrees() << "° " << euler.yaw.degrees() << "° "<< euler.roll.degrees() <<"°";
     }
   
   }
