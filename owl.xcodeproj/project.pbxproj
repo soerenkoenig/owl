@@ -28,7 +28,7 @@
 		286563CE1FE86A73003758E1 /* color_maps.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 286563CD1FE86A73003758E1 /* color_maps.cpp */; };
 		286F1DF11F9E67A500FCC209 /* map_iterator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 286F1DF01F9E67A500FCC209 /* map_iterator.cpp */; };
 		286F1DF31F9E6C4E00FCC209 /* filter_iterator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 286F1DF21F9E6C4E00FCC209 /* filter_iterator.cpp */; };
-		286FE414203AC81F006BF193 /* primitives.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 286FE413203AC81F006BF193 /* primitives.cpp */; };
+		286FE414203AC81F006BF193 /* mesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 286FE413203AC81F006BF193 /* mesh.cpp */; };
 		287090AA1FC8BDF600356338 /* matrix.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 287090A91FC8BDF600356338 /* matrix.cpp */; };
 		28757C801FCF5A45001720F1 /* plane.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28757C7F1FCF5A44001720F1 /* plane.cpp */; };
 		2883C2561F91BAFA007DDB3C /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2883C2551F91BAFA007DDB3C /* main.cpp */; };
@@ -146,12 +146,15 @@
 		285D63971FCCA33A007EBB23 /* connected_components.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = connected_components.hpp; sourceTree = "<group>"; };
 		285D63981FCCACBB007EBB23 /* frustrum.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = frustrum.hpp; sourceTree = "<group>"; };
 		285E00E6203E95DB0081CBA3 /* animation.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = animation.hpp; sourceTree = "<group>"; };
+		285E00E7203EC1FA0081CBA3 /* material.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = material.hpp; sourceTree = "<group>"; };
+		285E00E8203EC2480081CBA3 /* camera.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = camera.hpp; sourceTree = "<group>"; };
+		285E00E9203ED5F90081CBA3 /* scene.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = scene.hpp; sourceTree = "<group>"; };
 		286563CC1FE864AC003758E1 /* color_maps.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = color_maps.hpp; sourceTree = "<group>"; };
 		286563CD1FE86A73003758E1 /* color_maps.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = color_maps.cpp; sourceTree = "<group>"; };
 		286F1DF01F9E67A500FCC209 /* map_iterator.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = map_iterator.cpp; sourceTree = "<group>"; };
 		286F1DF21F9E6C4E00FCC209 /* filter_iterator.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = filter_iterator.cpp; sourceTree = "<group>"; };
-		286FE412203A02AC006BF193 /* primitives.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = primitives.hpp; sourceTree = "<group>"; };
-		286FE413203AC81F006BF193 /* primitives.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = primitives.cpp; sourceTree = "<group>"; };
+		286FE412203A02AC006BF193 /* mesh.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = mesh.hpp; sourceTree = "<group>"; };
+		286FE413203AC81F006BF193 /* mesh.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = mesh.cpp; sourceTree = "<group>"; };
 		286FE415203C5B9E006BF193 /* adjacent_iterator.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = adjacent_iterator.hpp; sourceTree = "<group>"; };
 		287090A91FC8BDF600356338 /* matrix.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = matrix.cpp; sourceTree = "<group>"; };
 		28757C7E1FCDDA18001720F1 /* nplane.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = nplane.hpp; sourceTree = "<group>"; };
@@ -300,7 +303,7 @@
 				286563CD1FE86A73003758E1 /* color_maps.cpp */,
 				2896D08F20343A5E00E9241D /* quaterion.cpp */,
 				2896D093203613BA00E9241D /* physical_properties.cpp */,
-				286FE413203AC81F006BF193 /* primitives.cpp */,
+				286FE413203AC81F006BF193 /* mesh.cpp */,
 			);
 			path = owl;
 			sourceTree = "<group>";
@@ -497,7 +500,7 @@
 				2896D08C2030807E00E9241D /* quaternion.hpp */,
 				2896D0912035875C00E9241D /* utils.hpp */,
 				2896D09220358A5900E9241D /* physical_properties.hpp */,
-				286FE412203A02AC006BF193 /* primitives.hpp */,
+				286FE412203A02AC006BF193 /* mesh.hpp */,
 			);
 			path = math;
 			sourceTree = "<group>";
@@ -507,6 +510,9 @@
 			children = (
 				2896D08E2030863100E9241D /* node.hpp */,
 				285E00E6203E95DB0081CBA3 /* animation.hpp */,
+				285E00E7203EC1FA0081CBA3 /* material.hpp */,
+				285E00E8203EC2480081CBA3 /* camera.hpp */,
+				285E00E9203ED5F90081CBA3 /* scene.hpp */,
 			);
 			path = scene;
 			sourceTree = "<group>";
@@ -670,7 +676,7 @@
 				2896D094203613BA00E9241D /* physical_properties.cpp in Sources */,
 				284C09C51F9681D40062BFF1 /* matrix.cpp in Sources */,
 				28043CE41FE1ABE800AE177A /* connected_components.cpp in Sources */,
-				286FE414203AC81F006BF193 /* primitives.cpp in Sources */,
+				286FE414203AC81F006BF193 /* mesh.cpp in Sources */,
 				28CA4D3E1FAA6F4E00C753D6 /* uuid.cpp in Sources */,
 				D172B67B1F9F197C0039A121 /* count_iterator.cpp in Sources */,
 				28BB756C1FB3D030009A6290 /* signal.cpp in Sources */,

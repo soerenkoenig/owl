@@ -29,7 +29,9 @@ namespace owl
       using value_type = typename std::iterator_traits<Iterator>::value_type;
       using difference_type = typename std::iterator_traits<Iterator>::difference_type;
       using pointer = typename std::iterator_traits<Iterator>::pointer;
+      using const_pointer = const typename std::iterator_traits<Iterator>::pointer;
       using reference = typename std::iterator_traits<Iterator>::reference;
+      using const_reference = const typename std::iterator_traits<Iterator>::reference;
       using size_type = std::size_t;
     
       filter_iterator() = default;
@@ -78,13 +80,23 @@ namespace owl
       {
         return filter_iterator(predicate_, end_, end_);
       }
-  
-      auto operator*() const
+    
+      reference operator*()
       {
         return *current_;
       }
   
-      auto operator->() const
+      const_reference operator*() const
+      {
+        return *current_;
+      }
+    
+      pointer operator->()
+      {
+        std::addressof(operator*());
+      }
+  
+      const_pointer operator->() const
       {
         std::addressof(operator*());
       }

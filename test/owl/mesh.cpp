@@ -35,6 +35,15 @@ namespace test
     CHECK(tet.is_triangle_mesh());
     CHECK(tet.is_closed());
   
+  
+  
+    auto geo_sphere = create_geodesic_sphere<float>(2,2);
+    CHECK(geo_sphere.num_faces() == 20*4*4);
+  
+    
+  
+  
+  
     
   }
 }

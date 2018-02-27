@@ -26,6 +26,7 @@ namespace owl
       using difference_type = typename std::iterator_traits<iterator>::difference_type;
       using value_type = typename std::iterator_traits<iterator>::value_type;
       using reference = typename std::iterator_traits<iterator>::reference;
+      using const_reference = const typename std::iterator_traits<iterator>::reference;
   
       template<typename Iterator2>
       iterator_range(Iterator2 first, Iterator2 one_past_last)
@@ -84,8 +85,13 @@ namespace owl
       {
         return begin() == std::begin(r) && end() == std::end(r);
       }
+    
+      reference front()
+      {
+        return *begin_;
+      }
   
-      auto front() const
+      const_reference front() const
       {
         return *begin_;
       }
@@ -117,7 +123,12 @@ namespace owl
         return *this;
       }
   
-      auto back() const
+      const_reference back() const
+      {
+        return *(--end());
+      }
+    
+      reference back()
       {
         return *(--end());
       }
@@ -132,12 +143,17 @@ namespace owl
         advance_end(-n);
       }
   
-      auto operator[](difference_type at) const
+      const_reference operator[](difference_type at) const
+      {
+        return begin_[at];
+      }
+    
+      reference operator[](difference_type at)
       {
         return begin_[at];
       }
   
-      auto operator()(difference_type at) const
+      const_reference operator()(difference_type at) const
       {
         auto it = begin_;
         std::advance(it, at);

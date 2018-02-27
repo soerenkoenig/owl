@@ -30,7 +30,9 @@ namespace owl
       
       using pointer = void;
       
-      using reference = void;
+      using reference = value_type;
+    
+      using const_reference = const value_type;
     
       using function_type = Predicate;
     
@@ -55,12 +57,17 @@ namespace owl
       {
         return function_;
       }
-      
-      auto operator*() const
+    
+    
+      const_reference operator*() const
       {
         return function_(*base_);
       }
-      
+    
+      reference operator*()
+      {
+        return function_(*base_);
+      }
       map_iterator &operator++()
       {
         ++base_;
@@ -109,7 +116,12 @@ namespace owl
         return *this;
       }
     
-      auto operator[](difference_type n) const
+      const_reference operator[](difference_type n) const
+      {
+        return *(*this + n);
+      }
+    
+      reference operator[](difference_type n)
       {
         return *(*this + n);
       }

@@ -102,8 +102,9 @@ namespace owl
       template <typename Range>
       using is_face_range = std::is_same<typename utils::container_traits<std::decay_t<Range>>::value_type, face_handle>;
     
-      template <typename Range>
-      using is_point_range = std::is_same<typename utils::container_traits<std::decay_t<Range>>::value_type, vector<Scalar,3>>;
+      template <typename Range, std::size_t N = 3>
+      using is_vector_range = std::is_same<typename utils::container_traits<std::decay_t<Range>>::value_type, vector<Scalar,N>>;
+    
     
       auto faces() const
       {
@@ -167,6 +168,7 @@ namespace owl
           make_handle_iterator(he, step, deref, he.is_valid() ? 0 : 1),
           make_handle_iterator(he, step, deref, 1));
       }
+    
 
       auto incoming_halfedges(vertex_handle v) const
       {
@@ -238,8 +240,23 @@ namespace owl
           make_handle_iterator(he,step,deref,1));
       }
     
+      auto halfedges(halfedge_handle he) const
+      {
+        auto step = [this](halfedge_handle he)
+        {
+          return next(he);
+        };
+     
+        auto deref = [this](halfedge_handle he)
+        {
+          return he;
+        };
+        return make_iterator_range(
+          make_handle_iterator(he,step,deref,he.is_valid() ? 0 : 1),
+          make_handle_iterator(he,step,deref,1));
+      }
     
-    
+
       auto outer_halfedges(face_handle f) const
       {
         auto step = [this](halfedge_handle he)
@@ -290,8 +307,6 @@ namespace owl
         return operator[](h).normal;
       }
 
-    
-    
       template<typename Handle>
       const status_flags& status(Handle h) const
       {
@@ -328,61 +343,59 @@ namespace owl
         return status(h).is_selected();
       }
     
-    
-
       template <typename VertexRange, typename = std::enable_if_t<is_vertex_range<VertexRange>::value>>
       auto positions(VertexRange&& vertices) const
       {
-        return utils::map_range([this](vertex_handle v){ return position(v);},
+        return utils::map_range([this](vertex_handle v)->const auto&{ return position(v);},
           std::forward<VertexRange>(vertices));
       }
 
       template <typename VertexRange, typename = std::enable_if_t<is_vertex_range<VertexRange>::value>>
       auto positions(VertexRange&& vertices)
       {
-        return utils::map_range([this](vertex_handle v){ return position(v);},
+        return utils::map_range([this](vertex_handle v)->auto&{ return position(v);},
           std::forward<VertexRange>(vertices));
       }
 
       template <typename FaceRange, typename = std::enable_if_t<is_face_range<FaceRange>::value>>
       auto normals(FaceRange&& faces) const
       {
-        return utils::map_range([this](face_handle f){ return normal(f);},
+        return utils::map_range([this](face_handle f)-> auto&{ return normal(f);},
           std::forward<FaceRange>(faces));
       }
 
       template <typename FaceRange, typename = std::enable_if_t<is_face_range<FaceRange>::value>>
       auto normals(FaceRange&& faces)
       {
-        return utils::map_range([this](face_handle f){ return normal(f);},
+        return utils::map_range([this](face_handle f)->const auto&{ return normal(f);},
           std::forward<FaceRange>(faces));
       }
 
       template <typename VertexRange, typename = std::enable_if_t<is_vertex_range<VertexRange>::value>, typename = void>
       auto normals(VertexRange&& vertices) const
       {
-        return utils::map_range([this](vertex_handle v){ return normal(v);},
+        return utils::map_range([this](vertex_handle v)->const auto&{ return normal(v);},
           std::forward<VertexRange>(vertices));
       }
 
       template <typename VertexRange, typename = std::enable_if_t<is_vertex_range<VertexRange>::value>, typename = void>
       auto normals(VertexRange&& vertices)
       {
-        return utils::map_range([this](vertex_handle v){ return normal(v);},
+        return utils::map_range([this](vertex_handle v)->auto&{ return normal(v);},
           std::forward<VertexRange>(vertices));
       }
     
      template <typename HalfEdgeRange, typename = std::enable_if_t<is_halfedge_range<HalfEdgeRange>::value>>
       auto texcoords(HalfEdgeRange&& halfedges) const
       {
-        return utils::map_range([this](halfedge_handle he){ return texcoord(he);},
+        return utils::map_range([this](halfedge_handle he)->const auto&{ return texcoord(he);},
           std::forward<HalfEdgeRange>(halfedges));
       }
 
       template <typename HalfEdgeRange, typename = std::enable_if_t<is_halfedge_range<HalfEdgeRange>::value>, typename = void>
       auto texcoords(HalfEdgeRange&& halfedges)
       {
-        return utils::map_range([this](halfedge_handle he){ return texcoord(he);},
+        return utils::map_range([this](halfedge_handle he)->auto&{ return texcoord(he);},
           std::forward<HalfEdgeRange>(halfedges));
       }
     
@@ -422,10 +435,36 @@ namespace owl
         auto hes = halfedges(e);
         return is_boundary(hes[0]) || is_boundary(hes[1]);
       }
-
+ 
+      bool is_boundary(face_handle f, bool check_vertices = false) const
+      {
+        if(check_vertices)
+        {
+          for(auto v : vertices(f))
+            if(is_boundary(v))
+              return true;
+          return false;
+        }
+        for(auto he : outer_halfedges(f))
+          if(is_boundary(he))
+            return true;
+        return false;
+      }
+    
       bool is_isolated(vertex_handle v) const
       {
         return !halfedge(v).is_valid();
+      }
+    
+      bool is_sharp(edge_handle e, const angle<Scalar>& max_angle= degrees<Scalar>(44)) const
+      {
+        return is_sharp(halfedge(e), max_angle);
+      }
+  
+      bool is_sharp(halfedge_handle he, const angle<Scalar>& max_angle = degrees<Scalar>(44)) const
+      {
+        auto angle = std::abs(dihedral_angle(he));
+        return angle >= max_angle;
       }
     
       vector<Scalar,3> direction(halfedge_handle he) const
@@ -443,14 +482,16 @@ namespace owl
         return length(halfedge(e));
       }
     
-      vertex_handle split(edge_handle e, const vector<Scalar,3>& position)
+      void split(edge_handle e, const vector<Scalar,3>& position)
       {
-        return split(halfedge(e), position);
+        split(halfedge(e), position);
       }
+    
       void split(edge_handle e, vertex_handle v)
       {
-        return split(halfedge(e), v);
+        split(halfedge(e), v);
       }
+    
       void split(halfedge_handle he, const vector<Scalar,3>& position)
       {
         auto v = add_vertex(position);
@@ -477,6 +518,54 @@ namespace owl
         face(he_next_opp) = face(he_opp);
       }
     
+      void loop_subdivide()
+      {
+        std::vector<halfedge_handle> hes;
+        std::size_t n = num_vertices();
+      
+        for(auto e : edges())
+        {
+            auto pos = centroid(e);
+            split(e, pos);
+        }
+        auto is_new = [this,n](halfedge_handle he){ return target(he).index() >= n; };
+        for(auto he : halfedges())
+        {
+          if(is_boundary(he))
+            continue;
+          if(is_new(he))
+            insert_edge(he, next(next(he)));
+        }
+      
+      }
+    
+      // inserts an edge between target(he_prev) and origin(he_next).
+      // returns the halfedge containing the new face
+      //assumes he and he_next belong to the same face
+      halfedge_handle insert_edge(halfedge_handle he_prev, halfedge_handle he_next)
+      {
+        auto e = add_edge(target(he_prev), origin(he_next));
+        auto he = halfedge(e);
+        auto he_opp = opposite(he);
+        face(he_opp) = face(he_prev);
+        next(he_opp) = next(he_prev);
+        next(he_prev) = he;
+        next(he) = he_next;
+        next(prev(he_next)) = he_opp;
+        auto f_new = face_handle(faces_.size());
+        faces_.emplace_back(he);
+        face(he) = f_new;
+        halfedge(f_new) = he;
+        auto he2 = next(he);
+        while(he2 != he)
+        {
+          face(he2) = f_new;
+          he2 = next(he2);
+        }
+        normal(f_new) = compute_normal(f_new);
+        return he;
+      }
+    
       void split(face_handle f, const vector<Scalar,3>& pos)
       {
         split(f, add_vertex(pos));
@@ -489,7 +578,7 @@ namespace owl
     
       vector<Scalar, 3> centroid(edge_handle e) const
       {
-        return mid_point(halfedge(e));
+        return centroid(halfedge(e));
       }
     
       vector<Scalar, 3> centroid(face_handle f) const
@@ -541,41 +630,53 @@ namespace owl
         halfedge(v) = halfedge(edges_new.front());
       }
     
-    
-      /*
       angle<Scalar> sector_angle(halfedge_handle he) const
       {
         auto v0 = direction(next(he));
         auto v1 = direction(opposite(he));
-        auto denom = v0.length()*v1.length();
+        auto denom = v0.length() * v1.length();
         
         if(denom == Scalar(0))
           return 0;
     
         Scalar cos_a = dot(v0 , v1) / denom;
+        cos_a = std::clamp(cos_a, -1, 1);
         if(is_boundary(he))
-        {//determine if the boundary sector is concave or convex
-          auto fh = face(opposite(he));
-          vector<Scalar,3> f_n(calc_face_normal(fh));//this normal is (for convex fh) OK
+        {
+          vector<Scalar,3> f_n(compute_loop_normal(opposite(he)));
           Scalar sign_a = dot(cross(v0, v1), f_n);
-          cos_a = std::clamp(cos_a, -1, 1);
-          
-          return (Scalar) sign_a >= 0 ? acos(cos_a) : -acos(cos_a);
-
-
+          return radians<Scalar>(sign_a >= 0 ? acos(cos_a) : -acos(cos_a));
         }
         else
         {
-          cos_a = std::clamp(cos_a, -1, 1);
-          return acos(cos_a);
+          return radians<Scalar>(acos(cos_a));
         }
       }
 
-  
       angle<Scalar> dihedral_angle(halfedge_handle he) const
       {
+        return dihedral_angle(edge(he));
       }
-    */
+    
+      angle<Scalar> dihedral_angle(edge_handle e) const
+      {
+        if(is_boundary(e))
+          return radians<Scalar>(0);
+
+        vector<Scalar,3> n0, n1;
+        halfedge_handle he = halfedge(e);
+        n0 = compute_sector_normal(he);
+        n1 = compute_sector_normal(opposite(he));
+        auto he_dir = direction(he);
+        Scalar denom = n0.length() * n1.length();
+        if(denom == 0)
+          return 0;
+        Scalar da_cos = dot(n0, n1) / denom;
+        da_cos = std::clamp(da_cos, -1, 1);
+        Scalar da_sin_sign = dot(cross(n0, n1), he_dir);
+        return angle<Scalar>(da_sin_sign >= 0 ? acos(da_cos) : -acos(da_cos));
+      }
+    
     
       vector<Scalar, 3> compute_sector_normal(halfedge_handle he, bool normalize = true) const
       {
@@ -585,16 +686,20 @@ namespace owl
         return nml;
       }
     
-      vector<Scalar, 3> compute_normal(face_handle f) const
+      vector<Scalar, 3> compute_loop_normal(halfedge_handle he) const
       {
         auto nml = vector<Scalar,3>::zero();
       
-        for(auto he : halfedges(f))
+        for(auto he : halfedges(he))
           nml += compute_sector_normal(he, false);
       
-        
         nml.normalize();
         return nml;
+      }
+    
+      vector<Scalar, 3> compute_normal(face_handle f) const
+      {
+        return compute_loop_normal(halfedge(f));
       }
     
       vector<Scalar, 3> compute_normal(vertex_handle v) const
@@ -663,8 +768,16 @@ namespace owl
         return faces_.empty() && vertices_.empty() && edges_.empty();
       }
     
-      template <typename PointRange, typename = std::enable_if_t<is_point_range<PointRange>::value>>
-      auto add_vertices(PointRange&& points)
+    
+      auto add_vertex(const vector<Scalar,3>& pos)
+      {
+        auto v = vertex_handle{vertices_.size()};
+        vertices_.emplace_back(pos);
+        return v;
+      }
+    
+      template <typename VectorRange, typename = std::enable_if_t<is_vector_range<VectorRange>::value>>
+      auto add_vertices(VectorRange&& points)
       {
         std::size_t n = vertices_.size();
         vertices_.insert(vertices_.end(), std::begin(points),std::end(points));
@@ -720,22 +833,49 @@ namespace owl
             }
             next(he.current) = he.next;
             auto v = target(he.current);
-            adjust_halfedge(v, he.current);
+            halfedge(v) = he.current;
+            adjust_halfedge(v);
           }
         }
         faces_.emplace_back(hes.front());
+        normal(f) = compute_normal(f);
         return f;
       }
     
-      //set halfedge of v to he and ensure halfedge of v is on boundary if v is on boundary
-      void adjust_halfedge(vertex_handle v, halfedge_handle he)
+      template <typename TexCoordRange, typename = std::enable_if_t<is_vector_range<TexCoordRange,2>::value>>
+      void set_face_texcoords(face_handle f, vertex_handle v, TexCoordRange&& texcoords)
       {
-        halfedge(v) = he;
-        for(auto h : incoming_halfedges(v))
+        auto he = halfedge(f);
+        while(target(he) != v)
+          he = next(he);
+        for(const auto& uv : texcoords)
         {
-          if(is_boundary(h))
+          texcoord(he) = uv;
+          he = next(he);
+        }
+      }
+    
+      template <typename NormalRange, typename = std::enable_if_t<is_vector_range<NormalRange,3>::value>>
+      void set_face_normals(face_handle f, vertex_handle v, NormalRange&& normals)
+      {
+        auto he = halfedge(f);
+        while(target(he) != v)
+          he = next(he);
+        for(const auto& nml : normals)
+        {
+          normal(he) = nml;
+          he = next(he);
+        }
+      }
+    
+      //ensure halfedge of v is a boundary halfedge if v is on boundary
+      void adjust_halfedge(vertex_handle v)
+      {
+        for(auto he : incoming_halfedges(v))
+        {
+          if(is_boundary(he))
           {
-            halfedge(v) = h;
+            halfedge(v) = he;
             break;
           }
         }
@@ -846,6 +986,20 @@ namespace owl
      {
         return operator[](he).next;
      }
+    
+     halfedge_handle prev(halfedge_handle he) const
+     {
+        auto prev_he = opposite(next(opposite(he)));
+        auto prev_next_he = next(prev_he);
+        while(prev_next_he != he)
+        {
+          prev_he = opposite(prev_next_he);
+          prev_next_he = next(prev_he);
+        }
+        return prev_he;
+     }
+    
+    
     
      const face_handle& face(halfedge_handle he) const
      {
@@ -975,7 +1129,6 @@ namespace owl
      mesh<float> m;
      auto vertices = m.add_vertices(positions);
     
-     auto f = m.add_face(vertices[1],vertices[3],vertices[7],vertices[5]); //right
      std::array<math::vector<Scalar,2>,4> texcoord_right =
      {
       math::vector<Scalar,2>{0.5,0.25},
@@ -983,22 +1136,10 @@ namespace owl
       math::vector<Scalar,2>{0.75,0.5},
       math::vector<Scalar,2>{0.75,0.25}
      };
+     m.set_face_texcoords(m.add_face(vertices[1],vertices[3],vertices[7],vertices[5]),
+       vertices[1],texcoord_right);
     
     
-    
-    
-    
-    
-    
-    
-   
-     auto it = texcoord_right.begin();
-     for(auto he : m.halfedges(f))
-     {
-       m.texcoord(he) = *it++;
-     }
-    
-     f = m.add_face(vertices[0],vertices[4],vertices[6],vertices[2]); //left
      std::array<math::vector<Scalar,2>,4> texcoord_left =
      {
       math::vector<Scalar,2>{0,0.5},
@@ -1006,13 +1147,10 @@ namespace owl
       math::vector<Scalar,2>{0.25,0.25},
       math::vector<Scalar,2>{0,0.25}
      };
-     it = texcoord_left.begin();
-     for(auto he : m.halfedges(f))
-     {
-       m.texcoord(he) = *it++;
-     }
+    m.set_face_texcoords(m.add_face(vertices[0],vertices[4],vertices[6],vertices[2]),
+      vertices[0], texcoord_left);
     
-     f = m.add_face(vertices[2],vertices[6],vertices[7],vertices[3]); //top
+    
      std::array<math::vector<Scalar,2>,4> texcoord_top =
      {
       math::vector<Scalar,2>{0.25,0.0},
@@ -1020,27 +1158,19 @@ namespace owl
       math::vector<Scalar,2>{0.5,0.25},
       math::vector<Scalar,2>{0.5,0.0}
      };
-     it = texcoord_top.begin();
-     for(auto he : m.halfedges(f))
-     {
-       m.texcoord(he) = *it++;
-     }
+     m.set_face_texcoords(m.add_face(vertices[2], vertices[6], vertices[7], vertices[3]),
+     vertices[2],texcoord_top);
     
-     f = m.add_face(vertices[0],vertices[1],vertices[5],vertices[4]); //bottom
-      std::array<math::vector<Scalar,2>,4> texcoord_bottom =
+     std::array<math::vector<Scalar,2>,4> texcoord_bottom =
      {
       math::vector<Scalar,2>{0.25,0.75},
       math::vector<Scalar,2>{0.5,0.75},
       math::vector<Scalar,2>{0.5,0.5},
       math::vector<Scalar,2>{0.25,0.5}
      };
-     it = texcoord_bottom.begin();
-     for(auto he : m.halfedges(f))
-     {
-       m.texcoord(he) = *it++;
-     }
+     m.set_face_texcoords(m.add_face(vertices[0], vertices[1], vertices[5], vertices[4]),
+       vertices[0], texcoord_bottom);
     
-     f = m.add_face(vertices[4],vertices[5],vertices[7],vertices[6]); //front
       std::array<math::vector<Scalar,2>,4> texcoord_front =
      {
       math::vector<Scalar,2>{0.25,0.5},
@@ -1048,26 +1178,19 @@ namespace owl
       math::vector<Scalar,2>{0.5,0.25},
       math::vector<Scalar,2>{0.25,0.25}
      };
-     it = texcoord_front.begin();
-     for(auto he : m.halfedges(f))
-     {
-       m.texcoord(he) = *it++;
-     }
+     m.set_face_texcoords(m.add_face(vertices[4], vertices[5], vertices[7], vertices[6]),
+       vertices[4], texcoord_front);
     
-     f = m.add_face(vertices[0],vertices[2],vertices[3],vertices[1]); //back
-      std::array<math::vector<Scalar,2>,4> texcoord_back =
+     std::array<math::vector<Scalar,2>,4> texcoord_back =
      {
       math::vector<Scalar,2>{1,0.5},
       math::vector<Scalar,2>{1.0,0.25},
       math::vector<Scalar,2>{0.75,0.25},
       math::vector<Scalar,2>{0.75,0.5}
      };
-     it = texcoord_back.begin();
-     for(auto he : m.halfedges(f))
-     {
-       m.texcoord(he) = *it++;
-     }
-     m.update_face_normals();
+     m.set_face_texcoords(m.add_face(vertices[0],vertices[2],vertices[3],vertices[1]),
+       vertices[0], texcoord_back);
+    
      return m;
     
     }
@@ -1091,6 +1214,50 @@ namespace owl
      return m;
     
     }
+  
+    template <typename Scalar>
+    mesh<Scalar> create_icosaeder(const Scalar& radius = Scalar(1))
+    {
+      mesh<Scalar> m;
+  
+      Scalar a  = (Scalar)(radius * 4.0/sqrt(10.0 + 2.0 * sqrt(5.0)));
+      Scalar h = (Scalar)cos(2.0 * asin(a/(2.0 * radius))) * radius;
+      Scalar r2 = (Scalar)sqrt(radius * radius - h * h);
+    
+      std::array<vector<Scalar,3>,20> points;
+      int k = 0;
+      points[k++] =  vector<Scalar,3>(0,radius,0);
+      for(int i = 0; i < 5; i++)
+        points[k++] = vector<Scalar,3>(cos(i * degrees<Scalar>(72)) * r2, h, -sin(i * degrees<Scalar>(72)) * r2);
+      for(int i = 0; i < 5; i++)
+       points[k++] = vector<Scalar,3>(cos(degrees<Scalar>(36) + i * degrees<Scalar>(72)) * r2, -h, -sin(degrees<Scalar>(36) + i * degrees<Scalar>(72))*r2);
+      points[k] = vector<Scalar,3>(0,-radius,0);
+
+      auto vhandles = m.add_vertices(points);
+    
+      for(int i = 0; i < 5;i++)
+      {
+        m.add_face(vhandles[0], vhandles[i+1], vhandles[(i+1)%5+1]);
+        m.add_face(vhandles[11], vhandles[(i+1)%5+6], vhandles[i+6]);
+        m.add_face(vhandles[i+1], vhandles[i+6], vhandles[(i+1)%5+1]);
+        m.add_face(vhandles[(i+1)%5+1], vhandles[i+6], vhandles[(i+1)%5+6]);
+      }
+      return m;
+    }
+  
+  template <typename Scalar>
+  mesh<Scalar> create_geodesic_sphere(Scalar radius = 1, std::size_t levels = 2)
+  {
+    mesh<Scalar> m = create_icosaeder<Scalar>();
+    for(std::size_t i = 0; i < levels; ++i)
+    {
+      m.loop_subdivide();
+      for(auto& pos: m.positions(m.vertices()))
+        pos = radius * normalize(pos);
+    }
+    return m;
+  }
+  
   
     //sphere
     //radius

@@ -26,7 +26,8 @@ namespace owl
       using value_type = Integer;
       using difference_type = decltype(std::declval<Integer>() - std::declval<Integer>());
       using pointer = void;
-      using reference = void;
+      using reference = value_type;
+      using const_reference = const reference;
       using size_type = std::size_t;
       
       count_iterator() = default;
