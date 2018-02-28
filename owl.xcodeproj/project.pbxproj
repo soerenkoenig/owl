@@ -42,6 +42,7 @@
 		288A6FA81F91CA9E00783E52 /* binary_serialization.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 288A6FA61F91CA9E00783E52 /* binary_serialization.cpp */; };
 		2896D09020343A5E00E9241D /* quaterion.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2896D08F20343A5E00E9241D /* quaterion.cpp */; };
 		2896D094203613BA00E9241D /* physical_properties.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2896D093203613BA00E9241D /* physical_properties.cpp */; };
+		28A19C452046B6CA00D012F9 /* raytracer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28A19C442046B6CA00D012F9 /* raytracer.cpp */; };
 		28BB756A1FB0F6CC009A6290 /* signal.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28BB75691FB0F6CC009A6290 /* signal.cpp */; };
 		28BB756C1FB3D030009A6290 /* signal.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28BB756B1FB3D030009A6290 /* signal.cpp */; };
 		28C66FA71FC1BF1D00F9C0D1 /* handle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28C66FA61FC1BF1D00F9C0D1 /* handle.cpp */; };
@@ -149,7 +150,7 @@
 		285E00E6203E95DB0081CBA3 /* animation.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = animation.hpp; sourceTree = "<group>"; };
 		285E00E7203EC1FA0081CBA3 /* material.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = material.hpp; sourceTree = "<group>"; };
 		285E00E8203EC2480081CBA3 /* camera.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = camera.hpp; sourceTree = "<group>"; };
-		285E00E9203ED5F90081CBA3 /* scene.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = scene.hpp; sourceTree = "<group>"; };
+		285E00E9203ED5F90081CBA3 /* graph.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = graph.hpp; sourceTree = "<group>"; };
 		286563CC1FE864AC003758E1 /* color_maps.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = color_maps.hpp; sourceTree = "<group>"; };
 		286563CD1FE86A73003758E1 /* color_maps.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = color_maps.cpp; sourceTree = "<group>"; };
 		286F1DF01F9E67A500FCC209 /* map_iterator.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = map_iterator.cpp; sourceTree = "<group>"; };
@@ -190,6 +191,9 @@
 		2896D0912035875C00E9241D /* utils.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = utils.hpp; sourceTree = "<group>"; };
 		2896D09220358A5900E9241D /* physical_properties.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = physical_properties.hpp; sourceTree = "<group>"; };
 		2896D093203613BA00E9241D /* physical_properties.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = physical_properties.cpp; sourceTree = "<group>"; };
+		28A19C402046AA6400D012F9 /* view.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = view.hpp; sourceTree = "<group>"; };
+		28A19C432046AD2F00D012F9 /* raytracer.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = raytracer.hpp; sourceTree = "<group>"; };
+		28A19C442046B6CA00D012F9 /* raytracer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = raytracer.cpp; sourceTree = "<group>"; };
 		28AAB86B2020CEB000B03D9E /* camera.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = camera.hpp; sourceTree = "<group>"; };
 		28BB75661FB0F254009A6290 /* non_copyable.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = non_copyable.hpp; sourceTree = "<group>"; };
 		28BB75671FB0F393009A6290 /* export.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = export.hpp; sourceTree = "<group>"; };
@@ -309,6 +313,7 @@
 				2896D093203613BA00E9241D /* physical_properties.cpp */,
 				286FE413203AC81F006BF193 /* mesh.cpp */,
 				28E3DA5C204580D600D6CAFE /* property.cpp */,
+				28A19C442046B6CA00D012F9 /* raytracer.cpp */,
 			);
 			path = owl;
 			sourceTree = "<group>";
@@ -393,6 +398,7 @@
 		2883C2431F91BA7F007DDB3C /* owl */ = {
 			isa = PBXGroup;
 			children = (
+				28A19C422046AD0700D012F9 /* render */,
 				2896D08D2030861000E9241D /* scene */,
 				2857F02D1FF1252200DEF030 /* color */,
 				2816E69F1FA12F4B00CCE00A /* graphics */,
@@ -519,9 +525,18 @@
 				285E00E6203E95DB0081CBA3 /* animation.hpp */,
 				285E00E7203EC1FA0081CBA3 /* material.hpp */,
 				285E00E8203EC2480081CBA3 /* camera.hpp */,
-				285E00E9203ED5F90081CBA3 /* scene.hpp */,
+				285E00E9203ED5F90081CBA3 /* graph.hpp */,
+				28A19C402046AA6400D012F9 /* view.hpp */,
 			);
 			path = scene;
+			sourceTree = "<group>";
+		};
+		28A19C422046AD0700D012F9 /* render */ = {
+			isa = PBXGroup;
+			children = (
+				28A19C432046AD2F00D012F9 /* raytracer.hpp */,
+			);
+			path = render;
 			sourceTree = "<group>";
 		};
 		28C66FAC1FC5641B00F9C0D1 /* variant */ = {
@@ -703,6 +718,7 @@
 				28175DBC1F95BEF0004ECB87 /* stop_watch.cpp in Sources */,
 				28E3DA5D204580D600D6CAFE /* property.cpp in Sources */,
 				284C09CB1F9B0B370062BFF1 /* step_iterator.cpp in Sources */,
+				28A19C452046B6CA00D012F9 /* raytracer.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

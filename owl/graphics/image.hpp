@@ -22,9 +22,9 @@ namespace owl
     {
     public:
       using color_type = Color;
-      using iterator = std::vector<color_type>::iterator;
-      using const_iterator = std::vector<color_type::const_iterator;
-      using size_type = std::vector<color_type>::size_type;
+      using iterator = typename std::vector<color_type>::iterator;
+      using const_iterator = typename std::vector<color_type>::const_iterator;
+      using size_type = typename std::vector<color_type>::size_type;
       using pointer = Color*;
       using const_pointer = const Color*;
       using value_type = Color;
@@ -48,7 +48,7 @@ namespace owl
     
       pointer data()
       {
-        return data_data();
+        return data_.data();
       }
     
       const_pointer data() const
@@ -131,6 +131,8 @@ namespace owl
       size_type height_;
       std::vector<color_type> data_;
     };
+    
+    using rgb8u_image = image<owl::color::rgb8u>;
   }
 }
 

@@ -191,6 +191,7 @@ namespace owl
       {
         return inside(other.lower_bound) && inside(other.upper_bound);
       }
+    
       
       
       //ensures p is inside the interval
@@ -205,6 +206,68 @@ namespace owl
           upper_bound = helper_type_::maximum(upper_bound, helper_type_::next(p));
         else
           upper_bound = helper_type_::maximum(upper_bound, p);
+      }
+    
+      auto extents() const
+      {
+        return upper_bound - lower_bound;
+      }
+    
+      const auto& left() const
+      {
+        return lower_bound.x();
+      }
+    
+      auto& left()
+      {
+        return lower_bound.x();
+      }
+    
+      const auto& right() const
+      {
+        return upper_bound.x();
+      }
+    
+      auto& right()
+      {
+        return upper_bound.x();
+      }
+    
+      const auto& top() const
+      {
+        return lower_bound.y();
+      }
+    
+      auto& top()
+      {
+        return lower_bound.y();
+      }
+    
+      const auto& bottom() const
+      {
+        return upper_bound.y();
+      }
+    
+      auto& bottom()
+      {
+        return upper_bound.y();
+      }
+    
+      auto width() const
+      {
+        return upper_bound[0] - lower_bound[0];
+      }
+    
+      template <bool Dummy = true, typename = std::enable_if_t<Dummy && Dimension >= 2>>
+      auto height() const
+      {
+        return upper_bound[1] - lower_bound[1];
+      }
+    
+      template <bool Dummy = true, typename = std::enable_if_t<Dummy && Dimension >= 3>>
+      auto depth() const
+      {
+        return upper_bound[2] - lower_bound[2];
       }
       
       bool operator==(const interval& other) const
