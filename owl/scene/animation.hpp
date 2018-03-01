@@ -10,8 +10,6 @@
 #pragma once
 
 #include <chrono>
-#include "owl/scene/node.hpp"
-
 
 namespace owl
 {
@@ -25,7 +23,7 @@ namespace owl
       using duration =  clock::duration;
       using time_point = clock::time_point;
     
-      virtual void animate(time_point current_time, duration delta_t, node<Scalar& n)
+      virtual void animate(time_point current_time, duration delta_t)
       {
       }
     };

@@ -9,16 +9,13 @@
 
 #pragma once
 
-#include <chrono>
-
 namespace owl
 {
   namespace scene
   {
-    template <typename Scalar>
-    class camera
+    template<typename Scalar>
+    class geometry
     {
     };
   }
 }
-

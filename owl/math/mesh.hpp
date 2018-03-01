@@ -67,6 +67,26 @@ namespace owl
           select();
       }
     
+      bool is_modified() const
+      {
+        return bits_.test(1);
+      }
+    
+      void modify()
+      {
+        bits_.set(1, true);
+      }
+    
+      void unmodify()
+      {
+        bits_.set(0, false);
+      }
+    
+    
+    
+    
+    
+  
        /*  bool is_removed() const
       {
         return bits_.test(0);
@@ -576,7 +596,6 @@ namespace owl
           if(is_new(he))
             insert_edge(he, next(next(he)));
         }
-      
       }
     
       // inserts an edge between target(he_prev) and origin(he_next).
@@ -847,31 +866,54 @@ namespace owl
             he = halfedge(add_edge(v.prev, v.current));
           else
             assert(is_boundary(he));
+          face(he) = f;
           hes.push_back(he);
         }
+        faces_.emplace_back(hes.back());
+      
+      
       
         for(auto he : owl::utils::make_adjacent_range(hes))
         {
-          face(he.current) = f;
           if(next(he.current) != he.next)
           {
             auto he_outer = opposite(he.next);
             auto he_outer_next = next(he_outer);
             if(he_outer_next.is_valid())
             {
-              while(he_outer_next != he.next)
+              while(he_outer_next != he.next || he_outer == he.current)
               {
                 he_outer = opposite(he_outer_next);
                 he_outer_next = next(he_outer);
               }
-              next(he_outer) = opposite(he.current);
+              if(he_outer == he.current)
+              {
+                auto he_a = opposite(he.next);
+                while(!is_boundary(he_a))
+                  he_a = opposite(next(he_a));
+                auto he_b = prev(he.next);
+                next(he_b) = next(he_a);
+                next(he_a) = next(he_outer);
+                next(he_outer) = he.next;
+              }
+              else
+               next(he_outer) = opposite(he.current);
             }
             else
             {
               if(next(he.current).is_valid())
                 next(he_outer) = next(he.current);
               else
-                next(he_outer) = opposite(he.current);
+              {
+                auto he_p = halfedge(target(he.current));
+                if(he_p.is_valid() && is_boundary(he_p))
+                {
+                 next(he_outer) = next(he_p);
+                 next(he_p) = opposite(he.current);
+                }
+                else
+                  next(he_outer) = opposite(he.current);
+              }
             }
             next(he.current) = he.next;
             auto v = target(he.current);
@@ -880,7 +922,7 @@ namespace owl
             adjust_halfedge(v);
           }
         }
-        faces_.emplace_back(hes.back());
+      
         normal(f) = compute_normal(f);
         for(auto he : halfedges(f))
           normal(he) = normal(f);
@@ -1302,10 +1344,10 @@ namespace owl
     
       for(std::size_t i = 0; i < 5; i++)
       {
-        m.add_face(vhandles[0], vhandles[i + 1], vhandles[(i + 1) % 5 + 1]);
+        m.add_face(vhandles[0], vhandles[i + 1], vhandles[(i + 1) % 5 + 1]);      
+        m.add_face(vhandles[11], vhandles[(i + 1) % 5 + 6], vhandles[i + 6]);
         m.add_face(vhandles[i + 1], vhandles[i + 6], vhandles[(i + 1) % 5 + 1]);
         m.add_face(vhandles[(i + 1) % 5 + 1], vhandles[i + 6], vhandles[(i + 1) % 5 + 6]);
-        m.add_face(vhandles[11], vhandles[(i + 1) % 5 + 6], vhandles[i + 6]);
       }
       return m;
     }

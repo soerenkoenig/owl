@@ -4,7 +4,7 @@
 //          ./)_)
 //      owl --"-"---
 //
-//  Copyright © 2017 Sören König. All rights reserved.
+//  Copyright © 2018 Sören König. All rights reserved.
 //
 
 #pragma once
@@ -27,7 +27,7 @@ namespace owl
       using color = Pixel;
     
       std::shared_ptr<graph<Scalar>> scene;
-      std::shared_ptr<camera> point_of_view;
+      std::shared_ptr<node<Scalar>> point_of_view;
     
       std::size_t width() const
       {

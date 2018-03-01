@@ -9,14 +9,11 @@
 
 #pragma once
 
-#include <chrono>
-#include "owl/scene/node.hpp"
-
-
 namespace owl
 {
   namespace scene
   {
+    template<typename Scalar>
     class material
     {
     };

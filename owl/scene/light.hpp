@@ -4,7 +4,7 @@
 //          ./)_)
 //      owl --"-"---
 //
-//  Copyright © 2017 Sören König. All rights reserved.
+//  Copyright © 2018 Sören König. All rights reserved.
 //
 
 #pragma once
@@ -15,10 +15,11 @@ namespace owl
 {
   namespace scene
   {
-    template <typename Scalar>
-    class camera
+    template<typename Scalar>
+    class light
     {
     };
   }
 }
+
 

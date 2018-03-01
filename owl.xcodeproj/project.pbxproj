@@ -194,6 +194,9 @@
 		28A19C402046AA6400D012F9 /* view.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = view.hpp; sourceTree = "<group>"; };
 		28A19C432046AD2F00D012F9 /* raytracer.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = raytracer.hpp; sourceTree = "<group>"; };
 		28A19C442046B6CA00D012F9 /* raytracer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = raytracer.cpp; sourceTree = "<group>"; };
+		28A19C462047FF6400D012F9 /* light.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = light.hpp; sourceTree = "<group>"; };
+		28A19C4A204808D500D012F9 /* geometry.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = geometry.hpp; sourceTree = "<group>"; };
+		28A19C4B204812AF00D012F9 /* look_at_constraint.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = look_at_constraint.hpp; sourceTree = "<group>"; };
 		28AAB86B2020CEB000B03D9E /* camera.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = camera.hpp; sourceTree = "<group>"; };
 		28BB75661FB0F254009A6290 /* non_copyable.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = non_copyable.hpp; sourceTree = "<group>"; };
 		28BB75671FB0F393009A6290 /* export.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = export.hpp; sourceTree = "<group>"; };
@@ -527,6 +530,9 @@
 				285E00E8203EC2480081CBA3 /* camera.hpp */,
 				285E00E9203ED5F90081CBA3 /* graph.hpp */,
 				28A19C402046AA6400D012F9 /* view.hpp */,
+				28A19C462047FF6400D012F9 /* light.hpp */,
+				28A19C4A204808D500D012F9 /* geometry.hpp */,
+				28A19C4B204812AF00D012F9 /* look_at_constraint.hpp */,
 			);
 			path = scene;
 			sourceTree = "<group>";

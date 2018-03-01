@@ -21,7 +21,15 @@ namespace owl
     class graph
     {
     public:
+    
+      graph()
+      {
+        root = make_node<Scalar>();
+      }
+    
       std::shared_ptr<node<Scalar>> root;
+    
+    
     };
   
     template<typename S, typename...Args>
