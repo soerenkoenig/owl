@@ -1217,6 +1217,29 @@ namespace owl
       return random_matrix<T, M, M, Engine, Distribution>();
     }
   
+    template <typename Scalar>
+    std::array<std::size_t, 2> min_abs_components(const vector3<Scalar>& nml)
+    {
+      auto xabs = std::abs(nml[0]);
+      auto yabs = std::abs(nml[1]);
+      auto zabs = std::abs(nml[2]);
+    
+      if(xabs >= yabs)
+      {
+        if(xabs >= zabs)
+          return {1,2};
+        else
+          return {0,1};
+      }
+      else
+      {
+       if(yabs >= zabs)
+          return {2,0};
+        else
+          return {0,1};
+      }
+    }
+  
     template <typename T>
     matrix<T,4,4> projection_matrix_from_intrinsics(const matrix<T, 3, 3>& K, int img_width, int img_height, T znear, T zfar)
     {

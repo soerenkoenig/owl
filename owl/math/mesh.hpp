@@ -17,6 +17,7 @@
 #include "owl/utils/range_algorithm.hpp"
 #include "owl/math/matrix.hpp"
 #include "owl/math/angle.hpp"
+#include "owl/math/interval.hpp"
 #include "owl/math/constants.hpp"
 
 namespace owl
@@ -877,6 +878,46 @@ namespace owl
       bool is_triangle_mesh() const
       {
         return is_ngon_mesh(3);
+      }
+    
+      bool is_triangle(face_handle f) const
+      {
+        auto  he = halfedge(f);
+        return he == next(next(next(he)));
+      }
+    
+      bool is_quad(face_handle f) const
+      {
+        auto  he = halfedge(f);
+        return he == next(next(next(next(he))));
+      }
+    
+      bool is_convex(face_handle f) const
+      {
+        std::size_t n = valence(f);
+        if(n < 4)
+          return true;
+      
+        auto [u,v] = min_abs_components(normal(f));
+
+        math::interval<Scalar> zrange;
+        for(auto he : halfedges(f))
+        {
+          vector<3> d1 = position(target(next(he))) - position(target(he));
+          vector<3> d2 = position(target(opposite(he))) - position(target(he));
+          Scalar z = d1[u] * d2[v] - d1[v] * d2[u];
+          zrange.insert(z);
+        }
+        return (zrange.lower_bound >= 0 && zrange.upper_bound >= 0) ||
+               (zrange.lower_bound <= 0 && zrange.upper_bound <= 0);
+      }
+    
+      math::box<Scalar> bounds() const
+      {
+        box<Scalar> bbox;
+        for(auto p : positions(vertices()))
+          bbox.insert(p);
+        return bbox;
       }
     
       bool is_open() const
