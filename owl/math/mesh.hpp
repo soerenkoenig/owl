@@ -1344,7 +1344,7 @@ namespace owl
     
       for(std::size_t i = 0; i < 5; i++)
       {
-        m.add_face(vhandles[0], vhandles[i + 1], vhandles[(i + 1) % 5 + 1]);      
+        m.add_face(vhandles[0], vhandles[i + 1], vhandles[(i + 1) % 5 + 1]);
         m.add_face(vhandles[11], vhandles[(i + 1) % 5 + 6], vhandles[i + 6]);
         m.add_face(vhandles[i + 1], vhandles[i + 6], vhandles[(i + 1) % 5 + 1]);
         m.add_face(vhandles[(i + 1) % 5 + 1], vhandles[i + 6], vhandles[(i + 1) % 5 + 6]);
