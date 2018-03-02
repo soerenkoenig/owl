@@ -38,7 +38,7 @@ namespace owl
     
       map_iterator() = default;
     
-     explicit map_iterator( const base_iterator_type &base)
+     explicit map_iterator(const base_iterator_type &base)
         : base_(base)
       {
       }
