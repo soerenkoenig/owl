@@ -110,22 +110,30 @@ namespace owl
     class mesh
     {
     public:
+      using scalar = Scalar;
+    
+      template <std::size_t Dim>
+      using vector = vector<Scalar,Dim>;
+    
       using face_iterator = owl::utils::count_iterator<face_handle>;
       using vertex_iterator = owl::utils::count_iterator<vertex_handle>;
       using edge_iterator = owl::utils::count_iterator<edge_handle>;
       using halfedge_iterator = owl::utils::count_iterator<halfedge_handle>;
     
       template <typename Range>
-      using is_vertex_range = std::is_same<typename utils::container_traits<std::decay_t<Range>>::value_type, vertex_handle>;
+      using is_vertex_handle_range = std::is_same<typename utils::container_traits<std::decay_t<Range>>::value_type, vertex_handle>;
     
       template <typename Range>
-      using is_halfedge_range = std::is_same<typename utils::container_traits<std::decay_t<Range>>::value_type, halfedge_handle>;
+      using is_halfedge_handle_range = std::is_same<typename utils::container_traits<std::decay_t<Range>>::value_type, halfedge_handle>;
     
       template <typename Range>
-      using is_face_range = std::is_same<typename utils::container_traits<std::decay_t<Range>>::value_type, face_handle>;
+      using is_edge_handle_range = std::is_same<typename utils::container_traits<std::decay_t<Range>>::value_type, edge_handle>;
+    
+      template <typename Range>
+      using is_face_handle_range = std::is_same<typename utils::container_traits<std::decay_t<Range>>::value_type, face_handle>;
     
       template <typename Range, std::size_t N = 3>
-      using is_vector_range = std::is_same<typename utils::container_traits<std::decay_t<Range>>::value_type, vector<Scalar,N>>;
+      using is_vector_range = std::is_same<typename utils::container_traits<std::decay_t<Range>>::value_type, vector<N>>;
     
     
       auto faces() const
@@ -378,74 +386,74 @@ namespace owl
         return status(h).is_selected();
       }
     
-      template <typename VertexRange, typename = std::enable_if_t<is_vertex_range<VertexRange>::value>>
+      template <typename VertexRange, typename = std::enable_if_t<is_vertex_handle_range<VertexRange>::value>>
       auto positions(VertexRange&& vertices) const
       {
         return utils::map_range([this](vertex_handle v)->const auto&{ return position(v);},
           std::forward<VertexRange>(vertices));
       }
 
-      template <typename VertexRange, typename = std::enable_if_t<is_vertex_range<VertexRange>::value>>
+      template <typename VertexRange, typename = std::enable_if_t<is_vertex_handle_range<VertexRange>::value>>
       auto positions(VertexRange&& vertices)
       {
         return utils::map_range([this](vertex_handle v)->auto&{ return position(v);},
           std::forward<VertexRange>(vertices));
       }
 
-      template <typename FaceRange, typename = std::enable_if_t<is_face_range<FaceRange>::value>>
-      auto normals(FaceRange&& faces) const
+      template <typename FaceHandleRange, typename = std::enable_if_t<is_face_handle_range<FaceHandleRange>::value>>
+      auto normals(FaceHandleRange&& faces) const
       {
         return utils::map_range([this](face_handle f)-> auto&{ return normal(f);},
-          std::forward<FaceRange>(faces));
+          std::forward<FaceHandleRange>(faces));
       }
 
-      template <typename FaceRange, typename = std::enable_if_t<is_face_range<FaceRange>::value>>
-      auto normals(FaceRange&& faces)
+      template <typename FaceHandleRange, typename = std::enable_if_t<is_face_handle_range<FaceHandleRange>::value>>
+      auto normals(FaceHandleRange&& faces)
       {
         return utils::map_range([this](face_handle f)->const auto&{ return normal(f);},
-          std::forward<FaceRange>(faces));
+          std::forward<FaceHandleRange>(faces));
       }
 
-      template <typename VertexRange, typename = std::enable_if_t<is_vertex_range<VertexRange>::value>, typename = void>
-      auto normals(VertexRange&& vertices) const
+      template <typename VertexHandleRange, typename = std::enable_if_t<is_vertex_handle_range<VertexHandleRange>::value>, typename = void>
+      auto normals(VertexHandleRange&& vertices) const
       {
         return utils::map_range([this](vertex_handle v)->const auto&{ return normal(v);},
-          std::forward<VertexRange>(vertices));
+          std::forward<VertexHandleRange>(vertices));
       }
 
-      template <typename VertexRange, typename = std::enable_if_t<is_vertex_range<VertexRange>::value>, typename = void>
-      auto normals(VertexRange&& vertices)
+      template <typename VertexHandleRange, typename = std::enable_if_t<is_vertex_handle_range<VertexHandleRange>::value>, typename = void>
+      auto normals(VertexHandleRange&& vertices)
       {
         return utils::map_range([this](vertex_handle v)->auto&{ return normal(v);},
-          std::forward<VertexRange>(vertices));
+          std::forward<VertexHandleRange>(vertices));
       }
     
-      template <typename HalfEdgeRange, typename = std::enable_if_t<is_halfedge_range<HalfEdgeRange>::value>, typename = void, typename = void>
-      auto normals(HalfEdgeRange&& halfedges) const
+      template <typename HalfEdgeHandleRange, typename = std::enable_if_t<is_halfedge_handle_range<HalfEdgeHandleRange>::value>, typename = void, typename = void>
+      auto normals(HalfEdgeHandleRange&& halfedges) const
       {
         return utils::map_range([this](halfedge_handle he)->const auto&{ return normal(he);},
-          std::forward<HalfEdgeRange>(halfedges));
+          std::forward<HalfEdgeHandleRange>(halfedges));
       }
     
-      template <typename HalfEdgeRange, typename = std::enable_if_t<is_halfedge_range<HalfEdgeRange>::value>, typename = void, typename = void>
-      auto normals(HalfEdgeRange&& halfedges)
+      template <typename HalfEdgeHandleRange, typename = std::enable_if_t<is_halfedge_handle_range<HalfEdgeHandleRange>::value>, typename = void, typename = void>
+      auto normals(HalfEdgeHandleRange&& halfedges)
       {
         return utils::map_range([this](halfedge_handle he)->auto&{ return normal(he);},
-          std::forward<HalfEdgeRange>(halfedges));
+          std::forward<HalfEdgeHandleRange>(halfedges));
       }
     
-      template <typename HalfEdgeRange, typename = std::enable_if_t<is_halfedge_range<HalfEdgeRange>::value>>
-      auto texcoords(HalfEdgeRange&& halfedges) const
+      template <typename HalfEdgeHandleRange, typename = std::enable_if_t<is_halfedge_handle_range<HalfEdgeHandleRange>::value>>
+      auto texcoords(HalfEdgeHandleRange&& halfedges) const
       {
         return utils::map_range([this](halfedge_handle he)->const auto&{ return texcoord(he);},
-          std::forward<HalfEdgeRange>(halfedges));
+          std::forward<HalfEdgeHandleRange>(halfedges));
       }
 
-      template <typename HalfEdgeRange, typename = std::enable_if_t<is_halfedge_range<HalfEdgeRange>::value>, typename = void>
-      auto texcoords(HalfEdgeRange&& halfedges)
+      template <typename HalfEdgeHandleRange, typename = std::enable_if_t<is_halfedge_handle_range<HalfEdgeHandleRange>::value>, typename = void>
+      auto texcoords(HalfEdgeHandleRange&& halfedges)
       {
         return utils::map_range([this](halfedge_handle he)->auto&{ return texcoord(he);},
-          std::forward<HalfEdgeRange>(halfedges));
+          std::forward<HalfEdgeHandleRange>(halfedges));
       }
     
       std::size_t num_vertices() const
@@ -527,7 +535,7 @@ namespace owl
         return angle >= max_angle;
       }
     
-      vector<Scalar,3> direction(halfedge_handle he) const
+      vector<3> direction(halfedge_handle he) const
       {
         return position(target(he)) - position(origin(he));
       }
@@ -542,61 +550,131 @@ namespace owl
         return length(halfedge(e));
       }
     
-      void split(edge_handle e, const vector<Scalar,3>& position)
+      edge_handle split(edge_handle e, const vector<3>& position)
       {
-        split(halfedge(e), position);
+         return edge(split(halfedge(e), position));
       }
     
-      void split(edge_handle e, vertex_handle v)
+      edge_handle split(edge_handle e, vertex_handle v)
       {
-        split(halfedge(e), v);
+        return edge(split(halfedge(e), v));
       }
     
-      void split(halfedge_handle he, const vector<Scalar,3>& position)
+      halfedge_handle split(halfedge_handle he, const vector<3>& position)
       {
         auto v = add_vertex(position);
-        split(he, v);
+        return split(he, v);
       }
     
-      void split(halfedge_handle he, vertex_handle v)
-      {
-        auto he_prev = opposite(next(he));
-        while(next(he_prev) != opposite(he))
-          he_prev = opposite(next(he_prev));
     
-        auto e = add_edge(v,target(he));
-        auto he_next = halfedge(e);
-        auto he_next_opp = opposite(he_next);
-        next(he_prev) = he_next_opp;
-        next(he_next) = next(he);
-        next(he) = he_next;
+      //returns first halfedge of new edge pointing to new vertices
+      halfedge_handle split(halfedge_handle he, vertex_handle v)
+      {
         auto he_opp = opposite(he);
-        next(he_next_opp) = he_opp;
-        target(he_next_opp) = v;
+        auto he_opp_prev = prev(he_opp);
+      
+        auto e = add_edge(v, target(he));
+        auto he_new = halfedge(e);
+        auto he_new_opp = opposite(he_new);
+      
+        next(he_opp_prev) = he_new;
+        next(he_new_opp) = next(he);
+        next(he) = he_new_opp;
+        next(he_new) = he_opp;
+      
+        target(he_new) = v;
         target(he) = v;
-        face(he_next) = face(he);
-        face(he_next_opp) = face(he_opp);
+        face(he_new) = face(he_opp);
+        face(he_new_opp) = face(he);
+      
+        return he_new;
       }
     
-      void loop_subdivide()
+      auto split_edges()
       {
-        std::vector<halfedge_handle> hes;
-        std::size_t n = num_vertices();
-      
+        auto first = edge_handle{num_edges()};
         for(auto e : edges())
         {
-            auto pos = centroid(e);
-            split(e, pos);
+          auto pos = centroid(e);
+          split(e, pos);
         }
-        auto is_new = [this,n](halfedge_handle he){ return target(he).index() >= n; };
-        for(auto he : halfedges())
+        return make_iterator_range(
+         edge_iterator(first),
+         edge_iterator(edge_handle{num_edges()}));
+      }
+    
+      void subdivide_quad_split()
+      {
+        assert(is_quad_mesh());
+        vertices_.reserve(num_vertices() + num_faces());
+        edges_.reserve(2 * num_edges() + 4 * num_faces());
+        faces_.reserve(4 * num_faces());
+      
+        std::size_t num_vertices_old = vertices_.size();
+        split_edges();
+      
+        auto is_old_vertex = [&](vertex_handle v)
+          {
+            return v.index() < num_vertices_old;
+          };
+      
+        for(auto f : faces())
         {
-          if(is_boundary(he))
-            continue;
-          if(is_new(he))
-            insert_edge(he, next(next(he)));
+          auto he_prev = halfedge(f);
+          if(is_old_vertex(target(he_prev)))
+            he_prev = next(he_prev);
+        
+          auto he_next = next(next(next(he_prev)));
+          auto e = insert_edge(he_prev, he_next);
+          auto v = target(split_edge(e, centroid(f)));
+          he_prev = next(he_prev);
+          he_next = next(next(he_next));
+          while(he_next != he_prev)
+          {
+            insert(edge(he_prev,he_next));
+            he_next = next(next(he_next));
+          }
+          insert_edge(he_prev,he_next);
         }
       }
+    
+      void subdivide_triangle_split()
+      {
+        assert(is_triangle_mesh());
+      
+        vertices_.reserve(num_vertices() + num_edges());
+        faces_.reserve(4 * num_faces());
+        edges_.reserve(2 * num_edges() + 3 * num_faces());
+  
+        std::size_t num_vertices_old = vertices_.size();
+        split_edges();
+      
+        auto is_old_vertex = [&](vertex_handle v)
+          {
+            return v.index() < num_vertices_old;
+          };
+      
+        for(auto f : faces())
+        {
+          auto he_prev = halfedge(f);
+          if(is_old_vertex(target(he_prev)))
+            he_prev = next(he_prev);
+          
+          auto he_next = next(next(next(he_prev)));
+          insert_edge(he_prev, he_next);
+          he_prev = next(he_prev);
+          he_next = next(next(he_next));
+          insert_edge(he_prev, he_next);
+          he_prev = next(he_prev);
+          he_next = next(next(he_next));
+          insert_edge(he_prev, he_next);
+        }
+      }
+    
+     /* void subdivide_vertex_split()
+      {
+      
+      }*/
     
       // inserts an edge between target(he_prev) and origin(he_next).
       // returns the halfedge containing the new face
@@ -625,25 +703,25 @@ namespace owl
         return he;
       }
     
-      void split(face_handle f, const vector<Scalar,3>& pos)
+      void split(face_handle f, const vector<3>& pos)
       {
         split(f, add_vertex(pos));
       }
     
-      vector<Scalar, 3> centroid(halfedge_handle he) const
+      vector<3> centroid(halfedge_handle he) const
       {
         return (position(target(he)) + position(origin(he)))/2;
       }
     
-      vector<Scalar, 3> centroid(edge_handle e) const
+      vector<3> centroid(edge_handle e) const
       {
         return centroid(halfedge(e));
       }
     
-      vector<Scalar, 3> centroid(face_handle f) const
+      vector<3> centroid(face_handle f) const
       {
         auto points = positions(vertices(f));
-        vector<Scalar, 3> mp = vector<Scalar,3>::zero();
+        vector<3> mp = vector<3>::zero();
         std::size_t n = 0;
         for(auto p : points)
         {
@@ -702,7 +780,7 @@ namespace owl
         cos_a = std::clamp(cos_a, -1, 1);
         if(is_boundary(he))
         {
-          vector<Scalar,3> f_n(compute_loop_normal(opposite(he)));
+          vector<3> f_n(compute_loop_normal(opposite(he)));
           Scalar sign_a = dot(cross(v0, v1), f_n);
           return radians<Scalar>(sign_a >= 0 ? acos(cos_a) : -acos(cos_a));
         }
@@ -722,7 +800,7 @@ namespace owl
         if(is_boundary(e))
           return radians<Scalar>(0);
 
-        vector<Scalar,3> n0, n1;
+        vector<3> n0, n1;
         halfedge_handle he = halfedge(e);
         n0 = compute_sector_normal(he);
         n1 = compute_sector_normal(opposite(he));
@@ -736,7 +814,7 @@ namespace owl
         return angle<Scalar>(da_sin_sign >= 0 ? acos(da_cos) : -acos(da_cos));
       }
     
-      vector<Scalar, 3> compute_sector_normal(halfedge_handle he, bool normalize = true) const
+      vector<3> compute_sector_normal(halfedge_handle he, bool normalize = true) const
       {
         auto nml = cross(direction(next(he)), direction(opposite(he)));
         if(normalize)
@@ -744,9 +822,9 @@ namespace owl
         return nml;
       }
     
-      vector<Scalar, 3> compute_loop_normal(halfedge_handle he) const
+      vector<3> compute_loop_normal(halfedge_handle he) const
       {
-        auto nml = vector<Scalar,3>::zero();
+        auto nml = vector<3>::zero();
       
         for(auto he : halfedges(he))
           nml += compute_sector_normal(he, false);
@@ -755,14 +833,14 @@ namespace owl
         return nml;
       }
     
-      vector<Scalar, 3> compute_normal(face_handle f) const
+      vector<3> compute_normal(face_handle f) const
       {
         return compute_loop_normal(halfedge(f));
       }
     
-      vector<Scalar, 3> compute_normal(vertex_handle v) const
+      vector<3> compute_normal(vertex_handle v) const
       {
-        auto nml = vector<Scalar,3>::zero();
+        auto nml = vector<3>::zero();
       
         for(auto he : incoming_halfedges(v))
           nml += compute_sector_normal(he, false);
@@ -827,7 +905,7 @@ namespace owl
       }
     
     
-      auto add_vertex(const vector<Scalar,3>& pos)
+      auto add_vertex(const vector<3>& pos)
       {
         auto v = vertex_handle{vertices_.size()};
         vertices_.emplace_back(pos);
@@ -838,7 +916,7 @@ namespace owl
       auto add_vertices(VectorRange&& points)
       {
         std::size_t n = vertices_.size();
-        vertices_.insert(vertices_.end(), std::begin(points),std::end(points));
+        vertices_.insert(vertices_.end(), std::begin(points), std::end(points));
         return make_iterator_range(vertex_iterator(vertex_handle(n)), vertex_iterator(vertex_handle(vertices_.size())));
       }
     
@@ -851,8 +929,8 @@ namespace owl
     
       //ensures the first vertex of returned face is the vertices.front()
       //adding a face which results in a non-manifold vertex is not allowed
-      template <typename VertexRange, typename = std::enable_if_t<is_vertex_range<VertexRange>::value>>
-      face_handle add_face(VertexRange&& vertices)
+      template <typename VertexHandleRange, typename = std::enable_if_t<is_vertex_handle_range<VertexHandleRange>::value>>
+      face_handle add_face(VertexHandleRange&& vertices)
       {
         face_handle f = face_handle{faces_.size()};
       
@@ -870,8 +948,6 @@ namespace owl
           hes.push_back(he);
         }
         faces_.emplace_back(hes.back());
-      
-      
       
         for(auto he : owl::utils::make_adjacent_range(hes))
         {
@@ -959,10 +1035,10 @@ namespace owl
      struct vertex_t
      {
        vertex_t() = default;
-       vertex_t(const vector<Scalar,3>& p) : position{p} {}
+       vertex_t(const vector<3>& p) : position{p} {}
      
        halfedge_handle halfedge;
-       vector<Scalar,3> position;
+       vector<3> position;
        status_flags status;
      };
    
@@ -979,8 +1055,8 @@ namespace owl
         halfedge_handle next;
         face_handle face;
         status_flags status;
-        vector<Scalar,3> normal;
-        vector<Scalar,2> texcoord;
+        vector<3> normal;
+        vector<2> texcoord;
      };
     
      struct edge_t
@@ -999,14 +1075,14 @@ namespace owl
      {
        face_t() = default;
      
-       face_t(halfedge_handle he, const vector<Scalar,3>& nml = vector<Scalar,3>::zero())
+       face_t(halfedge_handle he, const vector<3>& nml = vector<3>::zero())
         : halfedge{he}
         , normal{nml}
        {
        }
      
        halfedge_handle halfedge;
-       vector<Scalar,3> normal;
+       vector<3> normal;
        status_flags status;
      };
     
@@ -1072,8 +1148,6 @@ namespace owl
         return prev_he;
      }
     
-    
-    
      const face_handle& face(halfedge_handle he) const
      {
         return operator[](he).face;
@@ -1092,6 +1166,12 @@ namespace owl
      halfedge_handle halfedge(edge_handle e) const
      {
        return halfedge_handle{e.index() << 1};
+     }
+     std::array<halfedge_handle,2> halfedges(edge_handle e) const
+     {
+       halfedge_handle he = halfedge_handle{e.index() << 1};
+       halfedge_handle he_opp = he + 1;
+       return {he, he_opp};
      }
     
      halfedge_handle opposite(halfedge_handle he) const
@@ -1168,8 +1248,8 @@ namespace owl
         return e;
      }
     
-    template <typename S>
-    friend std::size_t check_mesh(const mesh<S>& m);
+     template <typename S>
+     friend std::size_t check_mesh(const mesh<S>& m);
     
     
      std::vector<edge_t> edges_;
@@ -1360,7 +1440,7 @@ namespace owl
     for(std::size_t i = 0; i < levels; ++i)
     {
       auto n_old  = m.vertices().size();
-      m.loop_subdivide();
+      m.subdivide_triangle_split();
       auto verts = m.vertices();
     
       for(auto& pos: m.positions(make_iterator_range(verts).advance_begin(n_old)))
