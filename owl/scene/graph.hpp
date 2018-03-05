@@ -10,6 +10,7 @@
 #pragma once
 
 #include <memory>
+#include <stack>
 
 #include "owl/scene/node.hpp"
 
@@ -22,23 +23,27 @@ namespace owl
     {
     public:
     
-      graph()
+      node<Scalar>* first_point_of_view()
       {
-        root = make_node<Scalar>();
+        std::stack<node<Scalar>*> nodes;
+        nodes.push(&root);
+        while(!nodes.empty())
+        {
+          auto* current = nodes.top();
+        
+          if(current->camera)
+            return current;
+          nodes.pop();
+        
+          for(auto& child : current->children)
+            nodes.push(&child);
+        }
+        return nullptr;
       }
     
-      std::shared_ptr<node<Scalar>> root;
-    
-    
+      node<Scalar> root;
     };
-  
-    template<typename S, typename...Args>
-    std::shared_ptr<graph<S>> make_graph(Args&&... args)
-    {
-      return std::make_shared<graph<S>>(std::forward<Args>(args)...);
-    }
-  
-  
+
   }
 }
 

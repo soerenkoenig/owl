@@ -197,6 +197,8 @@
 		28A19C462047FF6400D012F9 /* light.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = light.hpp; sourceTree = "<group>"; };
 		28A19C4A204808D500D012F9 /* geometry.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = geometry.hpp; sourceTree = "<group>"; };
 		28A19C4B204812AF00D012F9 /* look_at_constraint.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = look_at_constraint.hpp; sourceTree = "<group>"; };
+		28A19C4C204D687400D012F9 /* mesh.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = mesh.hpp; sourceTree = "<group>"; };
+		28A19C4D204D6AD600D012F9 /* grid.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = grid.hpp; sourceTree = "<group>"; };
 		28BB75661FB0F254009A6290 /* non_copyable.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = non_copyable.hpp; sourceTree = "<group>"; };
 		28BB75671FB0F393009A6290 /* export.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = export.hpp; sourceTree = "<group>"; };
 		28BB75681FB0F541009A6290 /* signal.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = signal.hpp; sourceTree = "<group>"; };
@@ -531,6 +533,8 @@
 				28A19C462047FF6400D012F9 /* light.hpp */,
 				28A19C4A204808D500D012F9 /* geometry.hpp */,
 				28A19C4B204812AF00D012F9 /* look_at_constraint.hpp */,
+				28A19C4C204D687400D012F9 /* mesh.hpp */,
+				28A19C4D204D6AD600D012F9 /* grid.hpp */,
 			);
 			path = scene;
 			sourceTree = "<group>";

@@ -16,6 +16,7 @@ namespace owl
     template<typename Scalar>
     class geometry
     {
+      
     };
   }
 }

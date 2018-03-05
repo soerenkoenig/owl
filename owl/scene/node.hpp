@@ -30,21 +30,14 @@ namespace owl
     
   
     template<typename Scalar>
-    class node : public std::enable_shared_from_this<node<Scalar>>
+    class node
     {
     public:
-        std::string name;
-        std::optional<light<Scalar>> light;
-        std::optional<camera<Scalar>> camera;
-        std::optional<geometry<Scalar>> geometry;
-  
-        math::quaternion<Scalar> orientation;
-        math::vector<Scalar,3>   position;
-        math::vector<Scalar,3>   scale;
+    
     
         math::matrix<Scalar,4,4> local_to_parent() const
         {
-           return math::translate<Scalar>(position) * math::rotate<Scalar,4>(orientation) * math::scale<Scalar,4>(scale);
+           return math::translate<Scalar>(position) * math::square_matrix<Scalar,4>(orientation) * math::scale<Scalar,4>(scale);
         }
     
         math::matrix<Scalar,4,4> local_to_world() const
@@ -52,7 +45,7 @@ namespace owl
           if(is_root())
             return local_to_parent();
           else
-            return parent_.lock()->local_to_world() * local_to_parent();
+            return parent_->local_to_world() * local_to_parent();
         }
     
         math::matrix<Scalar,4,4> world_to_local() const
@@ -60,40 +53,75 @@ namespace owl
           return math::invert(local_to_world());
         }
     
-        math::vector<Scalar,4> convert_position(const math::vector<Scalar,4>& pos,
-          std::shared_ptr<node<Scalar>> to = nullptr) const
+        math::vector4<Scalar> convert(const math::vector4<Scalar>& v,
+          const node<Scalar>* to = nullptr) const
         {
-          if(to)
-            return to->world_to_local()*local_to_world() * pos;
-          else
-            return local_to_world() * pos;
+          if(!to)
+           return local_to_world() * v;
+          return to->world_to_local() * local_to_world() * v;
+        }
+    
+        math::vector3<Scalar> convert_position(const math::vector3<Scalar>& pos,
+          const node<Scalar>* to = nullptr) const
+        {
+          math::vector4<Scalar> pos_h;
+          pos_h << pos, 1;
+          pos_h = convert(pos_h);
+          return math::vector3<Scalar>(pos_h.x(), pos_h.y(), pos_h.z());
+        }
+    
+        math::vector3<Scalar> convert_direction(const math::vector3<Scalar>& dir,
+          const node<Scalar>* to = nullptr) const
+        {
+          math::vector4<Scalar> dir_h;
+          dir_h << dir, 0;
+          dir_h = convert(dir_h);
+          return math::vector3<Scalar>(dir_h.x(),dir_h.y(), dir_h.z());
         }
     
     
-        void add_child(std::shared_ptr<node>& n)
+    
+    
+        template <typename... Args>
+        node<Scalar>& add_child(Args&&... args)
         {
-          n->parent_ = this->shared_from_this();
-          children_.push_back(n);
+          children.emplace_back(std::forward<Args>(args)...);
+          auto& child = children.back();
+          child.parent_ = this;
+          return child;
         }
     
         bool is_root() const
         {
-          return !parent_.lock();
+          return parent_;
         }
     
-        std::vector<std::function<void(std::shared_ptr<node<Scalar>>)>> constraints;
+        const node<Scalar>* parent() const
+        {
+          return parent_;
+        }
+    
+    
+    
+        std::string name;
+        std::shared_ptr<light<Scalar>> light;
+        std::shared_ptr<camera<Scalar>> camera;
+        std::shared_ptr<geometry<Scalar>> geometry;
+        std::shared_ptr<material<Scalar>> material;
+  
+        math::quaternion<Scalar> orientation;
+        math::vector<Scalar,3>   position;
+        math::vector<Scalar,3>   scale;
+        std::vector<node<Scalar>> children;
+    
+        std::vector<std::function<void(node<Scalar>&)>> constraints;
     
     private:
-        std::weak_ptr<node> parent_;
-        std::vector<std::shared_ptr<node>> children_;
+        node* parent_ = nullptr;
     
         std::vector<animation<Scalar>> animations_;
     };
   
-    template<typename Scalar, typename... Args>
-    std::shared_ptr<node<Scalar>> make_node(Args&&... args)
-    {
-      return std::make_shared<node<Scalar>>(std::forward<Args>(args)...);
-    }
+  
   }
 }

@@ -21,7 +21,7 @@ namespace owl
       {
       public:
         template <typename Color, typename Scalar>
-        void render(std::shared_ptr<scene::view<Color, Scalar>> view)
+        void render(const scene::view<Color, Scalar>& view)
         {
         
         }

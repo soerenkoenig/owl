@@ -776,7 +776,7 @@ namespace owl
   
     template< typename  S, std::size_t N, std::size_t M,
     typename = std::enable_if_t< matrix<S, N, M>::is_vector()> >
-    matrix<S,N,M> normalize(matrix<S, N, M>& v)
+    matrix<S,N,M> normalize(const matrix<S, N, M>& v)
     {
       return v.normalized();
     }

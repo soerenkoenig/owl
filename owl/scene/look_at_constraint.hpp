@@ -9,6 +9,7 @@
 
 #pragma once
 #include "owl/scene/node.hpp"
+#include "owl/math/trafos.hpp"
 
 namespace owl
 {
@@ -18,26 +19,24 @@ namespace owl
     class look_at_constraint
     {
     public:
-      look_at_constraint(std::shared_ptr<node<Scalar>> target)
-        : target_(target)
+    
+      look_at_constraint(node<Scalar>& target)
+        : target_(&target)
       {
       }
     
-      void operator()(std::shared_ptr<node<Scalar>> n)
+      void operator()(node<Scalar>& n)
       {
-       
-        //n->orientation = math::lookat(<#const vector<S, 3> &eye#>, <#const vector<S, 3> &target#>, <#vector<S, 3> up#>)
+        math::vector3<Scalar> center = target_->convert_position(math::vector<Scalar,3>::zero(),n.parent());
+        math::vector3<Scalar> eye = n.convert_position(math::vector<Scalar,3>::zero(),n.parent());
+        math::vector3<Scalar> up = n.convert_direction(math::vector<Scalar,3>::identity_y(), n.parent());
+        n.orientation = math::lookat<Scalar>(eye, center, up);
       }
     
     private:
-      std::shared_ptr<node<Scalar>> target_;
+      node<Scalar>* target_;
    
     };
   
-    template <typename Scalar, typename... Args>
-    auto make_look_at_constraint(Args&&... args)
-    {
-      return std::make_shared<look_at_constraint<Scalar>>(std::forward<Args>(args)...);
-    }
   }
 }

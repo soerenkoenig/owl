@@ -20,14 +20,22 @@ namespace owl
 {
   namespace scene
   {
-    template <typename Pixel, typename Scalar>
+    template <typename Color, typename Scalar>
     class view
     {
     public:
-      using color = Pixel;
+      using color = Color;
     
-      std::shared_ptr<graph<Scalar>> scene;
-      std::shared_ptr<node<Scalar>> point_of_view;
+      view(graphics::image<color>& img, graph<Scalar>& g)
+        : raw_image_(img.data())
+        , step_(img.width())
+        , scene_(&g)
+        , point_of_view_(g.first_point_of_view())
+      {
+        viewport_.lower_bound = math::vector<std::size_t,2>::zero();
+        viewport_.upper_bound = math::vector<std::size_t,2>(img.width(), img.height());
+      }
+    
     
       std::size_t width() const
       {
@@ -49,29 +57,16 @@ namespace owl
         return *(raw_image_ + y * step_ + x + viewport_.left());
       }
     
-      view(graphics::image<Pixel>& img, std::shared_ptr<graph<Scalar>> g)
-        : raw_image_(img.data())
-        , step_(img.width())
-        , scene(g)
-       // , point_of_view(g.first_point_of_view())
-      {
-        viewport_.lower_bound = math::vector<std::size_t,2>::zero();
-        viewport_.upper_bound = math::vector<std::size_t,2>(img.width(), img.height());
-      
-      }
-    
+  
     private:
+      graph<Scalar>* scene_ = nullptr;
+      node<Scalar>* point_of_view_ = nullptr;
       math::rectangle<std::size_t> viewport_;
-      color* raw_image_;
-      std::size_t step_;
+      color* raw_image_ = nullptr;
+      std::size_t step_ = 0;
     
     };
   
-    template<typename P, typename S>
-    std::shared_ptr<view<P,S>> make_view(graphics::image<P>& img, std::shared_ptr<graph<S>> graph)
-    {
-      return std::make_shared<view<P,S>>(img, graph);
-    }
   
   }
 }
