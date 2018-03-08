@@ -16,7 +16,7 @@ namespace test
     using namespace owl;
   
   
-    scene::graph<float> scene;
+    scene::graph<float, color::rgb8u> scene;
   
     auto& grid_node = scene.root.add_child();
     grid_node.geometry = std::make_shared<scene::grid<float>>();
@@ -29,10 +29,10 @@ namespace test
 
     camera_node.position << 10, 10, 10;
   
-    camera_node.constraints.push_back(scene::look_at_constraint<float>(sphere_node));
+    camera_node.constraints.push_back(scene::look_at_constraint<float,color::rgb8u>(sphere_node));
   
     graphics::rgb8u_image img(640, 480);
-    scene::view<color::rgb8u, float> view(img, scene);
+    scene::view<float,color::rgb8u> view(img, scene);
   
     render::raytracer r;
   

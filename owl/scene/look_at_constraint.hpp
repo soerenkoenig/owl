@@ -15,17 +15,17 @@ namespace owl
 {
   namespace scene
   {
-    template<typename Scalar>
+    template<typename Scalar, typename Color>
     class look_at_constraint
     {
     public:
     
-      look_at_constraint(node<Scalar>& target)
+      look_at_constraint(node<Scalar, Color>& target)
         : target_(&target)
       {
       }
     
-      void operator()(node<Scalar>& n)
+      void operator()(node<Scalar, Color>& n)
       {
         math::vector3<Scalar> center = target_->convert_position(math::vector<Scalar,3>::zero(),n.parent());
         math::vector3<Scalar> eye = n.convert_position(math::vector<Scalar,3>::zero(),n.parent());
@@ -34,7 +34,7 @@ namespace owl
       }
     
     private:
-      node<Scalar>* target_;
+      node<Scalar, Color>* target_;
    
     };
   

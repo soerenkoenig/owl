@@ -18,14 +18,15 @@ namespace owl
 {
   namespace scene
   {
-    template<typename Scalar>
+    template<typename Scalar, typename Color>
     class graph
     {
     public:
+      using node = node<Scalar,Color>;
     
-      node<Scalar>* first_point_of_view()
+      node* first_point_of_view()
       {
-        std::stack<node<Scalar>*> nodes;
+        std::stack<node*> nodes;
         nodes.push(&root);
         while(!nodes.empty())
         {
@@ -41,7 +42,7 @@ namespace owl
         return nullptr;
       }
     
-      node<Scalar> root;
+      node root;
     };
 
   }

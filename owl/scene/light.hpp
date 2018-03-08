@@ -15,9 +15,23 @@ namespace owl
 {
   namespace scene
   {
-    template<typename Scalar>
+    enum class light_type
+    {
+      ambient, directional, spot, point
+    };
+  
+    template<typename Scalar, typename Color>
     class light
     {
+    public:
+      light_type type;
+      Scalar intensity;
+      Scalar temperature;
+      Color color;
+    
+    
+    
+    
     };
   }
 }

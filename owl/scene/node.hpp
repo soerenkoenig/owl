@@ -29,7 +29,7 @@ namespace owl
   {
     
   
-    template<typename Scalar>
+    template<typename Scalar, typename Color>
     class node
     {
     public:
@@ -54,7 +54,7 @@ namespace owl
         }
     
         math::vector4<Scalar> convert(const math::vector4<Scalar>& v,
-          const node<Scalar>* to = nullptr) const
+          const node* to = nullptr) const
         {
           if(!to)
            return local_to_world() * v;
@@ -62,7 +62,7 @@ namespace owl
         }
     
         math::vector3<Scalar> convert_position(const math::vector3<Scalar>& pos,
-          const node<Scalar>* to = nullptr) const
+          const node* to = nullptr) const
         {
           math::vector4<Scalar> pos_h;
           pos_h << pos, 1;
@@ -71,7 +71,7 @@ namespace owl
         }
     
         math::vector3<Scalar> convert_direction(const math::vector3<Scalar>& dir,
-          const node<Scalar>* to = nullptr) const
+          const node* to = nullptr) const
         {
           math::vector4<Scalar> dir_h;
           dir_h << dir, 0;
@@ -80,10 +80,8 @@ namespace owl
         }
     
     
-    
-    
         template <typename... Args>
-        node<Scalar>& add_child(Args&&... args)
+        node& add_child(Args&&... args)
         {
           children.emplace_back(std::forward<Args>(args)...);
           auto& child = children.back();
@@ -96,7 +94,7 @@ namespace owl
           return parent_;
         }
     
-        const node<Scalar>* parent() const
+        const node* parent() const
         {
           return parent_;
         }
@@ -104,7 +102,7 @@ namespace owl
     
     
         std::string name;
-        std::shared_ptr<light<Scalar>> light;
+        std::shared_ptr<light<Scalar,Color>> light;
         std::shared_ptr<camera<Scalar>> camera;
         std::shared_ptr<geometry<Scalar>> geometry;
         std::shared_ptr<material<Scalar>> material;
@@ -112,9 +110,9 @@ namespace owl
         math::quaternion<Scalar> orientation;
         math::vector<Scalar,3>   position;
         math::vector<Scalar,3>   scale;
-        std::vector<node<Scalar>> children;
+        std::vector<node<Scalar,Color>> children;
     
-        std::vector<std::function<void(node<Scalar>&)>> constraints;
+        std::vector<std::function<void(node&)>> constraints;
     
     private:
         node* parent_ = nullptr;

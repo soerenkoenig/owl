@@ -30,6 +30,7 @@
 		286F1DF31F9E6C4E00FCC209 /* filter_iterator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 286F1DF21F9E6C4E00FCC209 /* filter_iterator.cpp */; };
 		286FE414203AC81F006BF193 /* mesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 286FE413203AC81F006BF193 /* mesh.cpp */; };
 		287090AA1FC8BDF600356338 /* matrix.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 287090A91FC8BDF600356338 /* matrix.cpp */; };
+		2873F7ED2051388B003BE1D7 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2873F7EC2051388B003BE1D7 /* ViewController.swift */; };
 		28757C801FCF5A45001720F1 /* plane.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28757C7F1FCF5A44001720F1 /* plane.cpp */; };
 		2883C2561F91BAFA007DDB3C /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2883C2551F91BAFA007DDB3C /* main.cpp */; };
 		2883C25B1F91BB33007DDB3C /* libowl.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2883C2411F91BA7F007DDB3C /* libowl.dylib */; };
@@ -42,7 +43,14 @@
 		288A6FA81F91CA9E00783E52 /* binary_serialization.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 288A6FA61F91CA9E00783E52 /* binary_serialization.cpp */; };
 		2896D09020343A5E00E9241D /* quaterion.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2896D08F20343A5E00E9241D /* quaterion.cpp */; };
 		2896D094203613BA00E9241D /* physical_properties.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2896D093203613BA00E9241D /* physical_properties.cpp */; };
+		289CAEE9205133960016894A /* Mesh.swift in Sources */ = {isa = PBXBuildFile; fileRef = 289CAEE8205133960016894A /* Mesh.swift */; };
+		289CAEEB205135F40016894A /* SceneKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 289CAEEA205135F40016894A /* SceneKit.framework */; };
+		289CAEEC205135F90016894A /* libowl.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2883C2411F91BA7F007DDB3C /* libowl.dylib */; };
 		28A19C452046B6CA00D012F9 /* raytracer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28A19C442046B6CA00D012F9 /* raytracer.cpp */; };
+		28A19CAD205131C400D012F9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28A19CAC205131C400D012F9 /* AppDelegate.swift */; };
+		28A19CB1205131C400D012F9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 28A19CB0205131C400D012F9 /* Assets.xcassets */; };
+		28A19CB4205131C400D012F9 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 28A19CB2205131C400D012F9 /* Main.storyboard */; };
+		28A19CBC2051327D00D012F9 /* wrapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28A19CBB2051327D00D012F9 /* wrapper.cpp */; };
 		28BB756A1FB0F6CC009A6290 /* signal.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28BB75691FB0F6CC009A6290 /* signal.cpp */; };
 		28BB756C1FB3D030009A6290 /* signal.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28BB756B1FB3D030009A6290 /* signal.cpp */; };
 		28C66FA71FC1BF1D00F9C0D1 /* handle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28C66FA61FC1BF1D00F9C0D1 /* handle.cpp */; };
@@ -159,6 +167,7 @@
 		286FE413203AC81F006BF193 /* mesh.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = mesh.cpp; sourceTree = "<group>"; };
 		286FE415203C5B9E006BF193 /* adjacent_iterator.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = adjacent_iterator.hpp; sourceTree = "<group>"; };
 		287090A91FC8BDF600356338 /* matrix.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = matrix.cpp; sourceTree = "<group>"; };
+		2873F7EC2051388B003BE1D7 /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ViewController.swift; path = meshviewer/ViewController.swift; sourceTree = SOURCE_ROOT; };
 		28757C7E1FCDDA18001720F1 /* nplane.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = nplane.hpp; sourceTree = "<group>"; };
 		28757C7F1FCF5A44001720F1 /* plane.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = plane.cpp; sourceTree = "<group>"; };
 		2883C2411F91BA7F007DDB3C /* libowl.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libowl.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -191,6 +200,8 @@
 		2896D0912035875C00E9241D /* utils.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = utils.hpp; sourceTree = "<group>"; };
 		2896D09220358A5900E9241D /* physical_properties.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = physical_properties.hpp; sourceTree = "<group>"; };
 		2896D093203613BA00E9241D /* physical_properties.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = physical_properties.cpp; sourceTree = "<group>"; };
+		289CAEE8205133960016894A /* Mesh.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mesh.swift; sourceTree = "<group>"; };
+		289CAEEA205135F40016894A /* SceneKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SceneKit.framework; path = System/Library/Frameworks/SceneKit.framework; sourceTree = SDKROOT; };
 		28A19C402046AA6400D012F9 /* view.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = view.hpp; sourceTree = "<group>"; };
 		28A19C432046AD2F00D012F9 /* raytracer.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = raytracer.hpp; sourceTree = "<group>"; };
 		28A19C442046B6CA00D012F9 /* raytracer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = raytracer.cpp; sourceTree = "<group>"; };
@@ -199,6 +210,14 @@
 		28A19C4B204812AF00D012F9 /* look_at_constraint.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = look_at_constraint.hpp; sourceTree = "<group>"; };
 		28A19C4C204D687400D012F9 /* mesh.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = mesh.hpp; sourceTree = "<group>"; };
 		28A19C4D204D6AD600D012F9 /* grid.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = grid.hpp; sourceTree = "<group>"; };
+		28A19CAA205131C400D012F9 /* MeshViewer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MeshViewer.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		28A19CAC205131C400D012F9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		28A19CB0205131C400D012F9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		28A19CB3205131C400D012F9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		28A19CB5205131C400D012F9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		28A19CB6205131C400D012F9 /* MeshViewer.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MeshViewer.entitlements; sourceTree = "<group>"; };
+		28A19CBA2051327D00D012F9 /* MeshViewer-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MeshViewer-Bridging-Header.h"; sourceTree = "<group>"; };
+		28A19CBB2051327D00D012F9 /* wrapper.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = wrapper.cpp; path = meshviewer/wrapper.cpp; sourceTree = SOURCE_ROOT; };
 		28BB75661FB0F254009A6290 /* non_copyable.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = non_copyable.hpp; sourceTree = "<group>"; };
 		28BB75671FB0F393009A6290 /* export.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = export.hpp; sourceTree = "<group>"; };
 		28BB75681FB0F541009A6290 /* signal.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = signal.hpp; sourceTree = "<group>"; };
@@ -261,6 +280,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				288A6F9B1F91BE5400783E52 /* libowl.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		28A19CA7205131C400D012F9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				289CAEEC205135F90016894A /* libowl.dylib in Frameworks */,
+				289CAEEB205135F40016894A /* SceneKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -384,6 +412,7 @@
 				2883C2431F91BA7F007DDB3C /* owl */,
 				2883C2541F91BAFA007DDB3C /* test */,
 				288A6F951F91BE4400783E52 /* bench */,
+				28A19CAB205131C400D012F9 /* MeshViewer */,
 				2883C2421F91BA7F007DDB3C /* Products */,
 				2883C25A1F91BB33007DDB3C /* Frameworks */,
 			);
@@ -395,6 +424,7 @@
 				2883C2411F91BA7F007DDB3C /* libowl.dylib */,
 				2883C2531F91BAFA007DDB3C /* test */,
 				288A6F941F91BE4400783E52 /* bench */,
+				28A19CAA205131C400D012F9 /* MeshViewer.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -428,6 +458,7 @@
 		2883C25A1F91BB33007DDB3C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				289CAEEA205135F40016894A /* SceneKit.framework */,
 				280418F81FDC4B4B004EA43B /* libboost_system-mt.dylib */,
 				280418F51FDC4ACF004EA43B /* libboost_filesystem-mt.dylib */,
 			);
@@ -547,6 +578,22 @@
 			path = render;
 			sourceTree = "<group>";
 		};
+		28A19CAB205131C400D012F9 /* MeshViewer */ = {
+			isa = PBXGroup;
+			children = (
+				2873F7EC2051388B003BE1D7 /* ViewController.swift */,
+				28A19CAC205131C400D012F9 /* AppDelegate.swift */,
+				28A19CB0205131C400D012F9 /* Assets.xcassets */,
+				28A19CB2205131C400D012F9 /* Main.storyboard */,
+				28A19CB5205131C400D012F9 /* Info.plist */,
+				28A19CB6205131C400D012F9 /* MeshViewer.entitlements */,
+				28A19CBB2051327D00D012F9 /* wrapper.cpp */,
+				28A19CBA2051327D00D012F9 /* MeshViewer-Bridging-Header.h */,
+				289CAEE8205133960016894A /* Mesh.swift */,
+			);
+			path = MeshViewer;
+			sourceTree = "<group>";
+		};
 		28C66FAC1FC5641B00F9C0D1 /* variant */ = {
 			isa = PBXGroup;
 			children = (
@@ -636,13 +683,31 @@
 			productReference = 288A6F941F91BE4400783E52 /* bench */;
 			productType = "com.apple.product-type.tool";
 		};
+		28A19CA9205131C400D012F9 /* MeshViewer */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 28A19CB9205131C400D012F9 /* Build configuration list for PBXNativeTarget "MeshViewer" */;
+			buildPhases = (
+				28A19CA6205131C400D012F9 /* Sources */,
+				28A19CA7205131C400D012F9 /* Frameworks */,
+				28A19CA8205131C400D012F9 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = MeshViewer;
+			productName = MeshViewer;
+			productReference = 28A19CAA205131C400D012F9 /* MeshViewer.app */;
+			productType = "com.apple.product-type.application";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
 		2883C2391F91BA7F007DDB3C /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0900;
+				LastSwiftUpdateCheck = 0920;
+				LastUpgradeCheck = 0920;
 				ORGANIZATIONNAME = "Sören König";
 				TargetAttributes = {
 					2883C2401F91BA7F007DDB3C = {
@@ -657,6 +722,11 @@
 						CreatedOnToolsVersion = 9.0;
 						ProvisioningStyle = Automatic;
 					};
+					28A19CA9205131C400D012F9 = {
+						CreatedOnToolsVersion = 9.2;
+						LastSwiftMigration = 0920;
+						ProvisioningStyle = Automatic;
+					};
 				};
 			};
 			buildConfigurationList = 2883C23C1F91BA7F007DDB3C /* Build configuration list for PBXProject "owl" */;
@@ -665,6 +735,7 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				Base,
 			);
 			mainGroup = 2883C2381F91BA7F007DDB3C;
 			productRefGroup = 2883C2421F91BA7F007DDB3C /* Products */;
@@ -674,9 +745,22 @@
 				2883C2401F91BA7F007DDB3C /* owl */,
 				2883C2521F91BAFA007DDB3C /* test */,
 				288A6F931F91BE4400783E52 /* bench */,
+				28A19CA9205131C400D012F9 /* MeshViewer */,
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		28A19CA8205131C400D012F9 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				28A19CB1205131C400D012F9 /* Assets.xcassets in Resources */,
+				28A19CB4205131C400D012F9 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		2883C23D1F91BA7F007DDB3C /* Sources */ = {
@@ -740,7 +824,29 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		28A19CA6205131C400D012F9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				28A19CAD205131C400D012F9 /* AppDelegate.swift in Sources */,
+				289CAEE9205133960016894A /* Mesh.swift in Sources */,
+				2873F7ED2051388B003BE1D7 /* ViewController.swift in Sources */,
+				28A19CBC2051327D00D012F9 /* wrapper.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		28A19CB2205131C400D012F9 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				28A19CB3205131C400D012F9 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		2883C24A1F91BA7F007DDB3C /* Debug */ = {
@@ -848,6 +954,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = macosx;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				USER_HEADER_SEARCH_PATHS = "\"$(SRCROOT)/\" \"$(SRCROOT)/thirdparty\"";
 			};
 			name = Release;
@@ -934,6 +1041,51 @@
 			};
 			name = Release;
 		};
+		28A19CB7205131C400D012F9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = MeshViewer/MeshViewer.entitlements;
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = AS2VL7PB8X;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = MeshViewer/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = b.MeshViewer;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OBJC_BRIDGING_HEADER = "MeshViewer/MeshViewer-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 4.0;
+			};
+			name = Debug;
+		};
+		28A19CB8205131C400D012F9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = MeshViewer/MeshViewer.entitlements;
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = AS2VL7PB8X;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = MeshViewer/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = b.MeshViewer;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "MeshViewer/MeshViewer-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_VERSION = 4.0;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -969,6 +1121,15 @@
 			buildConfigurations = (
 				288A6F981F91BE4400783E52 /* Debug */,
 				288A6F991F91BE4400783E52 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		28A19CB9205131C400D012F9 /* Build configuration list for PBXNativeTarget "MeshViewer" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				28A19CB7205131C400D012F9 /* Debug */,
+				28A19CB8205131C400D012F9 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

@@ -20,13 +20,13 @@ namespace owl
 {
   namespace scene
   {
-    template <typename Color, typename Scalar>
+    template <typename Scalar, typename Color>
     class view
     {
     public:
       using color = Color;
     
-      view(graphics::image<color>& img, graph<Scalar>& g)
+      view(graphics::image<color>& img, graph<Scalar, Color>& g)
         : raw_image_(img.data())
         , step_(img.width())
         , scene_(&g)
@@ -59,8 +59,8 @@ namespace owl
     
   
     private:
-      graph<Scalar>* scene_ = nullptr;
-      node<Scalar>* point_of_view_ = nullptr;
+      graph<Scalar, Color>* scene_ = nullptr;
+      node<Scalar, Color>* point_of_view_ = nullptr;
       math::rectangle<std::size_t> viewport_;
       color* raw_image_ = nullptr;
       std::size_t step_ = 0;
