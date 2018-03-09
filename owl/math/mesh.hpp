@@ -10,6 +10,7 @@
 #pragma once
 
 #include "owl/utils/handle.hpp"
+#include "owl/utils/dynamic_properties.hpp"
 #include "owl/utils/count_iterator.hpp"
 #include "owl/utils/iterator_range.hpp"
 #include "owl/utils/map_iterator.hpp"
@@ -36,6 +37,21 @@ namespace owl
   
     struct face_tag{};
     using face_handle = owl::utils::handle<face_tag>;
+ 
+  
+    template <typename T>
+    using mesh_property_handle = owl::utils::property_handle<T>;
+  
+    template <typename T>
+    using vertex_property_handle = owl::utils::indexed_property_handle<T,vertex_tag>;
+    template <typename T>
+    using edge_property_handle = owl::utils::indexed_property_handle<T,edge_tag>;
+    template <typename T>
+    using halfedge_property_handle = owl::utils::indexed_property_handle<T,halfedge_tag>;
+    template <typename T>
+    using face_property_handle = owl::utils::indexed_property_handle<T,face_tag>;
+  
+
   
     class status_flags
     {
@@ -135,6 +151,15 @@ namespace owl
     
       template <typename Range, std::size_t N = 3>
       using is_vector_range = std::is_same<typename utils::container_traits<std::decay_t<Range>>::value_type, vector<N>>;
+    
+    
+      mesh()
+      {
+        add_property(vertex_position_handle_,"vertex_position");
+        add_property(face_normal_handle_,"face_normal");
+        add_property(halfedge_normal_handle_,"halfedge_normal");
+        add_property(halfedge_texcoord_handle_,"halfedge_texcoord");
+      }
     
     
       auto faces() const
@@ -336,31 +361,74 @@ namespace owl
 
       math::vector<Scalar,2>& texcoord(halfedge_handle he)
       {
-        return operator[](he).texcoord;
+        return halfedge_properties_[halfedge_texcoord_handle_][he.index()];
       }
 
-      template<typename Handle>
-      const math::vector<Scalar,3>& normal(Handle h) const
+      const math::vector<Scalar,3>& normal(face_handle f) const
       {
-        return operator[](h).normal;
+        return face_properties_[face_normal_handle_][f.index()];
+      }
+    
+      math::vector<Scalar,3>& normal(face_handle f)
+      {
+        return face_properties_[face_normal_handle_][f.index()];
+      }
+    
+      const math::vector<Scalar,3>& normal(halfedge_handle he) const
+      {
+        return halfedge_properties_[halfedge_normal_handle_][he.index()];
+      }
+    
+      math::vector<Scalar,3>& normal(halfedge_handle he)
+      {
+        return halfedge_properties_[halfedge_normal_handle_][he.index()];
       }
 
-      template<typename Handle>
-      math::vector<Scalar,3>& normal(Handle h)
-      {
-        return operator[](h).normal;
-      }
-
-      template<typename Handle>
-      const status_flags& status(Handle h) const
-      {
-        return operator[](h);
-      }
     
       template<typename Handle>
       status_flags& status(Handle h)
       {
         return operator[](h);
+      }
+    
+      const vertex_handle& target(halfedge_handle he) const
+      {
+        return operator[](he).target;
+      }
+    
+      vertex_handle& target(halfedge_handle he)
+      {
+        return operator[](he).target;
+      }
+    
+      const vertex_handle& origin(halfedge_handle he) const
+      {
+        return operator[](opposite(he)).target;
+      }
+    
+      vertex_handle& origin(halfedge_handle he)
+      {
+        return operator[](opposite(he)).target;
+      }
+    
+      const vertex_handle& target(edge_handle e) const
+      {
+        return operator[](halfedge(e)).target;
+      }
+    
+      vertex_handle& target(edge_handle e)
+      {
+        return operator[](halfedge(e)).target;
+      }
+    
+      const vertex_handle& origin(edge_handle e) const
+      {
+        return operator[](opposite(halfedge(e))).target;
+      }
+    
+      vertex_handle& origin(edge_handle e)
+      {
+        return operator[](opposite(halfedge(e))).target;
       }
     
       template<typename Handle>
@@ -477,6 +545,26 @@ namespace owl
         return faces_.size();
       }
     
+      std::size_t num_triangles() const
+      {
+        auto fs =  faces();
+        return std::count_if(fs.begin(), fs.end(),
+         [this](face_handle f)
+         {
+           return is_triangle(f);
+         });
+      }
+    
+      std::size_t num_quads() const
+      {
+        auto fs =  faces();
+        return std::count_if(fs.begin(), fs.end(),
+         [this](face_handle f)
+         {
+           return is_quad(f);
+         });
+      }
+    
       bool is_non_manifold(vertex_handle v) const
       {
         std::size_t n = 0;
@@ -525,7 +613,7 @@ namespace owl
         return !halfedge(v).is_valid();
       }
     
-      bool is_sharp(edge_handle e, const angle<Scalar>& max_angle= degrees<Scalar>(44)) const
+      bool is_sharp(edge_handle e, const angle<Scalar>& max_angle = degrees<Scalar>(44)) const
       {
         return is_sharp(halfedge(e), max_angle);
       }
@@ -604,12 +692,31 @@ namespace owl
          edge_iterator(edge_handle{num_edges()}));
       }
     
+      void reserve_vertices(std::size_t n)
+      {
+        vertices_.reserve(n);
+        vertex_properties_.reserve(n);
+      }
+    
+      void reserve_edges(std::size_t n)
+      {
+        edges_.reserve(n);
+        edge_properties_.reserve(n);
+        halfedge_properties_.reserve(2*n);
+      }
+    
+      void reserve_faces(std::size_t n)
+      {
+        faces_.reserve(n);
+        face_properties_.reserve(n);
+      }
+    
       void subdivide_quad_split()
       {
         assert(is_quad_mesh());
-        vertices_.reserve(num_vertices() + num_faces());
-        edges_.reserve(2 * num_edges() + 4 * num_faces());
-        faces_.reserve(4 * num_faces());
+        reserve_vertices(num_vertices() + num_faces());
+        reserve_edges(2 * num_edges() + 4 * num_faces());
+        reserve_faces(4 * num_faces());
       
         std::size_t num_vertices_old = vertices_.size();
         split_edges();
@@ -643,9 +750,9 @@ namespace owl
       {
         assert(is_triangle_mesh());
       
-        vertices_.reserve(num_vertices() + num_edges());
-        faces_.reserve(4 * num_faces());
-        edges_.reserve(2 * num_edges() + 3 * num_faces());
+        reserve_vertices(num_vertices() + num_edges());
+        reserve_faces(4 * num_faces());
+        reserve_edges(2 * num_edges() + 3 * num_faces());
   
         std::size_t num_vertices_old = vertices_.size();
         split_edges();
@@ -672,6 +779,14 @@ namespace owl
         }
       }
     
+      face_handle create_face(halfedge_handle he)
+      {
+      
+        faces_.emplace_back(he);
+        return face_properties_.add_elem();
+      
+      }
+    
      /* void subdivide_vertex_split()
       {
       
@@ -690,8 +805,7 @@ namespace owl
         next(he_prev) = he;
         next(he) = he_next;
         next(prev(he_next)) = he_opp;
-        auto f_new = face_handle(faces_.size());
-        faces_.emplace_back(he);
+        auto f_new = create_face(he);
         face(he) = f_new;
         halfedge(f_new) = he;
         auto he2 = next(he);
@@ -750,7 +864,7 @@ namespace owl
         {
           auto he2 = halfedge(e.current);
           if(f == faces_.size())
-            faces_.emplace_back_back(he2);
+            create_face(he2);
           else
             halfedge(f) = he2;
           auto he_start = he2;
@@ -936,8 +1050,12 @@ namespace owl
       void clear()
       {
         faces_.clear();
+        face_properties_.clear();
         edges_.clear();
+        edge_properties_.clear();
+        halfedge_properties_.clear();
         vertices_.clear();
+        vertex_properties_.clear();
       }
     
       bool empty() const
@@ -948,17 +1066,15 @@ namespace owl
     
       auto add_vertex(const vector<3>& pos)
       {
-        auto v = vertex_handle{vertices_.size()};
         vertices_.emplace_back(pos);
-        return v;
+        return vertex_properties_.add_elem();
       }
     
       template <typename VectorRange, typename = std::enable_if_t<is_vector_range<VectorRange>::value>>
       auto add_vertices(VectorRange&& points)
       {
-        std::size_t n = vertices_.size();
         vertices_.insert(vertices_.end(), std::begin(points), std::end(points));
-        return make_iterator_range(vertex_iterator(vertex_handle(n)), vertex_iterator(vertex_handle(vertices_.size())));
+        return vertex_properties_.add_elems(std::size(points));
       }
     
       template <typename... VertexHandles, typename = std::enable_if_t<(... && std::is_same<std::decay_t<VertexHandles>,vertex_handle>::value)>>
@@ -988,7 +1104,7 @@ namespace owl
           face(he) = f;
           hes.push_back(he);
         }
-        faces_.emplace_back(hes.back());
+        create_face(hes.back());
       
         for(auto he : owl::utils::make_adjacent_range(hes))
         {
@@ -1070,8 +1186,70 @@ namespace owl
           }
         }
       }
+    
+      template <typename T>
+      void add_property(vertex_property_handle<T>& ph, const std::string& name = "")
+      {
+        return vertex_properties_.add_property(ph, name);
+      }
+    
+      template <typename T>
+      void add_property(edge_property_handle<T>& ph, const std::string& name = "")
+      {
+        return edge_properties_.add_property(ph, name);
+      }
+    
+      template <typename T>
+      void add_property(halfedge_property_handle<T>& ph, const std::string& name = "")
+      {
+        return halfedge_properties_.add_property(ph, name);
+      }
+    
+      template <typename T>
+      void add_property(face_property_handle<T>& ph, const std::string& name = "")
+      {
+        face_properties_.add_property(ph, name);
+      }
+    
+      template <typename T>
+      void add_property(mesh_property_handle<T>& ph, const std::string& name = "")
+      {
+        mesh_properties_.add_property(ph, name);
+      }
+    
+      template <typename T>
+      void remove_property(vertex_property_handle<T>& ph)
+      {
+        vertex_properties_.remove_property(ph);
+      }
+    
+      template <typename T>
+      void remove_property(edge_property_handle<T>& ph)
+      {
+        edge_properties_.remove_property(ph);
+      }
+    
+      template <typename T>
+      void remove_property(halfedge_property_handle<T>& ph)
+      {
+        halfedge_properties_.remove_property(ph);
+      }
+    
+      template <typename T>
+      void remove_property(face_property_handle<T>& ph)
+      {
+        face_properties_.remove_property(ph);
+      }
+    
+      template <typename T>
+      void remove_property(mesh_property_handle<T>& ph)
+      {
+        mesh_properties_.remove_property(ph);
+      }
 
    private:
+   
+    
    
      struct vertex_t
      {
@@ -1096,8 +1274,6 @@ namespace owl
         halfedge_handle next;
         face_handle face;
         status_flags status;
-        vector<3> normal;
-        vector<2> texcoord;
      };
     
      struct edge_t
@@ -1116,14 +1292,12 @@ namespace owl
      {
        face_t() = default;
      
-       face_t(halfedge_handle he, const vector<3>& nml = vector<3>::zero())
+       face_t(halfedge_handle he)
         : halfedge{he}
-        , normal{nml}
        {
        }
      
        halfedge_handle halfedge;
-       vector<3> normal;
        status_flags status;
      };
     
@@ -1147,25 +1321,7 @@ namespace owl
        return operator[](v).halfedge;
      }
     
-     const vertex_handle& target(halfedge_handle he) const
-     {
-       return operator[](he).target;
-     }
     
-     vertex_handle& target(halfedge_handle he)
-     {
-       return operator[](he).target;
-     }
-    
-     const vertex_handle& origin(halfedge_handle he) const
-     {
-       return operator[](opposite(he)).target;
-     }
-    
-     vertex_handle& origin(halfedge_handle he)
-     {
-       return operator[](opposite(he)).target;
-     }
     
      const halfedge_handle& next(halfedge_handle he) const
      {
@@ -1284,9 +1440,9 @@ namespace owl
     
      edge_handle add_edge(vertex_handle from, vertex_handle to)
      {
-        edge_handle e = edge_handle{edges_.size()};
         edges_.emplace_back(from, to);
-        return e;
+        halfedge_properties_.add_elems(2);
+        return edge_properties_.add_elem();
      }
     
      template <typename S>
@@ -1296,6 +1452,17 @@ namespace owl
      std::vector<edge_t> edges_;
      std::vector<vertex_t> vertices_;
      std::vector<face_t> faces_;
+    
+     vertex_property_handle<vector3<Scalar>> vertex_position_handle_;
+     face_property_handle<vector3<Scalar>> face_normal_handle_;
+     halfedge_property_handle<vector3<Scalar>> halfedge_normal_handle_;
+     halfedge_property_handle<vector2<Scalar>> halfedge_texcoord_handle_;
+    
+     utils::indexed_property_container<vertex_tag> vertex_properties_;
+     utils::indexed_property_container<edge_tag> edge_properties_;
+     utils::indexed_property_container<halfedge_tag> halfedge_properties_;
+     utils::indexed_property_container<face_tag> face_properties_;
+     utils::property_container mesh_properties_;
    };
   
   

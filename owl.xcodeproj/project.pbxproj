@@ -168,6 +168,7 @@
 		286FE415203C5B9E006BF193 /* adjacent_iterator.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = adjacent_iterator.hpp; sourceTree = "<group>"; };
 		287090A91FC8BDF600356338 /* matrix.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = matrix.cpp; sourceTree = "<group>"; };
 		2873F7EC2051388B003BE1D7 /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ViewController.swift; path = meshviewer/ViewController.swift; sourceTree = SOURCE_ROOT; };
+		2873F7EE20529A1E003BE1D7 /* dynamic_properties.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = dynamic_properties.hpp; sourceTree = "<group>"; };
 		28757C7E1FCDDA18001720F1 /* nplane.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = nplane.hpp; sourceTree = "<group>"; };
 		28757C7F1FCF5A44001720F1 /* plane.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = plane.cpp; sourceTree = "<group>"; };
 		2883C2411F91BA7F007DDB3C /* libowl.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libowl.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -384,6 +385,7 @@
 				286FE415203C5B9E006BF193 /* adjacent_iterator.hpp */,
 				28E3DA5A20455FA500D6CAFE /* range_algorithm.hpp */,
 				28E3DA5B204580BB00D6CAFE /* property.hpp */,
+				2873F7EE20529A1E003BE1D7 /* dynamic_properties.hpp */,
 			);
 			path = utils;
 			sourceTree = "<group>";

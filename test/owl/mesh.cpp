@@ -16,6 +16,7 @@ namespace test
   
   
     mesh<float> b = create_box<float>();
+    mesh<float> b2 = b;
     CHECK(b.num_faces() == 6);
     CHECK(b.num_vertices() == 8);
     CHECK(b.num_edges() == 12);

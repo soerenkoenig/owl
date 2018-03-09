@@ -34,29 +34,53 @@ class Mesh: NSObject
     }
     
   
-   /* public var vertexCount: Int {
+    public var vertexCount: Int {
         return Int(mesh_num_vertices(self.cpp_mesh_pointer))
     }
   
+    public var edgeCount: Int {
+        return Int(mesh_num_edges(self.cpp_mesh_pointer))
+    }
+  
+    public var halfedgeCount: Int {
+        return Int(mesh_num_halfedges(self.cpp_mesh_pointer))
+    }
+  
+    public var faceCount: Int {
+        return Int(mesh_num_faces(self.cpp_mesh_pointer))
+    }
+  
+    public var triangleCount: Int {
+        return Int(mesh_num_triangles(self.cpp_mesh_pointer))
+    }
+  
+     public var quadCount: Int {
+        return Int(mesh_num_quads(self.cpp_mesh_pointer))
+    }
+  /*
     public var name: String {
         return String(cString:mesh_name(self.cpp_mesh_pointer))
     }
   
     func load(_ filename:String) -> Bool {
       return Bool(mesh_load(self.cpp_mesh_pointer, filename.cCharArray))
-    }
+    }*/
   
-    func geometry(_ filename:String) -> SCNGeometry
+   /* func geometry(_ filename:String) -> SCNGeometry
     {
-      let indices: [Int32] = [0, 1, 2, 3]
       
-      let count = mesh_position_count(self.cpp_mesh_pointer);
-     
+      
+      let c = mesh_num_edges(self.cpp_mesh_pointer)*2;
+      let indices = Array(repeating: Int32(0), count: c)
+      
+      
+     /*
       let rawPtr = UnsafeRawPointer( mesh_position_data(self.cpp_mesh_pointer));
       let posData = NSData(bytes: rawPtr, length: MemoryLayout<Float32>.size * count*3)
       
       let source = SCNGeometrySource(data: posData as Data, semantic: SCNGeometrySource.Semantic.vertex, vectorCount: count, usesFloatComponents: true, componentsPerVector: 3, bytesPerComponent: MemoryLayout<Float>.size, dataOffset: 0, dataStride: 0)
-      let element = SCNGeometryElement(indices: indices, primitiveType: .triangleStrip)
+*/
+      let element = SCNGeometryElement(indices: indices, primitiveType: .line)
 
       let meshGeom =  SCNGeometry(sources: [source], elements: [element])
       return meshGeom;

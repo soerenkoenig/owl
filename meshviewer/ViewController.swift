@@ -31,7 +31,10 @@ class ViewController: NSViewController {
   //  let result = m.load("test.txt")
   //  print(result)
     
-    //print(m.name)
+    print("number of vertices: \(m.vertexCount)")
+    print("number of edges: \(m.edgeCount)")
+    print("number of halfedges: \(m.halfedgeCount)")
+    print("number of faces: \(m.faceCount)")
     
     let scene = SCNScene()
     
