@@ -30,7 +30,7 @@ class Mesh: NSObject
   
     func create_geo_sphere()
     {
-      mesh_create_geosphere(self.cpp_mesh_pointer, 10.0,  0)
+      mesh_create_geosphere(self.cpp_mesh_pointer, 10.0,  3)
     }
   
     func create_box()

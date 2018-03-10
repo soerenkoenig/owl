@@ -661,21 +661,28 @@ namespace owl
       {
         auto he_opp = opposite(he);
         auto he_opp_prev = prev(he_opp);
+        auto vold = target(he);
       
-        auto e = add_edge(v, target(he));
+        auto e = add_edge(vold, v);
         auto he_new = halfedge(e);
         auto he_new_opp = opposite(he_new);
+      
+         if(halfedge(vold) == he)
+          halfedge(vold) = he_new_opp;
       
         next(he_opp_prev) = he_new;
         next(he_new_opp) = next(he);
         next(he) = he_new_opp;
         next(he_new) = he_opp;
       
-        target(he_new) = v;
         target(he) = v;
         face(he_new) = face(he_opp);
         face(he_new_opp) = face(he);
-      
+        if(!face(he_new).is_valid())
+         halfedge(v) = he_new;
+        else
+          halfedge(v) = he;
+        
         return he_new;
       }
     
@@ -800,7 +807,9 @@ namespace owl
         auto e = add_edge(target(he_prev), origin(he_next));
         auto he = halfedge(e);
         auto he_opp = opposite(he);
+        auto fold =  face(he_prev);
         face(he_opp) = face(he_prev);
+        halfedge(fold) = he_opp;
         next(he_opp) = next(he_prev);
         next(he_prev) = he;
         next(he) = he_next;
@@ -1067,7 +1076,9 @@ namespace owl
       auto add_vertex(const vector<3>& pos)
       {
         vertices_.emplace_back();
-        return vertex_properties_.add_elem();
+        auto v = vertex_properties_.add_elem();
+        position(v) = pos;
+        return v;
       }
     
       template <typename VectorRange, typename = std::enable_if_t<is_vector_range<VectorRange>::value>>
@@ -1332,8 +1343,7 @@ namespace owl
       struct edge_t
       {
         edge_t(vertex_handle from, vertex_handle to)
-          : halfedges {halfedge_t(to)
-          , halfedge_t(from)}
+          : halfedges {halfedge_t(to), halfedge_t(from)}
         {
         }
      
@@ -1638,6 +1648,22 @@ namespace owl
       return m;
     }
   
+     template <typename Scalar>
+    mesh<Scalar> create_triangle()
+    {
+      mesh<Scalar> m;
+    
+      std::array<vector3<Scalar>,3> positions =
+      {vector3<Scalar>{0, 0,  0},
+       vector3<Scalar>{1, 0,  0},
+       vector3<Scalar>{(Scalar)0.5,(Scalar) 1,  0}};
+      auto vhandles = m.add_vertices(positions);
+
+      m.add_face(vhandles[0], vhandles[1], vhandles[2]);
+    
+      return m;
+    }
+  
   template <typename Scalar, typename Scalar2>
   mesh<Scalar> create_geodesic_sphere(Scalar2 radius = 1, std::size_t levels = 2)
   {
@@ -1647,10 +1673,10 @@ namespace owl
     {
       auto n_old  = m.vertices().size();
       m.subdivide_triangle_split();
-     /* auto verts = m.vertices();
+      auto verts = m.vertices();
     
       for(auto& pos: m.positions(make_iterator_range(verts).advance_begin(n_old)))
-        pos = radius * normalize(pos);*/
+        pos = radius * normalize(pos);
     }
     for(auto v: m.vertices())
     {
@@ -1854,6 +1880,8 @@ namespace owl
     }
     return m;
   }
+  
+  
 
 
   

@@ -75,9 +75,10 @@ class ViewController: NSViewController {
     print("number of halfedges: \(m.halfedgeCount)")
     print("number of faces: \(m.faceCount)")
     
-    let meshGeom = m.edgeGeometry()
+   // let meshGeom = m.edgeGeometry()
+    let meshGeom = m.triangleGeometry()
     let meshNode = SCNNode(geometry: meshGeom)
-    meshGeom.firstMaterial?.lightingModel = SCNMaterial.LightingModel.constant
+  //  meshGeom.firstMaterial?.lightingModel = SCNMaterial.LightingModel.constant
     meshGeom.firstMaterial?.diffuse.contents  = #colorLiteral(red: 0.9254902005, green: 0.2352941185, blue: 0.1019607857, alpha: 1)
     meshNode.renderingOrder = 100000;
     scene.rootNode.addChildNode(meshNode)
