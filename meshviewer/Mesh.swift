@@ -30,7 +30,7 @@ class Mesh: NSObject
   
     func create_geo_sphere()
     {
-      mesh_create_geosphere(self.cpp_mesh_pointer, 1.0,  0)
+      mesh_create_geosphere(self.cpp_mesh_pointer, 10.0,  0)
     }
   
     func create_box()
@@ -71,20 +71,51 @@ class Mesh: NSObject
       return Bool(mesh_load(self.cpp_mesh_pointer, filename.cCharArray))
     }*/
   
-    func geometry() -> SCNGeometry
+    func edgeGeometry() -> SCNGeometry
+    {
+      let positionPtr = UnsafeMutableRawPointer(mesh_halfedge_position_data_init(self.cpp_mesh_pointer))
+      let positionData = Data(bytes: positionPtr!, count: MemoryLayout<Float32>.size * halfedgeCount * 3)
+      mesh_halfedge_position_data_deinit(positionPtr!)
+      
+      let indexPtr = UnsafeMutableRawPointer(mesh_edge_halfedge_indices_init(self.cpp_mesh_pointer))!
+      let indexData = Data(bytes: indexPtr, count: MemoryLayout<Int32>.size * edgeCount * 2)
+      mesh_edge_halfedge_indices_deinit(indexPtr)
+      
+      let sourcePositions = SCNGeometrySource(data: positionData, semantic: SCNGeometrySource.Semantic.vertex, vectorCount: halfedgeCount, usesFloatComponents: true, componentsPerVector: 3, bytesPerComponent: MemoryLayout<Float32>.size, dataOffset: 0, dataStride: 3*MemoryLayout<Float32>.size)
+      
+      let element = SCNGeometryElement(data: indexData, primitiveType: .line, primitiveCount: edgeCount, bytesPerIndex: MemoryLayout<Int32>.size)
+   
+      let meshGeom =  SCNGeometry(sources: [sourcePositions], elements: [element])
+      
+      return meshGeom;
+    }
+  
+    func triangleGeometry() -> SCNGeometry
     {
       mesh_print_vertex_positions(self.cpp_mesh_pointer)
-      let rawPtr = UnsafeRawPointer( mesh_vertex_position_data(self.cpp_mesh_pointer));
-      let posData = NSData(bytes: rawPtr, length: MemoryLayout<Float32>.size * vertexCount * 3)
-      let D = posData as Data
-      let sourceVertices = SCNGeometrySource(data: D, semantic: SCNGeometrySource.Semantic.vertex, vectorCount: vertexCount, usesFloatComponents: true, componentsPerVector: 3, bytesPerComponent: MemoryLayout<Float32>.size, dataOffset: 0, dataStride: 3*MemoryLayout<Float32>.size)
-      print(sourceVertices)
+    
+      let positionPtr = UnsafeMutableRawPointer(mesh_halfedge_position_data_init(self.cpp_mesh_pointer))
+      let positionData = Data(bytes: positionPtr!, count: MemoryLayout<Float32>.size * halfedgeCount * 3)
+      mesh_halfedge_position_data_deinit(positionPtr!)
       
-
-      let indices = Array<Int>(0..<vertexCount)
-      let element = SCNGeometryElement(indices: indices, primitiveType: .line)
-
-      let meshGeom =  SCNGeometry(sources: [sourceVertices], elements: [element])
+      let normalPtr = UnsafeMutableRawPointer(mesh_halfedge_normal_data_init(self.cpp_mesh_pointer))!
+      let normalData = Data(bytes: normalPtr, count: MemoryLayout<Float32>.size * halfedgeCount * 3)
+      mesh_halfedge_normal_data_deinit(normalPtr)
+      
+      let indexPtr = UnsafeMutableRawPointer(mesh_triangle_halfedge_indices_init(self.cpp_mesh_pointer))!
+      let indexData = Data(bytes: indexPtr, count: MemoryLayout<Int32>.size * faceCount * 3)
+      mesh_triangle_halfedge_indices_deinit(indexPtr)
+      
+      let sourcePositions = SCNGeometrySource(data: positionData, semantic: SCNGeometrySource.Semantic.vertex, vectorCount: halfedgeCount, usesFloatComponents: true, componentsPerVector: 3, bytesPerComponent: MemoryLayout<Float32>.size, dataOffset: 0, dataStride: 3*MemoryLayout<Float32>.size)
+      
+      let sourceNormals = SCNGeometrySource(data: normalData, semantic: SCNGeometrySource.Semantic.normal, vectorCount: halfedgeCount, usesFloatComponents: true, componentsPerVector: 3, bytesPerComponent: MemoryLayout<Float32>.size, dataOffset: 0, dataStride: 3*MemoryLayout<Float32>.size)
+     
+      
+  
+      let element = SCNGeometryElement(data: indexData, primitiveType: .triangles, primitiveCount: faceCount, bytesPerIndex: MemoryLayout<Int32>.size)
+   
+      let meshGeom =  SCNGeometry(sources: [sourcePositions,sourceNormals], elements: [element])
+      
       return meshGeom;
     }
   

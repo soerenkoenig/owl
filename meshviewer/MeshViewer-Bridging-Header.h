@@ -22,6 +22,16 @@ size_t mesh_num_triangles(void * mesh);
 
 size_t mesh_num_quads(void * mesh);
 
-const float* mesh_vertex_position_data(void * mesh);
+void* mesh_halfedge_position_data_init(void* mesh);
+void mesh_halfedge_position_data_deinit(void* pos);
+
+void* mesh_halfedge_normal_data_init(void * mesh);
+void mesh_halfedge_normal_data_deinit(void* nmls);
+
+void* mesh_triangle_halfedge_indices_init(void* mesh);
+void mesh_triangle_halfedge_indices_deinit(void* indices);
+
+void* mesh_edge_halfedge_indices_init(void* mesh);
+void mesh_edge_halfedge_indices_deinit(void* indices);
 
 void mesh_print_vertex_positions(void * mesh);

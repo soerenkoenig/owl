@@ -1249,20 +1249,73 @@ namespace owl
       {
         mesh_properties_.remove_property(ph);
       }
+    
+      const face_handle& face(halfedge_handle he) const
+      {
+        return operator[](he).face;
+      }
+    
+    
+      halfedge_handle opposite(halfedge_handle he) const
+      {
+        return he.index() % 2  == 0 ? halfedge_handle{he.index() + 1} : halfedge_handle{he.index() - 1};
+      }
+    
+      const halfedge_handle& halfedge(face_handle f) const
+      {
+        return operator[](f).halfedge;
+      }
+    
+      const halfedge_handle& next(halfedge_handle he) const
+      {
+        return operator[](he).next;
+      }
+    
+      const halfedge_handle& halfedge(vertex_handle v) const
+      {
+        return operator[](v).halfedge;
+      }
+    
+      halfedge_handle prev(halfedge_handle he) const
+      {
+        auto prev_he = opposite(next(opposite(he)));
+        auto prev_next_he = next(prev_he);
+        while(prev_next_he != he)
+        {
+          prev_he = opposite(prev_next_he);
+          prev_next_he = next(prev_he);
+        }
+        return prev_he;
+      }
+    
+      edge_handle edge(halfedge_handle he) const
+      {
+        return edge_handle(he.index() >> 1);
+      }
+    
+      halfedge_handle halfedge(edge_handle e) const
+      {
+        return halfedge_handle{e.index() << 1};
+      }
+    
+      std::array<halfedge_handle,2> halfedges(edge_handle e) const
+      {
+        halfedge_handle he = halfedge_handle{e.index() << 1};
+        halfedge_handle he_opp = he + 1;
+        return {he, he_opp};
+      }
 
    private:
    
-    
+      struct vertex_t
+      {
+        vertex_t() = default;
+        halfedge_handle halfedge;
+        status_flags status;
+      };
    
-     struct vertex_t
-     {
-       vertex_t() = default;
-       halfedge_handle halfedge;
-       status_flags status;
-     };
-   
-     struct halfedge_t
-     {
+      struct halfedge_t
+      {
         halfedge_t() = default;
         halfedge_t(vertex_handle to, face_handle f = face_handle{})
           : target{to}
@@ -1274,196 +1327,141 @@ namespace owl
         halfedge_handle next;
         face_handle face;
         status_flags status;
-     };
+      };
     
-     struct edge_t
-     {
-       edge_t(vertex_handle from, vertex_handle to)
-        : halfedges {halfedge_t(to)
-        , halfedge_t(from)}
-       {
-       }
-     
-       std::array<halfedge_t,2> halfedges;
-       status_flags status;
-     };
-    
-     struct face_t
-     {
-       face_t() = default;
-     
-       face_t(halfedge_handle he)
-        : halfedge{he}
-       {
-       }
-     
-       halfedge_handle halfedge;
-       status_flags status;
-     };
-    
-     halfedge_handle& halfedge(face_handle f)
-     {
-       return operator[](f).halfedge;
-     }
-     
-     const halfedge_handle& halfedge(face_handle f) const
-     {
-       return operator[](f).halfedge;
-     }
-    
-     halfedge_handle& halfedge(vertex_handle v)
-     {
-       return operator[](v).halfedge;
-     }
-    
-     const halfedge_handle& halfedge(vertex_handle v) const
-     {
-       return operator[](v).halfedge;
-     }
-    
-    
-    
-     const halfedge_handle& next(halfedge_handle he) const
-     {
-        return operator[](he).next;
-     }
-    
-     halfedge_handle& next(halfedge_handle he)
-     {
-        return operator[](he).next;
-     }
-    
-     halfedge_handle prev(halfedge_handle he) const
-     {
-        auto prev_he = opposite(next(opposite(he)));
-        auto prev_next_he = next(prev_he);
-        while(prev_next_he != he)
+      struct edge_t
+      {
+        edge_t(vertex_handle from, vertex_handle to)
+          : halfedges {halfedge_t(to)
+          , halfedge_t(from)}
         {
-          prev_he = opposite(prev_next_he);
-          prev_next_he = next(prev_he);
         }
-        return prev_he;
-     }
-    
-     const face_handle& face(halfedge_handle he) const
-     {
-        return operator[](he).face;
-     }
-    
-     face_handle& face(halfedge_handle he)
-     {
-        return operator[](he).face;
-     }
-    
-     edge_handle edge(halfedge_handle he) const
-     {
-      return edge_handle(he.index() >> 1);
-     }
-    
-     halfedge_handle halfedge(edge_handle e) const
-     {
-       return halfedge_handle{e.index() << 1};
-     }
-     std::array<halfedge_handle,2> halfedges(edge_handle e) const
-     {
-       halfedge_handle he = halfedge_handle{e.index() << 1};
-       halfedge_handle he_opp = he + 1;
-       return {he, he_opp};
-     }
-    
-     halfedge_handle opposite(halfedge_handle he) const
-     {
-       return he.index() % 2  == 0 ? halfedge_handle{he.index() + 1} : halfedge_handle{he.index() - 1};
-     }
-    
-     auto operator[](edge_handle e)
-     {
-      auto he = halfedge(e);
-      return std::tie(operator[](he), operator[](he + 1));
-     }
-    
-     auto operator[](edge_handle e) const
-     {
-       auto he = halfedge(e);
-       return std::tie(operator[](he), operator[](he + 1));
-     }
-    
-     auto& operator[](halfedge_handle he)
-     {
-      edge_handle e = edge(he);
-       return edges_[e.index()].halfedges[he.index() - (e.index() << 1)];
-     }
-        
-     const auto& operator[](halfedge_handle he) const
-     {
-       edge_handle e = edge(he);
-       return edges_[e.index()].halfedges[he.index() - (e.index() << 1)];
-     }
-    
-     auto& operator[](face_handle f)
-     {
-       return faces_[f.index()];
-     }
-    
-     const auto& operator[](face_handle f) const
-     {
-       return faces_[f.index()];
-     }
-    
-     auto& operator[](vertex_handle v)
-     {
-       return vertices_[v.index()];
-     }
-    
-     const auto& operator[](vertex_handle v) const
-     {
-       return vertices_[v.index()];
-     }
-    
-     halfedge_handle find_halfedge(vertex_handle from, vertex_handle to) const
-     {
-      auto hes = outgoing_halfedges(from);
-        for(auto he : hes)
-          if(target(he) == to)
-            return he;
-        return halfedge_handle{};
-     }
-    
-     edge_handle find_edge(vertex_handle from, vertex_handle to) const
-     {
-       halfedge_handle he = find_halfedge(from,to);
-       if(he.is_valid())
-         return edge(he);
      
-       return edge_handle{};
-     }
+        std::array<halfedge_t,2> halfedges;
+        status_flags status;
+      };
     
-     edge_handle add_edge(vertex_handle from, vertex_handle to)
-     {
+      struct face_t
+      {
+        face_t() = default;
+     
+        face_t(halfedge_handle he)
+          : halfedge{he}
+        {
+        }
+     
+        halfedge_handle halfedge;
+        status_flags status;
+      };
+    
+      face_handle& face(halfedge_handle he)
+      {
+       return operator[](he).face;
+      }
+    
+      halfedge_handle& halfedge(face_handle f)
+      {
+        return operator[](f).halfedge;
+      }
+    
+      halfedge_handle& halfedge(vertex_handle v)
+      {
+        return operator[](v).halfedge;
+      }
+    
+      halfedge_handle& next(halfedge_handle he)
+      {
+        return operator[](he).next;
+      }
+    
+      auto operator[](edge_handle e)
+      {
+        auto he = halfedge(e);
+        return std::tie(operator[](he), operator[](he + 1));
+      }
+    
+      auto operator[](edge_handle e) const
+      {
+        auto he = halfedge(e);
+        return std::tie(operator[](he), operator[](he + 1));
+      }
+
+      auto& operator[](halfedge_handle he)
+      {
+        edge_handle e = edge(he);
+        return edges_[e.index()].halfedges[he.index() - (e.index() << 1)];
+      }
+        
+      const auto& operator[](halfedge_handle he) const
+      {
+        edge_handle e = edge(he);
+        return edges_[e.index()].halfedges[he.index() - (e.index() << 1)];
+      }
+
+      auto& operator[](face_handle f)
+      {
+        return faces_[f.index()];
+      }
+
+      const auto& operator[](face_handle f) const
+      {
+        return faces_[f.index()];
+      }
+    
+      auto& operator[](vertex_handle v)
+      {
+        return vertices_[v.index()];
+      }
+
+      const auto& operator[](vertex_handle v) const
+      {
+        return vertices_[v.index()];
+      }
+    
+      halfedge_handle find_halfedge(vertex_handle from, vertex_handle to) const
+      {
+        auto hes = outgoing_halfedges(from);
+          for(auto he : hes)
+            if(target(he) == to)
+              return he;
+        return halfedge_handle{};
+      }
+
+      edge_handle find_edge(vertex_handle from, vertex_handle to) const
+      {
+        halfedge_handle he = find_halfedge(from,to);
+        if(he.is_valid())
+          return edge(he);
+
+       return edge_handle{};
+      }
+    
+      edge_handle add_edge(vertex_handle from, vertex_handle to)
+      {
         edges_.emplace_back(from, to);
         halfedge_properties_.add_elems(2);
         return edge_properties_.add_elem();
-     }
+      }
+
+      template <typename S>
+      friend std::size_t check_mesh(const mesh<S>& m);
     
-     template <typename S>
-     friend std::size_t check_mesh(const mesh<S>& m);
     
+      std::vector<edge_t> edges_;
+      std::vector<vertex_t> vertices_;
+      std::vector<face_t> faces_;
+
+      vertex_property_handle<vector3<Scalar>> vertex_position_handle_;
+      face_property_handle<vector3<Scalar>> face_normal_handle_;
+      halfedge_property_handle<vector3<Scalar>> halfedge_normal_handle_;
+      halfedge_property_handle<vector2<Scalar>> halfedge_texcoord_handle_;
     
-     std::vector<edge_t> edges_;
-     std::vector<vertex_t> vertices_;
-     std::vector<face_t> faces_;
-    
-     vertex_property_handle<vector3<Scalar>> vertex_position_handle_;
-     face_property_handle<vector3<Scalar>> face_normal_handle_;
-     halfedge_property_handle<vector3<Scalar>> halfedge_normal_handle_;
-     halfedge_property_handle<vector2<Scalar>> halfedge_texcoord_handle_;
-    
-     utils::indexed_property_container<vertex_tag> vertex_properties_;
-     utils::indexed_property_container<edge_tag> edge_properties_;
-     utils::indexed_property_container<halfedge_tag> halfedge_properties_;
-     utils::indexed_property_container<face_tag> face_properties_;
-     utils::property_container mesh_properties_;
-   };
+      utils::indexed_property_container<vertex_tag> vertex_properties_;
+      utils::indexed_property_container<edge_tag> edge_properties_;
+      utils::indexed_property_container<halfedge_tag> halfedge_properties_;
+      utils::indexed_property_container<face_tag> face_properties_;
+      utils::property_container mesh_properties_;
+    };
   
   
    template <typename Scalar>
@@ -1649,10 +1647,10 @@ namespace owl
     {
       auto n_old  = m.vertices().size();
       m.subdivide_triangle_split();
-      auto verts = m.vertices();
+     /* auto verts = m.vertices();
     
       for(auto& pos: m.positions(make_iterator_range(verts).advance_begin(n_old)))
-        pos = radius * normalize(pos);
+        pos = radius * normalize(pos);*/
     }
     for(auto v: m.vertices())
     {
