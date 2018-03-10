@@ -66,7 +66,7 @@ class Mesh: NSObject
       return Bool(mesh_load(self.cpp_mesh_pointer, filename.cCharArray))
     }*/
   
-   /* func geometry(_ filename:String) -> SCNGeometry
+    func geometry(_ filename:String) -> SCNGeometry
     {
       
       
@@ -74,9 +74,11 @@ class Mesh: NSObject
       let indices = Array(repeating: Int32(0), count: c)
       
       
-     /*
+     
+     
+     
       let rawPtr = UnsafeRawPointer( mesh_position_data(self.cpp_mesh_pointer));
-      let posData = NSData(bytes: rawPtr, length: MemoryLayout<Float32>.size * count*3)
+     /* let posData = NSData(bytes: rawPtr, length: MemoryLayout<Float32>.size * count*3)
       
       let source = SCNGeometrySource(data: posData as Data, semantic: SCNGeometrySource.Semantic.vertex, vectorCount: count, usesFloatComponents: true, componentsPerVector: 3, bytesPerComponent: MemoryLayout<Float>.size, dataOffset: 0, dataStride: 0)
 */

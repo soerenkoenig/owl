@@ -12,8 +12,10 @@
 
 #include "owl/utils/handle.hpp"
 #include "owl/utils/count_iterator.hpp"
+#include "owl/utils/range_algorithm.hpp"
 #include <vector>
 #include <memory>
+
 
 
 namespace owl
@@ -33,7 +35,7 @@ namespace owl
         : name(name)
       {}
     
-      virtual property_base* clone() const = 0;
+      virtual std::unique_ptr<property_base> clone() const = 0;
   
       std::string name;
     };
@@ -49,9 +51,9 @@ namespace owl
     
       property(const property&) = default;
     
-      property_base* clone() const override
+      std::unique_ptr<property_base> clone() const override
       {
-        return new property(*this);
+        return std::unique_ptr<property>(*this);
       }
     
       T value;
@@ -60,10 +62,41 @@ namespace owl
     class property_container
     {
     public:
+      property_container() = default;
+    
+      property_container(const property_container& other)
+      {
+       properties_.reserve(other.properties_.size());
+      
+        owl::utils::transform(other.properties_,
+          std::back_inserter(properties_),
+          [](const std::unique_ptr<property_base>& p)
+          {
+            return p ? p->clone() : nullptr;
+          });
+      }
+    
+      property_container& operator=(const property_container& other)
+      {
+        if(this == &other)
+          return *this;
+      
+        properties_.clear();
+        properties_.reserve(other.properties_.size());
+      
+        owl::utils::transform(other.properties_,
+          std::back_inserter(properties_),
+          [](const std::unique_ptr<property_base>& p)
+          {
+            return p ? p->clone() : nullptr;
+          });
+        return *this;
+      }
+    
       template <typename T>
       property_handle<T>& add_property(property_handle<T>& p, const std::string& name = "")
       {
-        auto it = std::find(properties_.begin(), properties_.end(), nullptr);
+        auto it = owl::utils::find(properties_, nullptr);
         if(it == properties_.end())
         {
           properties_.emplace_back(std::make_unique<property<T>>(name));
@@ -71,10 +104,9 @@ namespace owl
         }
         else
         {
-          p = property_handle<T>{std::distance(properties_.begin(), it)};
+          p = property_handle<T>{std::distance(std::begin(properties_), it)};
           *it = std::make_unique<property<T>>(name);
         }
-      
         return p;
       }
     
@@ -84,8 +116,10 @@ namespace owl
         assert(is_valid<T>(p));
         auto it = properties_.begin() + p.index();
         *it = nullptr;
+      
         if(std::all_of(it, properties_.end(), [](auto& prop){ return prop == nullptr;}))
-          properties_.erase(it,properties_.end());
+          properties_.erase(it, properties_.end());
+      
         p.invalidate();
       }
     
@@ -111,18 +145,7 @@ namespace owl
       {
         properties_.clear();
       }
-      property_container() = default;
-      property_container(const property_container& other)
-      {
-       properties_.reserve(other.properties_.size());
-      
-        std::transform(std::begin(other.properties_), std::end(other.properties_),
-         std::back_inserter(properties_),
-         [](const std::unique_ptr<property_base>& p)
-         {
-            return std::unique_ptr<property_base>{p ? (p->clone()) : nullptr};
-         });
-      }
+    
     private:
       std::vector<std::unique_ptr<property_base>> properties_;
     };
@@ -136,11 +159,11 @@ namespace owl
     };
   
   
-    class indexed_property_base : public property_base
+    class indexed_property_base
     {
     public:
       indexed_property_base(const std::string& name)
-        : property_base(name)
+        : name(name)
       {}
     
       virtual void reserve(std::size_t n) = 0;
@@ -149,11 +172,13 @@ namespace owl
     
       virtual void swap(std::size_t i, std::size_t j) = 0;
     
-      virtual indexed_property_base* clone() const = 0;
+      virtual std::unique_ptr<indexed_property_base> clone() const = 0;
+    
+      std::string name;
     
     };
   
-
+  
     template<typename T>
     class indexed_property : public indexed_property_base
     {
@@ -164,7 +189,6 @@ namespace owl
         : indexed_property_base(name)
         , values(n, T{})
       {}
-    
     
       void reserve(std::size_t n) override
       {
@@ -181,16 +205,15 @@ namespace owl
         std::swap(values[i], values[j]);
       }
     
-      indexed_property_base* clone() const override
+      std::unique_ptr<indexed_property_base> clone() const override
       {
-        return new indexed_property(*this);
+        return std::make_unique<indexed_property>(*this);
       }
-    
+
       std::vector<T> values;
     };
   
-  
-  
+
     template <typename Tag>
     class indexed_property_container
     {
@@ -198,11 +221,11 @@ namespace owl
       template <typename T>
       void add_property(indexed_property_handle<T,Tag>& p, const std::string& name = "")
       {
-        auto it = std::find(properties_.begin(), properties_.end(), nullptr);
+        auto it = owl::utils::find(properties_, nullptr);
         if(it == properties_.end())
         {
           p = indexed_property_handle<T,Tag>(properties_.size());
-          properties_.emplace_back(std::make_unique<indexed_property<T>>(name, num_elems_));
+          properties_.push_back(std::make_unique<indexed_property<T>>(name, num_elems_));
         }
         else
         {
@@ -221,7 +244,6 @@ namespace owl
           properties_.erase(it, properties_.end());
         p.invalidate();
       }
-    
     
       template <typename T>
       std::vector<T>& operator[](const indexed_property_handle<T,Tag>& ph)
@@ -256,8 +278,8 @@ namespace owl
       void reserve(std::size_t n)
       {
        for(auto& p: properties_)
-          if(p)
-            p->reserve(n);
+         if(p)
+           p->reserve(n);
       }
     
       void resize(std::size_t n)
@@ -272,7 +294,6 @@ namespace owl
         resize(0);
       }
     
-    
       handle<Tag> add_elem()
       {
         resize(num_elems_ + 1);
@@ -285,9 +306,8 @@ namespace owl
         owl::utils::handle<Tag> first{num_elems_};
         num_elems_ += n;
         resize(num_elems_);
-       // return owl::utils::handle<Tag>{num_elems_};
         return make_iterator_range(count_iterator<handle<Tag>>(first),
-         count_iterator<handle<Tag>>(owl::utils::handle<Tag>(num_elems_)));
+          count_iterator<handle<Tag>>(owl::utils::handle<Tag>(num_elems_)));
       }
     
       indexed_property_container() = default;
@@ -296,12 +316,29 @@ namespace owl
       {
         properties_.reserve(other.properties_.size());
       
-        std::transform(std::begin(other.properties_), std::end(other.properties_),
-         std::back_inserter(properties_),
-         [](const std::unique_ptr<indexed_property_base>& p)
-         {
-            return std::unique_ptr<indexed_property_base>{p ? (p->clone()) : nullptr};
-         });
+        owl::utils::transform(other.properties_,
+          std::back_inserter(properties_),
+          [](const std::unique_ptr<indexed_property_base>& p)
+          {
+            return p ? p->clone() : nullptr;
+          });
+      }
+    
+      indexed_property_container& operator=(const indexed_property_container& other)
+      {
+        if(this == &other)
+          return *this;
+      
+        properties_.clear();
+        properties_.reserve(other.properties_.size());
+      
+        owl::utils::transform(other.properties_,
+          std::back_inserter(properties_),
+          [](const std::unique_ptr<property_base>& p)
+          {
+            return p ? p->clone() : nullptr;
+          });
+        return *this;
       }
     
       private:

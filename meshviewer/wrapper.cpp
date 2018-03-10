@@ -90,16 +90,16 @@ extern "C" void mesh_quad_indices(void * mesh, int* indices)
 {
     return ((const owl::math::mesh<float>*)mesh)->num_vertices();
 }
+*/
 
-
-extern "C" const float* mesh_position_data(void * mesh)
+extern "C" const float* mesh_vertex_position_data(void * mesh)
 {
-    return (const float*)((const owl::math::mesh<float>*)mesh)->position_data();
+    return &((const owl::math::mesh<float>*)mesh)->position(vertex_handle(0));
 }
-
-extern "C" size_t mesh_position_count(void * mesh)
+/*
+extern "C" size_t mesh_vertex_position_count(void * mesh)
 {
-    return ((const math::mesh<MyFloat>*)mesh)->position_count();
+    return ((const math::mesh<float>*)mesh)->num_vertices();
 }
 
 extern "C" bool mesh_load(void * mesh, const char* filename)

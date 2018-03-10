@@ -10,6 +10,7 @@
 #pragma once
 #include <iterator>
 #include <type_traits>
+#include <algorithm>
 #include "owl/utils/iterator_range.hpp"
 
 namespace owl
@@ -34,6 +35,20 @@ namespace owl
     {
       std::sort(std::begin(rng), std::end(rng), std::forward<Pred>(less));
       return rng;
+    }
+  
+    template<typename Range, typename T>
+    inline auto find(Range&& rng, const T& value)
+    {
+      return std::find(std::begin(std::forward<Range>(rng)), std::end(std::forward<Range>(rng)), value);
+    }
+  
+    template<typename InputRange, typename OutIter, typename BinaryOperation>
+    inline auto transform(InputRange&& rng, OutIter&& it, BinaryOperation&& binary_op)
+    {
+      return std::transform(std::begin(std::forward<InputRange>(rng)),
+        std::end(std::forward<InputRange>(rng)),std::forward<OutIter>(it),
+        std::forward<BinaryOperation>(binary_op));
     }
   
   }
