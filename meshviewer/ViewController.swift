@@ -26,22 +26,14 @@ class ViewController: NSViewController {
   }
   
   func sceneSetup() {
-    let m = Mesh()
-    m.create_geo_sphere()
-  //  let result = m.load("test.txt")
-  //  print(result)
-    
-    print("number of vertices: \(m.vertexCount)")
-    print("number of edges: \(m.edgeCount)")
-    print("number of halfedges: \(m.halfedgeCount)")
-    print("number of faces: \(m.faceCount)")
+   
     
     let scene = SCNScene()
     
-    let floorGeometry = SCNFloor();
+   /* let floorGeometry = SCNFloor();
     let floorNode = SCNNode(geometry: floorGeometry)
     scene.rootNode.addChildNode(floorNode)
-    
+    */
     let cameraNode = SCNNode()
     cameraNode.camera = SCNCamera()
     cameraNode.position = SCNVector3Make(20, 10, 1)
@@ -51,7 +43,7 @@ class ViewController: NSViewController {
     let boxGeometry = SCNBox(width: 4.0, height: 4.0, length: 4.0, chamferRadius: 0.0)
     let boxNode = SCNNode(geometry: boxGeometry)
     boxNode.position = SCNVector3(0,2.0,0)
-    scene.rootNode.addChildNode(boxNode)
+  //  scene.rootNode.addChildNode(boxNode)
     boxGeometry.firstMaterial!.diffuse.contents = #colorLiteral(red: 0.2745098174, green: 0.4862745106, blue: 0.1411764771, alpha: 1)
     
     let indices: [Int32] = [0, 1, 2, 3]
@@ -68,13 +60,33 @@ class ViewController: NSViewController {
     
     lineGeom.firstMaterial?.lightingModel = SCNMaterial.LightingModel.constant
     lineGeom.firstMaterial?.diffuse.contents  = #colorLiteral(red: 0.9254902005, green: 0.2352941185, blue: 0.1019607857, alpha: 1)
-    scene.rootNode.addChildNode(lineNode);
+ //   scene.rootNode.addChildNode(lineNode);
     lineNode.constraints = [SCNBillboardConstraint()]
+    
+    
+     let m = Mesh()
+  //   m.create_geo_sphere()
+      m.create_box()
+  //  let result = m.load("test.txt")
+  //  print(result)
+    
+    print("number of vertices: \(m.vertexCount)")
+    print("number of edges: \(m.edgeCount)")
+    print("number of halfedges: \(m.halfedgeCount)")
+    print("number of faces: \(m.faceCount)")
+    
+    let meshGeom = m.geometry()
+    let meshNode = SCNNode(geometry: meshGeom)
+    meshGeom.firstMaterial?.lightingModel = SCNMaterial.LightingModel.constant
+    meshGeom.firstMaterial?.diffuse.contents  = #colorLiteral(red: 0.9254902005, green: 0.2352941185, blue: 0.1019607857, alpha: 1)
+    scene.rootNode.addChildNode(meshNode)
     
     sceneView.scene = scene
     sceneView.autoenablesDefaultLighting = true
     sceneView.allowsCameraControl = true
     sceneView.backgroundColor = #colorLiteral(red: 0.2745098174, green: 0.4862745106, blue: 0.1411764771, alpha: 1)
+    
+    print(meshNode.boundingBox)
   }
 
 

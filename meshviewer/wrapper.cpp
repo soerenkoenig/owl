@@ -19,6 +19,12 @@ extern "C" void mesh_create_geosphere(void * mesh, float radius, size_t levels)
    owl::math::create_geodesic_sphere<float>(radius, levels);
 }
 
+extern "C" void mesh_create_box(void * mesh)
+{
+  *((owl::math::mesh<float> *)mesh) =
+   owl::math::create_box<float>();
+}
+
 extern "C" size_t mesh_num_vertices(void * mesh)
 {
   return ((owl::math::mesh<float> *)mesh)->num_vertices();
@@ -86,15 +92,15 @@ extern "C" void mesh_quad_indices(void * mesh, int* indices)
 
 
 
-/*extern "C" size_t mesh_num_vertices(void * mesh)
+extern "C" void mesh_print_vertex_positions(void * mesh)
 {
-    return ((const owl::math::mesh<float>*)mesh)->num_vertices();
+   owl::math::print_vertex_positions(*(const owl::math::mesh<float>*)mesh);
 }
-*/
+
 
 extern "C" const float* mesh_vertex_position_data(void * mesh)
 {
-    return &((const owl::math::mesh<float>*)mesh)->position(vertex_handle(0));
+    return (const float*)(&((const owl::math::mesh<float>*)mesh)->position(owl::math::vertex_handle(0)));
 }
 /*
 extern "C" size_t mesh_vertex_position_count(void * mesh)

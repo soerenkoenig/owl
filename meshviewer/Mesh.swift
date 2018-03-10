@@ -30,7 +30,12 @@ class Mesh: NSObject
   
     func create_geo_sphere()
     {
-      mesh_create_geosphere(self.cpp_mesh_pointer, 1.0,  2)
+      mesh_create_geosphere(self.cpp_mesh_pointer, 1.0,  0)
+    }
+  
+    func create_box()
+    {
+      mesh_create_box(self.cpp_mesh_pointer)
     }
     
   
@@ -66,28 +71,23 @@ class Mesh: NSObject
       return Bool(mesh_load(self.cpp_mesh_pointer, filename.cCharArray))
     }*/
   
-    func geometry(_ filename:String) -> SCNGeometry
+    func geometry() -> SCNGeometry
     {
+      mesh_print_vertex_positions(self.cpp_mesh_pointer)
+      let rawPtr = UnsafeRawPointer( mesh_vertex_position_data(self.cpp_mesh_pointer));
+      let posData = NSData(bytes: rawPtr, length: MemoryLayout<Float32>.size * vertexCount * 3)
+      let D = posData as Data
+      let sourceVertices = SCNGeometrySource(data: D, semantic: SCNGeometrySource.Semantic.vertex, vectorCount: vertexCount, usesFloatComponents: true, componentsPerVector: 3, bytesPerComponent: MemoryLayout<Float32>.size, dataOffset: 0, dataStride: 3*MemoryLayout<Float32>.size)
+      print(sourceVertices)
       
-      
-      let c = mesh_num_edges(self.cpp_mesh_pointer)*2;
-      let indices = Array(repeating: Int32(0), count: c)
-      
-      
-     
-     
-     
-      let rawPtr = UnsafeRawPointer( mesh_position_data(self.cpp_mesh_pointer));
-     /* let posData = NSData(bytes: rawPtr, length: MemoryLayout<Float32>.size * count*3)
-      
-      let source = SCNGeometrySource(data: posData as Data, semantic: SCNGeometrySource.Semantic.vertex, vectorCount: count, usesFloatComponents: true, componentsPerVector: 3, bytesPerComponent: MemoryLayout<Float>.size, dataOffset: 0, dataStride: 0)
-*/
+
+      let indices = Array<Int>(0..<vertexCount)
       let element = SCNGeometryElement(indices: indices, primitiveType: .line)
 
-      let meshGeom =  SCNGeometry(sources: [source], elements: [element])
+      let meshGeom =  SCNGeometry(sources: [sourceVertices], elements: [element])
       return meshGeom;
     }
-  */
+  
   
   
 }

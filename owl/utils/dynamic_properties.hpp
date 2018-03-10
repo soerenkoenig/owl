@@ -334,7 +334,7 @@ namespace owl
       
         owl::utils::transform(other.properties_,
           std::back_inserter(properties_),
-          [](const std::unique_ptr<property_base>& p)
+          [](const std::unique_ptr<indexed_property_base>& p)
           {
             return p ? p->clone() : nullptr;
           });

@@ -346,17 +346,17 @@ namespace owl
 
       const math::vector<Scalar,3>& position(vertex_handle v) const
       {
-        return operator[](v).position;
+        return vertex_properties_[vertex_position_handle_][v.index()];
       }
 
       math::vector<Scalar,3>& position(vertex_handle v)
       {
-        return operator[](v).position;
+        return vertex_properties_[vertex_position_handle_][v.index()];
       }
 
       const math::vector<Scalar,2>& texcoord(halfedge_handle he) const
       {
-        return operator[](he).texcoord;
+        return halfedge_properties_[halfedge_texcoord_handle_][he.index()];
       }
 
       math::vector<Scalar,2>& texcoord(halfedge_handle he)
@@ -1066,15 +1066,18 @@ namespace owl
     
       auto add_vertex(const vector<3>& pos)
       {
-        vertices_.emplace_back(pos);
+        vertices_.emplace_back();
         return vertex_properties_.add_elem();
       }
     
       template <typename VectorRange, typename = std::enable_if_t<is_vector_range<VectorRange>::value>>
       auto add_vertices(VectorRange&& points)
       {
-        vertices_.insert(vertices_.end(), std::begin(points), std::end(points));
-        return vertex_properties_.add_elems(std::size(points));
+        auto n = std::size(points);
+        vertices_.resize(num_vertices() + n);
+        auto verts = vertex_properties_.add_elems(n);
+        owl::utils::copy(points, positions(verts).begin());
+        return verts;
       }
     
       template <typename... VertexHandles, typename = std::enable_if_t<(... && std::is_same<std::decay_t<VertexHandles>,vertex_handle>::value)>>
@@ -1254,10 +1257,7 @@ namespace owl
      struct vertex_t
      {
        vertex_t() = default;
-       vertex_t(const vector<3>& p) : position{p} {}
-     
        halfedge_handle halfedge;
-       vector<3> position;
        status_flags status;
      };
    
@@ -2023,5 +2023,14 @@ mesh create_saddle(int stacks, int slices, const typename primitive_traits<mesh>
 
 
   */
+  
+    template <typename Scalar>
+    void print_vertex_positions(const mesh<Scalar>& m)
+    {
+      for(auto pos: m.positions(m.vertices()))
+      {
+        std::cout << pos << std::endl;
+      }
+    }
   }
 }
