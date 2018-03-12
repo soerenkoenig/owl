@@ -37,6 +37,11 @@ class Mesh: NSObject
     {
       mesh_create_box(self.cpp_mesh_pointer)
     }
+  
+    func triangulate()
+    {
+      mesh_triangulate(self.cpp_mesh_pointer)
+    }
     
   
     public var vertexCount: Int {
@@ -95,6 +100,7 @@ class Mesh: NSObject
       
       return meshGeom;
     }
+  
   
     func triangleGeometry() -> SCNGeometry
     {

@@ -15,8 +15,8 @@ class ViewController: NSViewController {
   
   override func viewDidLoad() {
     super.viewDidLoad()
-
     sceneSetup()
+    resetCamera()
   }
 
   override var representedObject: Any? {
@@ -25,19 +25,18 @@ class ViewController: NSViewController {
     }
   }
   
-  override func keyDown(with event: NSEvent)
-  {
-        if let key = event.charactersIgnoringModifiers, key == " "
-        {
-          resetCamera()
-        }
+  override func keyDown(with event: NSEvent) {
+    if let key = event.charactersIgnoringModifiers, key == " "
+    {
+      resetCamera()
+    }
   }
   
   func resetCamera()
   {
-    sceneView.pointOfView?.position = SCNVector3Make(40, 30, 1)
-    sceneView.pointOfView?.look(at:SCNVector3(0,10,0), up: SCNVector3(0,1,0), localFront: SCNVector3(0,0,-1))
-    // sceneView.pointOfView?.worldUp = SCNVector3(0,1,0)
+    sceneView.pointOfView?.position = SCNVector3Make(20, 10, 1)
+    sceneView.pointOfView?.look(at:SCNVector3(0,0,0), up: SCNVector3(0,1,0), localFront: SCNVector3(0,0,-1))
+  //  sceneView.pointOfView?.look(at:SCNVector3(0,0,0));
   }
   
   func sceneSetup() {
@@ -52,48 +51,22 @@ class ViewController: NSViewController {
     
     let cameraNode = SCNNode()
     cameraNode.camera = SCNCamera()
-    cameraNode.position = SCNVector3Make(40, 30, 1)
-    cameraNode.look(at:SCNVector3(0,10,0));
-    
+    cameraNode.position = SCNVector3Make(20, 10, 1)
+    cameraNode.look(at:SCNVector3(0,0,0), up: SCNVector3(0,1,0), localFront: SCNVector3(0,0,-1))
     scene.rootNode.addChildNode(cameraNode)
   
-    let boxGeometry = SCNBox(width: 4.0, height: 4.0, length: 4.0, chamferRadius: 0.0)
-    let boxNode = SCNNode(geometry: boxGeometry)
-    boxNode.position = SCNVector3(0,2.0,0)
-  //  scene.rootNode.addChildNode(boxNode)
-    boxGeometry.firstMaterial!.diffuse.contents = #colorLiteral(red: 0.2745098174, green: 0.4862745106, blue: 0.1411764771, alpha: 1)
-    
-    let indices: [Int32] = [0, 1, 2, 3]
-    let vector1 = SCNVector3(0,0,0);
-    let vector2 = SCNVector3(0,10,0);
-    let vector3 = SCNVector3(0.5,10,0);
-    let vector4 = SCNVector3(0.5,0,0);
-    
-    let source = SCNGeometrySource(vertices: [vector1, vector4,vector2, vector3])
-    let element = SCNGeometryElement(indices: indices, primitiveType: .triangleStrip)
-
-    let lineGeom =  SCNGeometry(sources: [source], elements: [element])
-    let lineNode = SCNNode(geometry: lineGeom)
-    
-    lineGeom.firstMaterial?.lightingModel = SCNMaterial.LightingModel.constant
-    lineGeom.firstMaterial?.diffuse.contents  = #colorLiteral(red: 0.9254902005, green: 0.2352941185, blue: 0.1019607857, alpha: 1)
- //   scene.rootNode.addChildNode(lineNode);
-    lineNode.constraints = [SCNBillboardConstraint()]
-    
-    
+ 
      let m = Mesh()
-     m.create_geo_sphere()
+     m.create_box()
+   //  m.triangulate()
     //  m.create_box()
-  //  let result = m.load("test.txt")
-  //  print(result)
-    
     print("number of vertices: \(m.vertexCount)")
     print("number of edges: \(m.edgeCount)")
     print("number of halfedges: \(m.halfedgeCount)")
     print("number of faces: \(m.faceCount)")
     
     let meshGeom = m.edgeGeometry()
-//    let meshGeom = m.triangleGeometry()
+//let meshGeom = m.triangleGeometry()
     let meshNode = SCNNode(geometry: meshGeom)
     meshNode.position = SCNVector3(0,(meshNode.boundingBox.max.y - meshNode.boundingBox.min.y) / 2 ,0)
   //  meshGeom.firstMaterial?.lightingModel = SCNMaterial.LightingModel.constant

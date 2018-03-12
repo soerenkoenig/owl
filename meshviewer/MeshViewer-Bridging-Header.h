@@ -34,4 +34,6 @@ void mesh_triangle_halfedge_indices_deinit(void* indices);
 void* mesh_edge_halfedge_indices_init(void* mesh);
 void mesh_edge_halfedge_indices_deinit(void* indices);
 
+void mesh_triangulate(void* mesh);
+
 void mesh_print_vertex_positions(void * mesh);

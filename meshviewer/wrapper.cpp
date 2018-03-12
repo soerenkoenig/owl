@@ -181,12 +181,18 @@ extern "C" void mesh_edge_halfedge_indices_deinit(void* indices)
    delete[] (int*)indices;
 }
 
+extern "C" void mesh_triangulate(void* mesh)
+{
+  owl::math::mesh<float>* m = (owl::math::mesh<float>*)mesh;
+  m->triangulate();
+}
 
+/*
 extern "C" const void* mesh_vertex_position_data(void* mesh)
 {
     return (const void*)(&((const owl::math::mesh<float>*)mesh)->position(owl::math::vertex_handle(0)));
 }
-/*
+
 extern "C" size_t mesh_vertex_position_count(void * mesh)
 {
     return ((const math::mesh<float>*)mesh)->num_vertices();

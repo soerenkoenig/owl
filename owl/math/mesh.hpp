@@ -162,7 +162,6 @@ namespace owl
         add_property(halfedge_texcoord_handle_,"halfedge_texcoord");
       }
     
-    
       auto faces() const
       {
        return make_iterator_range(
@@ -829,8 +828,12 @@ namespace owl
       
         auto f_new = create_face(he);
         face(he) = f_new;
-        for(auto he2 : halfedges(f_new))
+        auto he2 = next(he);
+        while(he2 != he)
+        {
           face(he2) = f_new;
+          he2 = next(he2);
+        }
       
         return he;
       }
@@ -1001,11 +1004,11 @@ namespace owl
       }
     
     
-      void update_normals()
+      void update_normals(const angle<Scalar>& max_angle = degrees<Scalar>(44))
       {
         update_face_normals();
         update_vertex_normals();
-        update_halfedge_normals();
+        update_halfedge_normals(max_angle);
       }
     
       template <typename Handle>
@@ -1368,6 +1371,32 @@ namespace owl
         halfedge_handle he_opp = he + 1;
         return {he, he_opp};
       }
+    
+      void triangulate(face_handle f)
+      {
+        assert(is_convex(f));
+        auto n = valence(f);
+        if(n <= 3)
+          return;
+      
+        auto he_prev = halfedge(f);     //auto he_last =  next(halfedge(he_prev))
+        auto he_next = next(next(next(he_prev)));
+        while(he_next != he_prev)
+        {
+           insert_edge(he_prev,he_next);
+           he_next = next(he_next);
+        }
+      }
+    
+      void triangulate()
+      {
+        for(auto f : faces())
+        {
+          std::cout << "triangulate "<< f <<std::endl;
+          triangulate(f);
+        }
+        update_normals();
+      }
 
    private:
    
@@ -1538,10 +1567,24 @@ namespace owl
          std::cout << "mesh contains isolated vertex "<< v << std::endl;
          ++count_error;
        }
+       else
+       {
+         if(m.target(m.incoming(v)) != v)
+         {
+          std::cout << "mesh contains inconsistent incoming halfedge at vertex "<< v << std::endl;
+         ++count_error;
+         }
+       }
      }
+   
    
      for(auto f: m.faces())
      {
+       if(!m.halfedge(f).is_valid() )
+        {
+           std::cout << "halfedge of face " << f << "is invalid "<<std::endl;
+          ++count_error;
+        }
        for(auto he : m.halfedges(f))
        {
          if(m.face(he) != f)
@@ -1551,16 +1594,20 @@ namespace owl
          }
        }
      }
+   
      for(auto he: m.halfedges())
      {
+        if(!m.target(he).is_valid() )
+        {
+           std::cout << "target of halfedge " << he << "is invalid "<< he <<std::endl;
+          ++count_error;
+        }
         if(m.next(m.prev(he)) != he)
         {
           std::cout << "next halfedge of halfedge " << m.prev(he) << "is "<<m.next(m.prev(he)) << "instead of "<< he <<std::endl;
           ++count_error;
         }
-         
      }
-   
      return count_error;
    }
   
@@ -1647,7 +1694,9 @@ namespace owl
       math::vector<Scalar,2>{0.75,0.5}
      };
      m.set_face_texcoords(m.add_face(vertices[0],vertices[2],vertices[3],vertices[1]), texcoord_back);
-    
+     m.triangulate();
+     m.update_normals(radians<Scalar>(0));
+     check_mesh(m);
      return m;
     
     }
@@ -1667,7 +1716,7 @@ namespace owl
       m.add_face(vertices[0], vertices[3], vertices[2]);
       m.add_face(vertices[0], vertices[1], vertices[3]);
       m.add_face(vertices[1], vertices[2], vertices[3]);
-  
+      m.update_normals();
       return m;
     }
   
@@ -1698,6 +1747,7 @@ namespace owl
         m.add_face(vhandles[i + 1], vhandles[i + 6], vhandles[(i + 1) % 5 + 1]);
         m.add_face(vhandles[(i + 1) % 5 + 1], vhandles[i + 6], vhandles[(i + 1) % 5 + 6]);
       }
+       m.update_normals(radians<Scalar>(0));
       return m;
     }
   
