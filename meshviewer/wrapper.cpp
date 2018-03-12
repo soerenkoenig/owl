@@ -105,9 +105,9 @@ extern "C"  void* mesh_halfedge_position_data_init(void * mesh)
   std::size_t i = 0;
   for(auto he: m->halfedges())
   {
-    positions[i++] = m->position(m->origin(he)).x();
-    positions[i++] = m->position(m->origin(he)).y();
-    positions[i++] = m->position(m->origin(he)).z();
+    positions[i++] = m->position(m->target(he)).x();
+    positions[i++] = m->position(m->target(he)).y();
+    positions[i++] = m->position(m->target(he)).z();
   }
   return positions;
 }
@@ -125,9 +125,9 @@ extern "C" void* mesh_halfedge_normal_data_init(void * mesh)
   std::size_t i = 0;
   for(auto he: m->halfedges())
   {
-    normals[i++] = m->normal(m->face(he)).x();
-    normals[i++] = m->normal(m->face(he)).y();
-    normals[i++] = m->normal(m->face(he)).z();
+    normals[i++] = m->normal(he).x();
+    normals[i++] = m->normal(he).y();
+    normals[i++] = m->normal(he).z();
   }
   return normals;
 }

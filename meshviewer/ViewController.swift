@@ -25,21 +25,38 @@ class ViewController: NSViewController {
     }
   }
   
+  override func keyDown(with event: NSEvent)
+  {
+        if let key = event.charactersIgnoringModifiers, key == " "
+        {
+          resetCamera()
+        }
+  }
+  
+  func resetCamera()
+  {
+    sceneView.pointOfView?.position = SCNVector3Make(40, 30, 1)
+    sceneView.pointOfView?.look(at:SCNVector3(0,10,0), up: SCNVector3(0,1,0), localFront: SCNVector3(0,0,-1))
+    // sceneView.pointOfView?.worldUp = SCNVector3(0,1,0)
+  }
+  
   func sceneSetup() {
    
     
     let scene = SCNScene()
     
-   /* let floorGeometry = SCNFloor();
+    let floorGeometry = SCNFloor();
     let floorNode = SCNNode(geometry: floorGeometry)
     scene.rootNode.addChildNode(floorNode)
-    */
+    floorGeometry.firstMaterial!.diffuse.contents = #colorLiteral(red: 0.05882352963, green: 0.180392161, blue: 0.2470588237, alpha: 1)
+    
     let cameraNode = SCNNode()
     cameraNode.camera = SCNCamera()
-    cameraNode.position = SCNVector3Make(20, 10, 1)
-    scene.rootNode.addChildNode(cameraNode)
-    cameraNode.look(at:SCNVector3(0,0,0));
+    cameraNode.position = SCNVector3Make(40, 30, 1)
+    cameraNode.look(at:SCNVector3(0,10,0));
     
+    scene.rootNode.addChildNode(cameraNode)
+  
     let boxGeometry = SCNBox(width: 4.0, height: 4.0, length: 4.0, chamferRadius: 0.0)
     let boxNode = SCNNode(geometry: boxGeometry)
     boxNode.position = SCNVector3(0,2.0,0)
@@ -75,19 +92,19 @@ class ViewController: NSViewController {
     print("number of halfedges: \(m.halfedgeCount)")
     print("number of faces: \(m.faceCount)")
     
-   // let meshGeom = m.edgeGeometry()
-    let meshGeom = m.triangleGeometry()
+    let meshGeom = m.edgeGeometry()
+//    let meshGeom = m.triangleGeometry()
     let meshNode = SCNNode(geometry: meshGeom)
+    meshNode.position = SCNVector3(0,(meshNode.boundingBox.max.y - meshNode.boundingBox.min.y) / 2 ,0)
   //  meshGeom.firstMaterial?.lightingModel = SCNMaterial.LightingModel.constant
     meshGeom.firstMaterial?.diffuse.contents  = #colorLiteral(red: 0.9254902005, green: 0.2352941185, blue: 0.1019607857, alpha: 1)
-    meshNode.renderingOrder = 100000;
     scene.rootNode.addChildNode(meshNode)
     
     
     sceneView.scene = scene
     sceneView.autoenablesDefaultLighting = true
     sceneView.allowsCameraControl = true
-    sceneView.backgroundColor = #colorLiteral(red: 0.2745098174, green: 0.4862745106, blue: 0.1411764771, alpha: 1)
+    sceneView.backgroundColor = #colorLiteral(red: 0.1019607857, green: 0.2784313858, blue: 0.400000006, alpha: 1)
     
     print(meshNode.boundingBox)
   }

@@ -156,6 +156,7 @@ namespace owl
       mesh()
       {
         add_property(vertex_position_handle_,"vertex_position");
+        add_property(vertex_normal_handle_,"vertex_normal");
         add_property(face_normal_handle_,"face_normal");
         add_property(halfedge_normal_handle_,"halfedge_normal");
         add_property(halfedge_texcoord_handle_,"halfedge_texcoord");
@@ -220,7 +221,7 @@ namespace owl
       {
         auto step = [this](halfedge_handle he)
         {
-          return opposite(next(he));
+          return next_incoming(he);
         };
 
         auto deref = [this](halfedge_handle he)
@@ -228,7 +229,7 @@ namespace owl
           return target(he);
         };
       
-        halfedge_handle he = halfedge(v);
+        halfedge_handle he = incoming(v);
         return make_iterator_range(
           make_handle_iterator(he, step, deref, he.is_valid() ? 0 : 1),
           make_handle_iterator(he, step, deref, 1));
@@ -238,7 +239,7 @@ namespace owl
       {
         auto step = [this](halfedge_handle he)
         {
-          return opposite(next(he));
+          return next_incoming(he);
         };
 
         auto deref = [this](halfedge_handle he)
@@ -246,7 +247,7 @@ namespace owl
           return he;
         };
 
-        halfedge_handle he = halfedge(v);
+        halfedge_handle he = incoming(v);
 
         return make_iterator_range(
           make_handle_iterator(he, step, deref, he.is_valid() ? 0 : 1),
@@ -257,14 +258,14 @@ namespace owl
       {
         auto step = [this](halfedge_handle he)
         {
-          return opposite(next(he));
+          return next_outgoing(he);
         };
 
         auto deref = [this](halfedge_handle he)
         {
-          return opposite(he);
+          return he;
         };
-        halfedge_handle he = halfedge(v);
+        halfedge_handle he = outgoing(v);
         return make_iterator_range(
           make_handle_iterator(he, step, deref, he.is_valid() ? 0 : 1),
           make_handle_iterator(he, step, deref, 1));
@@ -382,6 +383,16 @@ namespace owl
       math::vector<Scalar,3>& normal(halfedge_handle he)
       {
         return halfedge_properties_[halfedge_normal_handle_][he.index()];
+      }
+    
+      const math::vector<Scalar,3>& normal(vertex_handle v) const
+      {
+        return halfedge_properties_[vertex_normal_handle_][v.index()];
+      }
+    
+      math::vector<Scalar,3>& normal(vertex_handle v)
+      {
+        return vertex_properties_[vertex_normal_handle_][v.index()];
       }
 
     
@@ -579,7 +590,7 @@ namespace owl
 
       bool is_boundary(vertex_handle v) const
       {
-        return is_boundary(halfedge(v));
+        return is_boundary(incoming(v));
       }
 
       bool is_boundary(halfedge_handle he) const
@@ -610,7 +621,7 @@ namespace owl
     
       bool is_isolated(vertex_handle v) const
       {
-        return !halfedge(v).is_valid();
+        return !incoming(v).is_valid();
       }
     
       bool is_sharp(edge_handle e, const angle<Scalar>& max_angle = degrees<Scalar>(44)) const
@@ -667,8 +678,8 @@ namespace owl
         auto he_new = halfedge(e);
         auto he_new_opp = opposite(he_new);
       
-         if(halfedge(vold) == he)
-          halfedge(vold) = he_new_opp;
+         if(incoming(vold) == he)
+          incoming(vold) = he_new_opp;
       
         next(he_opp_prev) = he_new;
         next(he_new_opp) = next(he);
@@ -679,9 +690,9 @@ namespace owl
         face(he_new) = face(he_opp);
         face(he_new_opp) = face(he);
         if(!face(he_new).is_valid())
-         halfedge(v) = he_new;
+         incoming(v) = he_new;
         else
-          halfedge(v) = he;
+          incoming(v) = he;
         
         return he_new;
       }
@@ -808,22 +819,19 @@ namespace owl
         auto he = halfedge(e);
         auto he_opp = opposite(he);
         auto fold =  face(he_prev);
+        auto he_next_prev = prev(he_next);
         face(he_opp) = face(he_prev);
         halfedge(fold) = he_opp;
         next(he_opp) = next(he_prev);
         next(he_prev) = he;
         next(he) = he_next;
-        next(prev(he_next)) = he_opp;
+        next(he_next_prev) = he_opp;
+      
         auto f_new = create_face(he);
         face(he) = f_new;
-        halfedge(f_new) = he;
-        auto he2 = next(he);
-        while(he2 != he)
-        {
+        for(auto he2 : halfedges(f_new))
           face(he2) = f_new;
-          he2 = next(he2);
-        }
-        normal(f_new) = compute_normal(f_new);
+      
         return he;
       }
     
@@ -931,11 +939,11 @@ namespace owl
         auto he_dir = direction(he);
         Scalar denom = n0.length() * n1.length();
         if(denom == 0)
-          return 0;
+          return radians<Scalar>(0);
         Scalar da_cos = dot(n0, n1) / denom;
-        da_cos = std::clamp(da_cos, -1, 1);
+        da_cos = std::clamp(da_cos, Scalar{-1}, Scalar{1});
         Scalar da_sin_sign = dot(cross(n0, n1), he_dir);
-        return angle<Scalar>(da_sin_sign >= 0 ? acos(da_cos) : -acos(da_cos));
+        return radians<Scalar>(da_sin_sign >= 0 ? acos(da_cos) : -acos(da_cos));
       }
     
       vector<3> compute_sector_normal(halfedge_handle he, bool normalize = true) const
@@ -946,23 +954,23 @@ namespace owl
         return nml;
       }
     
-      vector<3> compute_loop_normal(halfedge_handle he) const
+      vector<3> compute_loop_normal(halfedge_handle he, bool normalize = true) const
       {
         auto nml = vector<3>::zero();
       
         for(auto he : halfedges(he))
           nml += compute_sector_normal(he, false);
-      
-        nml.normalize();
+        if(normalize)
+         nml.normalize();
         return nml;
       }
     
-      vector<3> compute_normal(face_handle f) const
+      vector<3> compute_face_normal(face_handle f) const
       {
         return compute_loop_normal(halfedge(f));
       }
     
-      vector<3> compute_normal(vertex_handle v) const
+      vector<3> compute_vertex_normal(vertex_handle v) const
       {
         auto nml = vector<3>::zero();
       
@@ -976,7 +984,28 @@ namespace owl
       void update_face_normals()
       {
         for(auto f : faces())
-          normal(f) = compute_normal(f);
+          normal(f) = compute_face_normal(f);
+      }
+    
+      void update_vertex_normals()
+      {
+        for(auto v: vertices())
+          normal(v) = compute_vertex_normal(v);
+      }
+    
+    
+      void update_halfedge_normals(const angle<Scalar>& max_angle = degrees<Scalar>(44))
+      {
+        for(auto he : halfedges())
+          normal(he) = is_sharp(he, max_angle) ? compute_loop_normal(he) : compute_vertex_normal(target(he));
+      }
+    
+    
+      void update_normals()
+      {
+        update_face_normals();
+        update_vertex_normals();
+        update_halfedge_normals();
       }
     
       template <typename Handle>
@@ -1021,7 +1050,7 @@ namespace owl
         if(n < 4)
           return true;
       
-        auto [u,v] = min_abs_components(normal(f));
+        auto [u,v] = min_abs_components(compute_face_normal(f));
 
         math::interval<Scalar> zrange;
         for(auto he : halfedges(f))
@@ -1137,7 +1166,7 @@ namespace owl
               {
                 auto he_a = opposite(he.next);
                 while(!is_boundary(he_a))
-                  he_a = opposite(next(he_a));
+                  he_a = next_incoming(he_a);
                 auto he_b = prev(he.next);
                 next(he_b) = next(he_a);
                 next(he_a) = next(he_outer);
@@ -1152,7 +1181,7 @@ namespace owl
                 next(he_outer) = next(he.current);
               else
               {
-                auto he_p = halfedge(target(he.current));
+                auto he_p = incoming(target(he.current));
                 if(he_p.is_valid() && is_boundary(he_p))
                 {
                  next(he_outer) = next(he_p);
@@ -1165,14 +1194,11 @@ namespace owl
             next(he.current) = he.next;
             auto v = target(he.current);
             if(is_isolated(v))
-              halfedge(v) = he.current;
-            adjust_halfedge(v);
+              incoming(v) = he.current;
+            adjust_incoming(v);
           }
         }
       
-        normal(f) = compute_normal(f);
-        for(auto he : halfedges(f))
-          normal(he) = normal(f);
         return f;
       }
     
@@ -1189,13 +1215,13 @@ namespace owl
       }
     
       //ensure halfedge of v is a boundary halfedge if v is on boundary
-      void adjust_halfedge(vertex_handle v)
+      void adjust_incoming(vertex_handle v)
       {
         for(auto he : incoming_halfedges(v))
         {
           if(is_boundary(he))
           {
-            halfedge(v) = he;
+            incoming(v) = he;
             break;
           }
         }
@@ -1266,7 +1292,6 @@ namespace owl
         return operator[](he).face;
       }
     
-    
       halfedge_handle opposite(halfedge_handle he) const
       {
         return he.index() % 2  == 0 ? halfedge_handle{he.index() + 1} : halfedge_handle{he.index() - 1};
@@ -1282,19 +1307,47 @@ namespace owl
         return operator[](he).next;
       }
     
-      const halfedge_handle& halfedge(vertex_handle v) const
+      halfedge_handle next_incoming(halfedge_handle he) const
       {
-        return operator[](v).halfedge;
+        return opposite(next(he));
       }
     
+      halfedge_handle prev_incoming(halfedge_handle he) const
+      {
+        return prev(opposite(he));
+      }
+    
+      halfedge_handle next_outgoing(halfedge_handle he) const
+      {
+        return next(opposite(he));
+      }
+    
+      halfedge_handle prev_outgoing(halfedge_handle he) const
+      {
+        return opposite(prev(he));
+      }
+    
+      const halfedge_handle& incoming(vertex_handle v) const
+      {
+        return operator[](v).incoming;
+      }
+    
+      halfedge_handle outgoing(vertex_handle v) const
+      {
+        if(is_isolated(v))
+          return halfedge_handle{};
+        return opposite(incoming(v));
+      }
+  
       halfedge_handle prev(halfedge_handle he) const
       {
-        auto prev_he = opposite(next(opposite(he)));
-        auto prev_next_he = next(prev_he);
-        while(prev_next_he != he)
+        auto prev_he = next(he);
+        auto next_prev_he = next(prev_he);
+     
+        while(next_prev_he != he)
         {
-          prev_he = opposite(prev_next_he);
-          prev_next_he = next(prev_he);
+          prev_he = next_prev_he;
+          next_prev_he = next(prev_he);
         }
         return prev_he;
       }
@@ -1321,7 +1374,7 @@ namespace owl
       struct vertex_t
       {
         vertex_t() = default;
-        halfedge_handle halfedge;
+        halfedge_handle incoming;
         status_flags status;
       };
    
@@ -1374,9 +1427,9 @@ namespace owl
         return operator[](f).halfedge;
       }
     
-      halfedge_handle& halfedge(vertex_handle v)
+      halfedge_handle& incoming(vertex_handle v)
       {
-        return operator[](v).halfedge;
+        return operator[](v).incoming;
       }
     
       halfedge_handle& next(halfedge_handle he)
@@ -1430,8 +1483,7 @@ namespace owl
     
       halfedge_handle find_halfedge(vertex_handle from, vertex_handle to) const
       {
-        auto hes = outgoing_halfedges(from);
-          for(auto he : hes)
+          for(auto he : outgoing_halfedges(from))
             if(target(he) == to)
               return he;
         return halfedge_handle{};
@@ -1462,6 +1514,7 @@ namespace owl
       std::vector<face_t> faces_;
 
       vertex_property_handle<vector3<Scalar>> vertex_position_handle_;
+      vertex_property_handle<vector3<Scalar>> vertex_normal_handle_;
       face_property_handle<vector3<Scalar>> face_normal_handle_;
       halfedge_property_handle<vector3<Scalar>> halfedge_normal_handle_;
       halfedge_property_handle<vector2<Scalar>> halfedge_texcoord_handle_;
@@ -1678,11 +1731,7 @@ namespace owl
       for(auto& pos: m.positions(make_iterator_range(verts).advance_begin(n_old)))
         pos = radius * normalize(pos);
     }
-    for(auto v: m.vertices())
-    {
-      for(auto& nml : m.normals(m.incoming_halfedges(v)))
-        nml = normalize(m.position(v));
-    }
+    m.update_normals();
     return m;
   }
   
