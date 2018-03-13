@@ -157,6 +157,15 @@ namespace owl
         return std::forward<T>(val);
       }
     };
+  
+    struct default_next
+    {
+      template <typename T>
+      T operator()(T&& val) const
+      {
+        return std::forward<T>(val)++;
+      }
+    };
 
   
     template <typename Handle, typename Next, typename Deref = default_deref>
@@ -190,7 +199,6 @@ namespace owl
         return deref(current_);
       }
     
-    
       handle_iterator& operator++()
       {
         current_ = next(current_);
@@ -198,8 +206,6 @@ namespace owl
           ++lab_count_;
         return *this;
       }
-    
-    
     
       handle_iterator operator++(int)
       {
@@ -248,9 +254,23 @@ namespace owl
     };
   
     template <typename Handle, typename Next, typename Deref>
-    handle_iterator<Handle,Next,Deref> make_handle_iterator(Handle current, Next next, Deref deref = default_deref{}, std::size_t lab_count = 0)
+    handle_iterator<Handle,Next,Deref> make_handle_iterator(Handle current, std::size_t lab_count = 0, Next next = default_next{}, Deref deref = default_deref() )
     {
-      return handle_iterator<Handle,Next,Deref>(current, next,deref,lab_count);
+      return handle_iterator<Handle,Next,Deref>(current, next, deref, lab_count);
+    }
+  
+    template <typename Handle, typename Next = default_next, typename Deref = default_deref>
+    auto make_handle_range(Handle first, std::size_t lab_count_first, Handle last, std::size_t lab_count_last = 1, Next next = default_next{}, Deref deref = default_deref())
+    {
+      return make_iterator_range(make_handle_iterator(first, lab_count_first, next, deref),
+        make_handle_iterator(last, lab_count_last, next, deref));
+    }
+  
+     template <typename Handle, typename Next = default_next, typename Deref = default_deref>
+    auto make_handle_range(Handle first, Next next = default_next{}, Deref deref = default_deref())
+    {
+      return make_iterator_range(make_handle_iterator(first, first.is_valid() ? 0 : 1, next, deref),
+        make_handle_iterator(first, 1, next, deref));
     }
 
   }

@@ -314,21 +314,14 @@ namespace owl
     
       indexed_property_container(const indexed_property_container& other)
       {
-        properties_.reserve(other.properties_.size());
-      
-        owl::utils::transform(other.properties_,
-          std::back_inserter(properties_),
-          [](const std::unique_ptr<indexed_property_base>& p)
-          {
-            return p ? p->clone() : nullptr;
-          });
+        *this = other;
       }
     
       indexed_property_container& operator=(const indexed_property_container& other)
       {
         if(this == &other)
           return *this;
-      
+        num_elems_ = other.num_elems_;
         properties_.clear();
         properties_.reserve(other.properties_.size());
       

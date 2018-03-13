@@ -15,14 +15,16 @@ extern "C" void mesh_deinit(void * mesh)
 
 extern "C" void mesh_create_geosphere(void * mesh, float radius, size_t levels)
 {
-  *((owl::math::mesh<float> *)mesh) =
-   owl::math::create_geodesic_sphere<float>(radius, levels);
+  owl::math::mesh<float>* m = (owl::math::mesh<float> *)mesh;
+  *m = owl::math::create_geodesic_sphere<float>(radius, levels);
+  m->triangulate();
+  
 }
 
 extern "C" void mesh_create_box(void * mesh)
 {
-  *((owl::math::mesh<float> *)mesh) =
-   owl::math::create_box<float>();
+  owl::math::mesh<float>* m = (owl::math::mesh<float> *)mesh;
+  *m = owl::math::create_box<float>();
 }
 
 extern "C" size_t mesh_num_vertices(void * mesh)
@@ -89,8 +91,6 @@ extern "C" void mesh_quad_indices(void * mesh, int* indices)
       *indices++ = (int)v.index();
   }
 }
-
-
 
 extern "C" void mesh_print_vertex_positions(void * mesh)
 {
@@ -168,10 +168,8 @@ extern "C" int* mesh_edge_halfedge_indices_init(void* mesh)
   std::size_t i = 0;
   for(auto e: m->edges())
   {
-  
     indices[i++] = (int)m->halfedge(e).index();
     indices[i++] = (int)m->opposite(m->halfedge(e)).index();
-  
   }
   return indices;
 }
@@ -184,19 +182,11 @@ extern "C" void mesh_edge_halfedge_indices_deinit(void* indices)
 extern "C" void mesh_triangulate(void* mesh)
 {
   owl::math::mesh<float>* m = (owl::math::mesh<float>*)mesh;
-  m->triangulate();
+  owl::math::check_mesh(*m);
+  m->triangulate();  
 }
 
 /*
-extern "C" const void* mesh_vertex_position_data(void* mesh)
-{
-    return (const void*)(&((const owl::math::mesh<float>*)mesh)->position(owl::math::vertex_handle(0)));
-}
-
-extern "C" size_t mesh_vertex_position_count(void * mesh)
-{
-    return ((const math::mesh<float>*)mesh)->num_vertices();
-}
 
 extern "C" bool mesh_load(void * mesh, const char* filename)
 {

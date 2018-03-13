@@ -58,7 +58,7 @@ class ViewController: NSViewController {
  
      let m = Mesh()
      m.create_box()
-   //  m.triangulate()
+     m.triangulate()
     //  m.create_box()
     print("number of vertices: \(m.vertexCount)")
     print("number of edges: \(m.edgeCount)")

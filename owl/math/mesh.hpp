@@ -59,7 +59,6 @@ namespace owl
       status_flags()
         : bits_(0)
       {}
-  
     
       bool is_selected() const
       {
@@ -99,11 +98,6 @@ namespace owl
         bits_.set(0, false);
       }
     
-    
-    
-    
-    
-  
        /*  bool is_removed() const
       {
         return bits_.test(0);
@@ -132,11 +126,6 @@ namespace owl
       template <std::size_t Dim>
       using vector = vector<Scalar,Dim>;
     
-      using face_iterator = owl::utils::count_iterator<face_handle>;
-      using vertex_iterator = owl::utils::count_iterator<vertex_handle>;
-      using edge_iterator = owl::utils::count_iterator<edge_handle>;
-      using halfedge_iterator = owl::utils::count_iterator<halfedge_handle>;
-    
       template <typename Range>
       using is_vertex_handle_range = std::is_same<typename utils::container_traits<std::decay_t<Range>>::value_type, vertex_handle>;
     
@@ -152,42 +141,32 @@ namespace owl
       template <typename Range, std::size_t N = 3>
       using is_vector_range = std::is_same<typename utils::container_traits<std::decay_t<Range>>::value_type, vector<N>>;
     
-    
       mesh()
       {
-        add_property(vertex_position_handle_,"vertex_position");
-        add_property(vertex_normal_handle_,"vertex_normal");
-        add_property(face_normal_handle_,"face_normal");
-        add_property(halfedge_normal_handle_,"halfedge_normal");
-        add_property(halfedge_texcoord_handle_,"halfedge_texcoord");
+        add_property(vertex_position_handle_, "vertex_position");
+        add_property(face_normal_handle_, "face_normal");
+        add_property(halfedge_normal_handle_, "halfedge_normal");
+        add_property(halfedge_texcoord_handle_, "halfedge_texcoord");
       }
     
       auto faces() const
       {
-       return make_iterator_range(
-         face_iterator(face_handle(0)),
-         face_iterator(face_handle(num_faces())));
+        return utils::make_counting_range(face_handle(0), face_handle(num_faces()));
       }
 
       auto vertices() const
       {
-       return make_iterator_range(
-         vertex_iterator(vertex_handle(0)),
-         vertex_iterator(vertex_handle(num_vertices())));
+       return utils::make_counting_range(vertex_handle(0), vertex_handle(num_vertices()));
       }
 
       auto edges() const
       {
-       return make_iterator_range(
-         edge_iterator(edge_handle(0)),
-         edge_iterator(edge_handle(num_edges())));
+       return make_counting_range(edge_handle(0), edge_handle(num_edges()));
       }
 
       auto halfedges() const
       {
-       return make_iterator_range(
-         halfedge_iterator(halfedge_handle(0)),
-         halfedge_iterator(halfedge_handle(num_halfedges())));
+       return make_counting_range(halfedge_handle(0), halfedge_handle(num_halfedges()));
       }
     
       auto vertices(face_handle f, vertex_handle v_start) const
@@ -206,14 +185,12 @@ namespace owl
         while(target(he) != v_start)
           he = next(he);
       
-        return make_iterator_range(
-          make_handle_iterator(he, step, deref, he.is_valid() ? 0 : 1),
-          make_handle_iterator(he, step, deref, 1));
+        return make_handle_range(he, step, deref);
       }
 
       auto vertices(face_handle f) const
       {
-        return vertices(f,target(halfedge(f)));
+        return vertices(f, target(halfedge(f)));
       }
 
       auto vertices(vertex_handle v) const
@@ -228,46 +205,25 @@ namespace owl
           return target(he);
         };
       
-        halfedge_handle he = incoming(v);
-        return make_iterator_range(
-          make_handle_iterator(he, step, deref, he.is_valid() ? 0 : 1),
-          make_handle_iterator(he, step, deref, 1));
+        return make_handle_range(incoming(v), step, deref);
       }
     
       auto incoming_halfedges(vertex_handle v) const
       {
-        auto step = [this](halfedge_handle he)
-        {
-          return next_incoming(he);
-        };
-
-        auto deref = [this](halfedge_handle he)
-        {
-          return he;
-        };
-
-        halfedge_handle he = incoming(v);
-
-        return make_iterator_range(
-          make_handle_iterator(he, step, deref, he.is_valid() ? 0 : 1),
-          make_handle_iterator(he, step, deref, 1));
+        return make_handle_range(incoming(v),
+          [this](halfedge_handle he)
+          {
+            return next_incoming(he);
+          });
       }
 
       auto outgoing_halfedges(vertex_handle v) const
       {
-        auto step = [this](halfedge_handle he)
-        {
-          return next_outgoing(he);
-        };
-
-        auto deref = [this](halfedge_handle he)
-        {
-          return he;
-        };
-        halfedge_handle he = outgoing(v);
-        return make_iterator_range(
-          make_handle_iterator(he, step, deref, he.is_valid() ? 0 : 1),
-          make_handle_iterator(he, step, deref, 1));
+        return make_handle_range(outgoing(v),
+          [this](halfedge_handle he)
+          {
+            return next_outgoing(he);
+          });
       }
 
       auto edges(face_handle f) const
@@ -281,10 +237,8 @@ namespace owl
         {
           return edge(he);
         };
-        halfedge_handle he = halfedge(f);
-        return make_iterator_range(
-          make_handle_iterator(he, step, deref,he.is_valid() ? 0 : 1),
-          make_handle_iterator(he, step, deref, 1));
+      
+        return make_handle_range(halfedge(f), step, deref);
       }
     
       auto halfedges(face_handle f) const
@@ -294,37 +248,24 @@ namespace owl
     
       auto halfedges(face_handle f, halfedge_handle he_start) const
       {
-        auto step = [this](halfedge_handle he)
-        {
-          return next(he);
-        };
-     
-        auto deref = [this](halfedge_handle he)
-        {
-          return he;
-        };
         halfedge_handle he = halfedge(f);
         while(he != he_start)
           he = next(he);
-        return make_iterator_range(
-          make_handle_iterator(he, step, deref, he.is_valid() ? 0 : 1),
-          make_handle_iterator(he, step, deref, 1));
+      
+        return make_handle_range(he,
+          [this](halfedge_handle he)
+          {
+            return next(he);
+          });
       }
     
       auto halfedges(halfedge_handle he) const
       {
-        auto step = [this](halfedge_handle he)
-        {
-          return next(he);
-        };
-     
-        auto deref = [this](halfedge_handle he)
-        {
-          return he;
-        };
-        return make_iterator_range(
-          make_handle_iterator(he, step, deref, he.is_valid() ? 0 : 1),
-          make_handle_iterator(he, step, deref, 1));
+        return make_handle_range(he,
+          [this](halfedge_handle he)
+          {
+            return next(he);
+          });
       }
     
       auto outer_halfedges(face_handle f) const
@@ -338,10 +279,8 @@ namespace owl
         {
           return opposite(he);
         };
-        halfedge_handle he = halfedge(f);
-        return make_iterator_range(
-          make_handle_iterator(he, step, deref, he.is_valid() ? 0 : 1),
-          make_handle_iterator(he, step, deref, 1));
+
+        return make_handle_range(halfedge(f), step, deref);
       }
 
       const math::vector<Scalar,3>& position(vertex_handle v) const
@@ -383,18 +322,7 @@ namespace owl
       {
         return halfedge_properties_[halfedge_normal_handle_][he.index()];
       }
-    
-      const math::vector<Scalar,3>& normal(vertex_handle v) const
-      {
-        return halfedge_properties_[vertex_normal_handle_][v.index()];
-      }
-    
-      math::vector<Scalar,3>& normal(vertex_handle v)
-      {
-        return vertex_properties_[vertex_normal_handle_][v.index()];
-      }
 
-    
       template<typename Handle>
       status_flags& status(Handle h)
       {
@@ -493,20 +421,6 @@ namespace owl
           std::forward<FaceHandleRange>(faces));
       }
 
-      template <typename VertexHandleRange, typename = std::enable_if_t<is_vertex_handle_range<VertexHandleRange>::value>, typename = void>
-      auto normals(VertexHandleRange&& vertices) const
-      {
-        return utils::map_range([this](vertex_handle v)->const auto&{ return normal(v);},
-          std::forward<VertexHandleRange>(vertices));
-      }
-
-      template <typename VertexHandleRange, typename = std::enable_if_t<is_vertex_handle_range<VertexHandleRange>::value>, typename = void>
-      auto normals(VertexHandleRange&& vertices)
-      {
-        return utils::map_range([this](vertex_handle v)->auto&{ return normal(v);},
-          std::forward<VertexHandleRange>(vertices));
-      }
-    
       template <typename HalfEdgeHandleRange, typename = std::enable_if_t<is_halfedge_handle_range<HalfEdgeHandleRange>::value>, typename = void, typename = void>
       auto normals(HalfEdgeHandleRange&& halfedges) const
       {
@@ -547,7 +461,7 @@ namespace owl
 
       std::size_t num_halfedges() const
       {
-        return num_edges() << 1;
+        return 2 * num_edges();
       }
     
       std::size_t num_faces() const
@@ -555,24 +469,23 @@ namespace owl
         return faces_.size();
       }
     
+      std::size_t num_n_gons(std::size_t n) const
+      {
+        return utils::count_if(faces(),
+         [this,n](face_handle f)
+         {
+           return is_n_gon(f, n);
+         });
+      }
+    
       std::size_t num_triangles() const
       {
-        auto fs =  faces();
-        return std::count_if(fs.begin(), fs.end(),
-         [this](face_handle f)
-         {
-           return is_triangle(f);
-         });
+        return num_n_gons(3);
       }
     
       std::size_t num_quads() const
       {
-        auto fs =  faces();
-        return std::count_if(fs.begin(), fs.end(),
-         [this](face_handle f)
-         {
-           return is_quad(f);
-         });
+        return num_n_gons(4);
       }
     
       bool is_non_manifold(vertex_handle v) const
@@ -704,9 +617,7 @@ namespace owl
           auto pos = centroid(e);
           split(e, pos);
         }
-        return make_iterator_range(
-         edge_iterator(first),
-         edge_iterator(edge_handle{num_edges()}));
+        return make_counting_range(first, edge_handle{num_edges()});
       }
     
       void reserve_vertices(std::size_t n)
@@ -798,10 +709,8 @@ namespace owl
     
       face_handle create_face(halfedge_handle he)
       {
-      
         faces_.emplace_back(he);
         return face_properties_.add_elem();
-      
       }
     
      /* void subdivide_vertex_split()
@@ -990,11 +899,11 @@ namespace owl
           normal(f) = compute_face_normal(f);
       }
     
-      void update_vertex_normals()
+     /* void update_vertex_normals()
       {
         for(auto v: vertices())
           normal(v) = compute_vertex_normal(v);
-      }
+      }*/
     
     
       void update_halfedge_normals(const angle<Scalar>& max_angle = degrees<Scalar>(44))
@@ -1007,7 +916,6 @@ namespace owl
       void update_normals(const angle<Scalar>& max_angle = degrees<Scalar>(44))
       {
         update_face_normals();
-        update_vertex_normals();
         update_halfedge_normals(max_angle);
       }
     
@@ -1017,22 +925,25 @@ namespace owl
         return std::size(vertices(h));
       }
 
-      bool is_ngon_mesh(std::size_t n) const
+      bool is_n_gon_mesh(std::size_t n) const
       {
-        for(auto face: faces())
-          if(valence(face) != n)
-            return false;
-        return true;
+        return utils::all_of(faces(), [this,&n](face_handle f){ return is_n_gon(f, n); });
+
       }
 
       bool is_quad_mesh() const
       {
-        return is_ngon_mesh(4);
+        return is_n_gon_mesh(4);
       }
 
       bool is_triangle_mesh() const
       {
-        return is_ngon_mesh(3);
+        return is_n_gon_mesh(3);
+      }
+    
+      bool is_n_gon(face_handle f, std::size_t n) const
+      {
+        return valence(f) == n;
       }
     
       bool is_triangle(face_handle f) const
@@ -1104,13 +1015,23 @@ namespace owl
         return faces_.empty() && vertices_.empty() && edges_.empty();
       }
     
+      auto add_vertex()
+      {
+        vertices_.emplace_back();
+        return vertex_properties_.add_elem();
+      }
     
       auto add_vertex(const vector<3>& pos)
       {
-        vertices_.emplace_back();
-        auto v = vertex_properties_.add_elem();
+        auto v = add_vertex();
         position(v) = pos;
         return v;
+      }
+    
+      auto add_vertices(std::size_t n)
+      {
+        vertices_.resize(num_vertices() + n);
+        return vertex_properties_.add_elem(n);
       }
     
       template <typename VectorRange, typename = std::enable_if_t<is_vector_range<VectorRange>::value>>
@@ -1397,6 +1318,23 @@ namespace owl
         }
         update_normals();
       }
+    
+      halfedge_handle find_halfedge(vertex_handle from, vertex_handle to) const
+      {
+          for(auto he : outgoing_halfedges(from))
+            if(target(he) == to)
+              return he;
+        return halfedge_handle{};
+      }
+
+      edge_handle find_edge(vertex_handle from, vertex_handle to) const
+      {
+        halfedge_handle he = find_halfedge(from,to);
+        if(he.is_valid())
+          return edge(he);
+
+       return edge_handle{};
+      }
 
    private:
    
@@ -1510,23 +1448,6 @@ namespace owl
         return vertices_[v.index()];
       }
     
-      halfedge_handle find_halfedge(vertex_handle from, vertex_handle to) const
-      {
-          for(auto he : outgoing_halfedges(from))
-            if(target(he) == to)
-              return he;
-        return halfedge_handle{};
-      }
-
-      edge_handle find_edge(vertex_handle from, vertex_handle to) const
-      {
-        halfedge_handle he = find_halfedge(from,to);
-        if(he.is_valid())
-          return edge(he);
-
-       return edge_handle{};
-      }
-    
       edge_handle add_edge(vertex_handle from, vertex_handle to)
       {
         edges_.emplace_back(from, to);
@@ -1543,7 +1464,6 @@ namespace owl
       std::vector<face_t> faces_;
 
       vertex_property_handle<vector3<Scalar>> vertex_position_handle_;
-      vertex_property_handle<vector3<Scalar>> vertex_normal_handle_;
       face_property_handle<vector3<Scalar>> face_normal_handle_;
       halfedge_property_handle<vector3<Scalar>> halfedge_normal_handle_;
       halfedge_property_handle<vector2<Scalar>> halfedge_texcoord_handle_;
@@ -1577,7 +1497,6 @@ namespace owl
        }
      }
    
-   
      for(auto f: m.faces())
      {
        if(!m.halfedge(f).is_valid() )
@@ -1603,6 +1522,11 @@ namespace owl
           ++count_error;
         }
         if(m.next(m.prev(he)) != he)
+        {
+          std::cout << "next halfedge of halfedge " << m.prev(he) << "is "<<m.next(m.prev(he)) << "instead of "<< he <<std::endl;
+          ++count_error;
+        }
+         if(m.prev(m.next(he)) != he)
         {
           std::cout << "next halfedge of halfedge " << m.prev(he) << "is "<<m.next(m.prev(he)) << "instead of "<< he <<std::endl;
           ++count_error;
@@ -1647,8 +1571,6 @@ namespace owl
      };
      m.set_face_texcoords(m.add_face(vertices[1],vertices[3],vertices[7],vertices[5]), texcoord_right);
 
-    
-    
      std::array<math::vector<Scalar,2>,4> texcoord_left =
      {
       math::vector<Scalar,2>{0,0.5},
@@ -1694,9 +1616,7 @@ namespace owl
       math::vector<Scalar,2>{0.75,0.5}
      };
      m.set_face_texcoords(m.add_face(vertices[0],vertices[2],vertices[3],vertices[1]), texcoord_back);
-     m.triangulate();
      m.update_normals(radians<Scalar>(0));
-     check_mesh(m);
      return m;
     
     }

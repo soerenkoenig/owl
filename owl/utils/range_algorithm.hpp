@@ -44,11 +44,23 @@ namespace owl
     }
   
     template<typename InputRange, typename OutIter, typename BinaryOperation>
-    inline auto transform(InputRange&& rng, OutIter&& it, BinaryOperation&& binary_op)
+    inline auto transform(const InputRange& rng, OutIter&& it, BinaryOperation&& binary_op)
     {
-      return std::transform(std::begin(std::forward<InputRange>(rng)),
-        std::end(std::forward<InputRange>(rng)),std::forward<OutIter>(it),
+      return std::transform(std::begin(rng),
+        std::end(rng),std::forward<OutIter>(it),
         std::forward<BinaryOperation>(binary_op));
+    }
+  
+    template<typename Range, typename Pred>
+    inline auto all_of(const Range& rng, Pred&& cond)
+    {
+      return std::all_of(std::begin(rng), std::end(rng),std::forward<Pred>(cond));
+    }
+  
+    template<typename Range, typename Pred>
+    inline auto count_if(const Range& rng, Pred&& cond)
+    {
+      return std::count_if(std::begin(rng), std::end(rng),std::forward<Pred>(cond));
     }
   
   }
