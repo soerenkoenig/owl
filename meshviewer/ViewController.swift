@@ -43,10 +43,11 @@ class ViewController: NSViewController {
    
     
     let scene = SCNScene()
-    
-    let floorGeometry = SCNFloor();
+    let grid = Grid()
+    let floorGeometry = grid.geometry();
     let floorNode = SCNNode(geometry: floorGeometry)
     scene.rootNode.addChildNode(floorNode)
+    floorGeometry.firstMaterial?.lightingModel = SCNMaterial.LightingModel.constant
     floorGeometry.firstMaterial!.diffuse.contents = #colorLiteral(red: 0.05882352963, green: 0.180392161, blue: 0.2470588237, alpha: 1)
     
     let cameraNode = SCNNode()
@@ -57,6 +58,7 @@ class ViewController: NSViewController {
   
  
      let m = Mesh()
+     m.create_geo_sphere(radius: 4, numLevels: 5)
      m.create_box()
      m.triangulate()
     //  m.create_box()
@@ -69,7 +71,7 @@ class ViewController: NSViewController {
 //let meshGeom = m.triangleGeometry()
     let meshNode = SCNNode(geometry: meshGeom)
     meshNode.position = SCNVector3(0,(meshNode.boundingBox.max.y - meshNode.boundingBox.min.y) / 2 ,0)
-  //  meshGeom.firstMaterial?.lightingModel = SCNMaterial.LightingModel.constant
+    meshGeom.firstMaterial?.lightingModel = SCNMaterial.LightingModel.constant
     meshGeom.firstMaterial?.diffuse.contents  = #colorLiteral(red: 0.9254902005, green: 0.2352941185, blue: 0.1019607857, alpha: 1)
     scene.rootNode.addChildNode(meshNode)
     

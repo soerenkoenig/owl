@@ -396,14 +396,14 @@ namespace owl
       template <typename VertexRange, typename = std::enable_if_t<is_vertex_handle_range<VertexRange>::value>>
       auto positions(VertexRange&& vertices) const
       {
-        return utils::map_range([this](vertex_handle v)->const auto&{ return position(v);},
+        return utils::map_range([this](vertex_handle v)->const auto&{ return position(v); },
           std::forward<VertexRange>(vertices));
       }
 
       template <typename VertexRange, typename = std::enable_if_t<is_vertex_handle_range<VertexRange>::value>>
       auto positions(VertexRange&& vertices)
       {
-        return utils::map_range([this](vertex_handle v)->auto&{ return position(v);},
+        return utils::map_range([this](vertex_handle v)->auto&{ return position(v); },
           std::forward<VertexRange>(vertices));
       }
 
@@ -578,7 +578,6 @@ namespace owl
         return split(he, v);
       }
     
-    
       //returns first halfedge of new edge pointing to new vertices
       halfedge_handle split(halfedge_handle he, vertex_handle v)
       {
@@ -630,7 +629,7 @@ namespace owl
       {
         edges_.reserve(n);
         edge_properties_.reserve(n);
-        halfedge_properties_.reserve(2*n);
+        halfedge_properties_.reserve(2 * n);
       }
     
       void reserve_faces(std::size_t n)
@@ -829,9 +828,7 @@ namespace owl
           return radians<Scalar>(sign_a >= 0 ? acos(cos_a) : -acos(cos_a));
         }
         else
-        {
           return radians<Scalar>(acos(cos_a));
-        }
       }
 
       angle<Scalar> dihedral_angle(halfedge_handle he) const
@@ -872,8 +869,10 @@ namespace owl
       
         for(auto he : halfedges(he))
           nml += compute_sector_normal(he, false);
+      
         if(normalize)
          nml.normalize();
+      
         return nml;
       }
     
@@ -899,19 +898,11 @@ namespace owl
           normal(f) = compute_face_normal(f);
       }
     
-     /* void update_vertex_normals()
-      {
-        for(auto v: vertices())
-          normal(v) = compute_vertex_normal(v);
-      }*/
-    
-    
       void update_halfedge_normals(const angle<Scalar>& max_angle = degrees<Scalar>(44))
       {
         for(auto he : halfedges())
           normal(he) = is_sharp(he, max_angle) ? compute_loop_normal(he) : compute_vertex_normal(target(he));
       }
-    
     
       void update_normals(const angle<Scalar>& max_angle = degrees<Scalar>(44))
       {
@@ -928,7 +919,6 @@ namespace owl
       bool is_n_gon_mesh(std::size_t n) const
       {
         return utils::all_of(faces(), [this,&n](face_handle f){ return is_n_gon(f, n); });
-
       }
 
       bool is_quad_mesh() const
@@ -1049,7 +1039,6 @@ namespace owl
       {
          return add_face(std::array<vertex_handle, sizeof...(vertices)> { std::forward<VertexHandles>(vertices)... });
       }
-    
     
       //ensures the first vertex of returned face is the vertices.front()
       //adding a face which results in a non-manifold vertex is not allowed
@@ -1293,6 +1282,7 @@ namespace owl
         return {he, he_opp};
       }
     
+      //triangulate convex face
       void triangulate(face_handle f)
       {
         assert(is_convex(f));
@@ -1300,7 +1290,7 @@ namespace owl
         if(n <= 3)
           return;
       
-        auto he_prev = halfedge(f);     //auto he_last =  next(halfedge(he_prev))
+        auto he_prev = halfedge(f);
         auto he_next = next(next(next(he_prev)));
         while(he_next != he_prev)
         {
@@ -1309,14 +1299,12 @@ namespace owl
         }
       }
     
-      void triangulate()
+      void triangulate(bool update_normals = true)
       {
         for(auto f : faces())
-        {
-          std::cout << "triangulate "<< f <<std::endl;
           triangulate(f);
-        }
-        update_normals();
+        
+        this->update_normals();
       }
     
       halfedge_handle find_halfedge(vertex_handle from, vertex_handle to) const
@@ -1324,7 +1312,7 @@ namespace owl
           for(auto he : outgoing_halfedges(from))
             if(target(he) == to)
               return he;
-        return halfedge_handle{};
+        return halfedge_handle::invalid();
       }
 
       edge_handle find_edge(vertex_handle from, vertex_handle to) const
@@ -1333,7 +1321,7 @@ namespace owl
         if(he.is_valid())
           return edge(he);
 
-       return edge_handle{};
+       return edge_handle::invalid();
       }
 
    private:
@@ -1348,7 +1336,7 @@ namespace owl
       struct halfedge_t
       {
         halfedge_t() = default;
-        halfedge_t(vertex_handle to, face_handle f = face_handle{})
+        halfedge_t(vertex_handle to, face_handle f = face_handle::invalid())
           : target{to}
           , face{f}
         {
@@ -1454,10 +1442,6 @@ namespace owl
         halfedge_properties_.add_elems(2);
         return edge_properties_.add_elem();
       }
-
-      template <typename S>
-      friend std::size_t check_mesh(const mesh<S>& m);
-    
     
       std::vector<edge_t> edges_;
       std::vector<vertex_t> vertices_;
@@ -1551,74 +1535,71 @@ namespace owl
     template <typename Scalar>
     mesh<Scalar> create_box()
     {
-     std::array<math::vector<Scalar,3>,8> positions = {math::vector<Scalar,3>{0,0,0},
-     math::vector<Scalar,3>{1,0,0},
-     math::vector<Scalar,3>{0,1,0},
-     math::vector<Scalar,3>{1,1,0},
-     math::vector<Scalar,3>{0,0,1},
-     math::vector<Scalar,3>{1,0,1},
-     math::vector<Scalar,3>{0,1,1},
-     math::vector<Scalar,3>{1,1,1}};
-     mesh<float> m;
-     auto vertices = m.add_vertices(positions);
+      std::array<math::vector<Scalar,3>,8> positions = {math::vector<Scalar,3>{0,0,0},
+      math::vector<Scalar,3>{1,0,0},
+      math::vector<Scalar,3>{0,1,0},
+      math::vector<Scalar,3>{1,1,0},
+      math::vector<Scalar,3>{0,0,1},
+      math::vector<Scalar,3>{1,0,1},
+      math::vector<Scalar,3>{0,1,1},
+      math::vector<Scalar,3>{1,1,1}};
+      mesh<float> m;
+      auto vertices = m.add_vertices(positions);
     
-     std::array<math::vector<Scalar,2>,4> texcoord_right =
-     {
-      math::vector<Scalar,2>{0.5,0.25},
-      math::vector<Scalar,2>{0.5,0.5},
-      math::vector<Scalar,2>{0.75,0.5},
-      math::vector<Scalar,2>{0.75,0.25}
-     };
-     m.set_face_texcoords(m.add_face(vertices[1],vertices[3],vertices[7],vertices[5]), texcoord_right);
+      std::array<math::vector<Scalar,2>,4> texcoord_right =
+      {
+        math::vector<Scalar,2>{0.5,0.25},
+        math::vector<Scalar,2>{0.5,0.5},
+        math::vector<Scalar,2>{0.75,0.5},
+        math::vector<Scalar,2>{0.75,0.25}
+      };
+      m.set_face_texcoords(m.add_face(vertices[1],vertices[3],vertices[7],vertices[5]), texcoord_right);
 
-     std::array<math::vector<Scalar,2>,4> texcoord_left =
-     {
-      math::vector<Scalar,2>{0,0.5},
-      math::vector<Scalar,2>{0.25,0.5},
-      math::vector<Scalar,2>{0.25,0.25},
-      math::vector<Scalar,2>{0,0.25}
-     };
-    m.set_face_texcoords(m.add_face(vertices[0],vertices[4],vertices[6],vertices[2]),texcoord_left);
+      std::array<math::vector<Scalar,2>,4> texcoord_left =
+      {
+        math::vector<Scalar,2>{0,0.5},
+        math::vector<Scalar,2>{0.25,0.5},
+        math::vector<Scalar,2>{0.25,0.25},
+        math::vector<Scalar,2>{0,0.25}
+      };
+      m.set_face_texcoords(m.add_face(vertices[0],vertices[4],vertices[6],vertices[2]),texcoord_left);
+      std::array<math::vector<Scalar,2>,4> texcoord_top =
+      {
+        math::vector<Scalar,2>{0.25,0.0},
+        math::vector<Scalar,2>{0.25,0.25},
+        math::vector<Scalar,2>{0.5,0.25},
+        math::vector<Scalar,2>{0.5,0.0}
+      };
+      m.set_face_texcoords(m.add_face(vertices[2], vertices[6], vertices[7], vertices[3]), texcoord_top);
     
-    
-     std::array<math::vector<Scalar,2>,4> texcoord_top =
-     {
-      math::vector<Scalar,2>{0.25,0.0},
-      math::vector<Scalar,2>{0.25,0.25},
-      math::vector<Scalar,2>{0.5,0.25},
-      math::vector<Scalar,2>{0.5,0.0}
-     };
-     m.set_face_texcoords(m.add_face(vertices[2], vertices[6], vertices[7], vertices[3]), texcoord_top);
-    
-     std::array<math::vector<Scalar,2>,4> texcoord_bottom =
-     {
-      math::vector<Scalar,2>{0.25,0.75},
-      math::vector<Scalar,2>{0.5,0.75},
-      math::vector<Scalar,2>{0.5,0.5},
-      math::vector<Scalar,2>{0.25,0.5}
-     };
-     m.set_face_texcoords(m.add_face(vertices[0], vertices[1], vertices[5], vertices[4]), texcoord_bottom);
+      std::array<math::vector<Scalar,2>,4> texcoord_bottom =
+      {
+        math::vector<Scalar,2>{0.25,0.75},
+        math::vector<Scalar,2>{0.5,0.75},
+        math::vector<Scalar,2>{0.5,0.5},
+        math::vector<Scalar,2>{0.25,0.5}
+      };
+      m.set_face_texcoords(m.add_face(vertices[0], vertices[1], vertices[5], vertices[4]), texcoord_bottom);
     
       std::array<math::vector<Scalar,2>,4> texcoord_front =
-     {
-      math::vector<Scalar,2>{0.25,0.5},
-      math::vector<Scalar,2>{0.5,0.5},
-      math::vector<Scalar,2>{0.5,0.25},
-      math::vector<Scalar,2>{0.25,0.25}
-     };
-     m.set_face_texcoords(m.add_face(vertices[4], vertices[5], vertices[7], vertices[6]), texcoord_front);
+      {
+        math::vector<Scalar,2>{0.25,0.5},
+        math::vector<Scalar,2>{0.5,0.5},
+        math::vector<Scalar,2>{0.5,0.25},
+        math::vector<Scalar,2>{0.25,0.25}
+      };
+      m.set_face_texcoords(m.add_face(vertices[4], vertices[5], vertices[7], vertices[6]), texcoord_front);
     
-     std::array<math::vector<Scalar,2>,4> texcoord_back =
-     {
-      math::vector<Scalar,2>{1,0.5},
-      math::vector<Scalar,2>{1.0,0.25},
-      math::vector<Scalar,2>{0.75,0.25},
-      math::vector<Scalar,2>{0.75,0.5}
-     };
-     m.set_face_texcoords(m.add_face(vertices[0],vertices[2],vertices[3],vertices[1]), texcoord_back);
-     m.update_normals(radians<Scalar>(0));
-     return m;
-    
+      std::array<math::vector<Scalar,2>,4> texcoord_back =
+      {
+        math::vector<Scalar,2>{1,0.5},
+        math::vector<Scalar,2>{1.0,0.25},
+        math::vector<Scalar,2>{0.75,0.25},
+        math::vector<Scalar,2>{0.75,0.5}
+      };
+      m.set_face_texcoords(m.add_face(vertices[0],vertices[2],vertices[3],vertices[1]), texcoord_back);
+      m.update_normals(radians<Scalar>(0));
+      return m;
     }
   
     template <typename Scalar>
@@ -1671,247 +1652,234 @@ namespace owl
       return m;
     }
   
-     template <typename Scalar>
+    template <typename Scalar>
     mesh<Scalar> create_triangle()
     {
       mesh<Scalar> m;
     
       std::array<vector3<Scalar>,3> positions =
-      {vector3<Scalar>{0, 0,  0},
-       vector3<Scalar>{1, 0,  0},
-       vector3<Scalar>{(Scalar)0.5,(Scalar) 1,  0}};
+        { vector3<Scalar>{0, 0,  0},
+          vector3<Scalar>{1, 0,  0},
+          vector3<Scalar>{(Scalar)0.5,(Scalar) 1,  0} };
+    
+      auto vhandles = m.add_vertices(positions);
+      m.add_face(vhandles[0], vhandles[1], vhandles[2]);
+      return m;
+    }
+  
+    template <typename Scalar, typename Scalar2>
+    mesh<Scalar> create_geodesic_sphere(Scalar2 radius = 1, std::size_t levels = 2)
+    {
+      mesh<Scalar> m = create_icosaeder<Scalar>(radius);
+    
+      for(std::size_t i = 0; i < levels; ++i)
+      {
+        auto n_old  = m.vertices().size();
+        m.subdivide_triangle_split();
+        auto verts = m.vertices();
+      
+        for(auto& pos: m.positions(make_iterator_range(verts).advance_begin(n_old)))
+          pos = radius * normalize(pos);
+      }
+      m.update_normals();
+      return m;
+    }
+  
+    //create a sphere mesh
+    template <typename Scalar, typename Scalar2>
+    mesh<Scalar> create_sphere(Scalar2 radius, std::size_t slices = 48, std::size_t stacks = 48)
+    {
+      assert(slices >= 3 && stacks >= 3);
+    
+      mesh<Scalar> m;
+    
+      std::size_t n = slices * (stacks - 1) + 2;
+      std::vector<vector<Scalar,3>> positions;
+      positions.reserve(n);
+
+      positions.emplace_back(0, radius, 0);
+    
+      int k = 1;
+      for(int i = 1; i < stacks; i++)
+      {
+        Scalar angle1 = constants::pi_2<Scalar> - (Scalar)(i * constants::pi<Scalar>)/(Scalar)stacks;
+        Scalar r = cos(angle1) * radius;
+        Scalar height = sin(angle1) * radius;
+
+        for(int j = 0; j < slices; j++)
+        {
+          Scalar angle2 = (Scalar)(j * constants::two_pi<Scalar>) / (Scalar)(slices);
+          positions.emplace_back(cos(angle2) * r, height, sin(angle2) * r);
+          ++k;
+        }
+      }
+    
+      positions.emplace_back(0, -radius, 0);
+      auto vhandles = m.add_vertices(positions);
+    
+      for(int i = 0; i < slices; i++)
+      {
+        m.add_face(vhandles[0], vhandles[1 + (1 + i) % slices], vhandles[1 + i % slices]);
+      
+        for(std::size_t j = 0; j < stacks-2; ++j)
+        {
+          std::size_t a,b,c,d;
+          a = 1 + j * slices + i % slices;
+          b = 1 + j * slices + (1 + i) % slices;
+          c = 1 + (j + 1) * slices + (1 + i) % slices;
+          d = 1 + (j + 1) * slices + i % slices;
+          m.add_face(vhandles[a], vhandles[b], vhandles[c], vhandles[d]);
+        }
+        m.add_face(vhandles[1 + slices * (stacks - 1)],
+            vhandles[1 + (stacks - 2) * slices + i % slices],
+            vhandles[1 + (stacks - 2) * slices + (1 + i) % slices]);
+      }
+    
+      for(auto v: m.vertices())
+      {
+        for(auto& nml : m.normals(m.incoming_halfedges(v)))
+          nml = normalize(m.position(v));
+      }
+
+      return m;
+    }
+  
+    template <typename Scalar, typename Scalar2, typename Scalar3>
+    mesh<Scalar> create_cylinder(Scalar2 radius, Scalar3 height, std::size_t stacks, std::size_t slices)
+    {
+      assert(slices >= 3 && stacks >= 1);
+
+      mesh<Scalar> m;
+    
+      std::size_t n = 2 + slices * (stacks + 1);
+      std::vector<vector<Scalar,3> > positions;
+      positions.reserve(n);
+    
+      positions.emplace_back(0, height, 0);
+
+   
+      for(std::size_t i = 0; i < stacks + 1; i++)
+      {
+        Scalar h = (stacks - i) * height / stacks;
+
+        for(std::size_t j = 0; j < slices; j++)
+        {
+          Scalar angle2 = (Scalar)(j*constants::two_pi<Scalar>)/(Scalar)(slices);
+          positions.emplace_back(cos(angle2)*radius, h, sin(angle2)*radius);
+        }
+      }
+
+      positions.emplace_back(0,0,0);
       auto vhandles = m.add_vertices(positions);
 
-      m.add_face(vhandles[0], vhandles[1], vhandles[2]);
+      for(std::size_t i = 0; i < slices; ++i)
+      {
+        m.add_face(vhandles[0], vhandles[1 + (1 + i) % slices], vhandles[1 + i % slices]);
+    
+        for(int j = 0; j < stacks; ++j)
+        {
+          std::size_t a,b,c,d;
+          a = 1 + j * slices + i%slices;
+          b = 1 + j * slices + (1 + i) % slices;
+          c = 1 + (j + 1) * slices + (1+i) % slices;
+          d = 1 + (j + 1) * slices + i % slices;
+          m.add_face(vhandles[a], vhandles[b], vhandles[c], vhandles[d]);
+        }
+        m.add_face(vhandles[vhandles.size() - 1],
+        vhandles[1 + stacks * slices + i % slices],
+        vhandles[1 + stacks * slices + (1 + i) % slices]);
+      }
+      return m;
+    }
+  
+    template <typename Scalar>
+    mesh<Scalar> create_torus(Scalar r, Scalar R, std::size_t nsides, std::size_t rings)
+    {
+      assert(nsides >= 3 && rings >= 3);
+      mesh<Scalar> m;
+
+      std::size_t n = rings * nsides;
+      std::vector<vector<Scalar,3>> positions;
+      positions.reserve(n);
+      std::size_t k = 0;
+      for(std::size_t i = 0; i < rings; ++i)
+      {
+        Scalar angle1 = (Scalar)(i * constants::two_pi<Scalar> / rings);
+        vector<Scalar,3> center(cos(angle1) * R, 0, sin(angle1) * R);
+        vector<Scalar,3> t1(cos(angle1), 0, sin(angle1));
+        vector<Scalar,3> t2(0, 1, 0);
+
+        for(std::size_t j = 0; j < nsides; ++j)
+        {
+          Scalar angle2 = (Scalar)(j*constants::two_pi<Scalar>/nsides);
+          positions.push_back(center + (Scalar)(sin(angle2) * r) * t1+(Scalar)(cos(angle2) * r) * t2);
+        //  m.texcoord(vhandles[k]).set(angle1/(2*3.14159f),angle2/(2*3.14159f)) ;
+          k++;
+        }
+      }
+      auto vhandles = m.add_vertices(positions);
+
+      for(std::size_t i = 0; i < rings; ++i)
+      {
+        for(std::size_t j = 0; j < nsides; ++j)
+        {
+          std::size_t a,b,c,d;
+          a = (i+1)%(rings)*(nsides)+j;
+          b = (i+1)%(rings)*(nsides)+(j+1)%(nsides);
+          c = i*(nsides)+(j+1)%(nsides);
+          d = i*(nsides)+j;
+          m.add_face(vhandles[a], vhandles[b], vhandles[c], vhandles[d]);
+        }
+      }
+      return m;
+    }
+  
+    template <typename Scalar, typename Scalar2>
+    mesh<Scalar> create_disk(Scalar2 radius, std::size_t slices)
+    {
+      mesh<Scalar> m;
+      std::vector<vector<Scalar,3>> positions;
+      positions.reserve(slices + 1);
+      positions.emplace_back(0, 0, 0);
+    
+      for(std::size_t i = 0; i < slices; ++i)
+      {
+        Scalar angle= -i * constants::two_pi<Scalar>/slices;
+        positions.emplace_back(cos(angle) * radius, 0, sin(angle) * radius);
+      }
+      auto vhandles = m.add_vertices(positions);
+      for(std::size_t i = 0; i < slices; ++i)
+      {
+        m.add_face(vhandles[0], vhandles[1 + i % slices], vhandles[1 + (1 + i) % slices]);
+      }
     
       return m;
     }
   
-  template <typename Scalar, typename Scalar2>
-  mesh<Scalar> create_geodesic_sphere(Scalar2 radius = 1, std::size_t levels = 2)
-  {
-    mesh<Scalar> m = create_icosaeder<Scalar>(radius);
-  
-    for(std::size_t i = 0; i < levels; ++i)
+    template <typename Scalar, typename Scalar2>
+    mesh<Scalar> create_octaeder(Scalar2 radius)
     {
-      auto n_old  = m.vertices().size();
-      m.subdivide_triangle_split();
-      auto verts = m.vertices();
+      mesh<Scalar> m;
     
-      for(auto& pos: m.positions(make_iterator_range(verts).advance_begin(n_old)))
-        pos = radius * normalize(pos);
-    }
-    m.update_normals();
-    return m;
-  }
-  
-  //create a sphere mesh
-  template <typename Scalar, typename Scalar2>
-  mesh<Scalar> create_sphere(Scalar2 radius, std::size_t slices = 48, std::size_t stacks = 48)
-  {
-    assert(slices >= 3 && stacks >= 3);
-  
-    mesh<Scalar> m;
-  
-    std::size_t n = slices * (stacks - 1) + 2;
-    std::vector<vector<Scalar,3>> positions;
-    positions.reserve(n);
-
-    positions.emplace_back(0, radius, 0);
-  
-    int k = 1;
-    for(int i = 1; i < stacks; i++)
-    {
-      Scalar angle1 = constants::pi_2<Scalar> - (Scalar)(i * constants::pi<Scalar>)/(Scalar)stacks;
-      Scalar r = cos(angle1) * radius;
-      Scalar height = sin(angle1) * radius;
-
-      for(int j = 0; j < slices; j++)
-      {
-        Scalar angle2 = (Scalar)(j * constants::two_pi<Scalar>) / (Scalar)(slices);
-        positions.emplace_back(cos(angle2) * r, height, sin(angle2) * r);
-        ++k;
-      }
-    }
-  
-    positions.emplace_back(0, -radius, 0);
-    auto vhandles = m.add_vertices(positions);
-  
-    for(int i = 0; i < slices; i++)
-    {
-      m.add_face(vhandles[0], vhandles[1 + (1 + i) % slices], vhandles[1 + i % slices]);
+      std::vector<vector<Scalar,3>> positions;
+      positions.reserve(6);
     
-      for(std::size_t j = 0; j < stacks-2; ++j)
+      positions.emplace_back(0, radius, 0);
+    
+      for(std::size_t i = 0; i < 4; ++i)
+        positions.emplace_back((Scalar)cos(i * constants::pi_2<Scalar>) * radius, 0, -(Scalar)sin(i * constants::pi_2<Scalar>) * radius);
+
+      positions.emplace_back(0, -radius, 0);
+      auto vhandles = m.add_vertices(positions);
+
+      for(std::size_t i = 0; i < 4; i++)
       {
-        std::size_t a,b,c,d;
-        a = 1 + j * slices + i % slices;
-        b = 1 + j * slices + (1 + i) % slices;
-        c = 1 + (j + 1) * slices + (1 + i) % slices;
-        d = 1 + (j + 1) * slices + i % slices;
-        m.add_face(vhandles[a], vhandles[b], vhandles[c], vhandles[d]);
+        m.add_face(vhandles[0], vhandles[i + 1], vhandles[(i + 1) % 4 + 1]);
+        m.add_face(vhandles[5], vhandles[(i + 1) % 4 + 1], vhandles[i + 1]);
       }
-      m.add_face(vhandles[1 + slices * (stacks - 1)],
-          vhandles[1 + (stacks - 2) * slices + i % slices],
-          vhandles[1 + (stacks - 2) * slices + (1 + i) % slices]);
+      return m;
     }
   
-    for(auto v: m.vertices())
-    {
-      for(auto& nml : m.normals(m.incoming_halfedges(v)))
-        nml = normalize(m.position(v));
-    }
-
-    return m;
-  }
-  
-  template <typename Scalar, typename Scalar2, typename Scalar3>
-  mesh<Scalar> create_cylinder(Scalar2 radius, Scalar3 height, std::size_t stacks, std::size_t slices)
-  {
-    assert(slices >= 3 && stacks >= 1);
-
-    mesh<Scalar> m;
-  
-    std::size_t n = 2 + slices * (stacks + 1);
-    std::vector<vector<Scalar,3> > positions;
-    positions.reserve(n);
-  
-    positions.emplace_back(0, height, 0);
-
- 
-    for(std::size_t i = 0; i < stacks + 1; i++)
-    {
-      Scalar h = (stacks - i) * height / stacks;
-
-      for(std::size_t j = 0; j < slices; j++)
-      {
-        Scalar angle2 = (Scalar)(j*constants::two_pi<Scalar>)/(Scalar)(slices);
-        positions.emplace_back(cos(angle2)*radius, h, sin(angle2)*radius);
-      }
-    }
-
-    positions.emplace_back(0,0,0);
-    auto vhandles = m.add_vertices(positions);
-
-    for(std::size_t i = 0; i < slices; ++i)
-    {
-      m.add_face(vhandles[0], vhandles[1 + (1 + i) % slices], vhandles[1 + i % slices]);
-  
-      for(int j = 0; j < stacks; ++j)
-      {
-        std::size_t a,b,c,d;
-        a = 1 + j * slices + i%slices;
-        b = 1 + j * slices + (1 + i) % slices;
-        c = 1 + (j + 1) * slices + (1+i) % slices;
-        d = 1 + (j + 1) * slices + i % slices;
-        m.add_face(vhandles[a], vhandles[b], vhandles[c], vhandles[d]);
-      }
-      m.add_face(vhandles[vhandles.size() - 1],
-      vhandles[1 + stacks * slices + i % slices],
-      vhandles[1 + stacks * slices + (1 + i) % slices]);
-    }
-    return m;
-  }
-  
-  template <typename Scalar>
-  mesh<Scalar> create_torus(Scalar r, Scalar R, std::size_t nsides, std::size_t rings)
-  {
-    assert(nsides >= 3 && rings >= 3);
-    mesh<Scalar> m;
-
-    std::size_t n = rings * nsides;
-    std::vector<vector<Scalar,3>> positions;
-    positions.reserve(n);
-    std::size_t k = 0;
-    for(std::size_t i = 0; i < rings; ++i)
-    {
-      Scalar angle1 = (Scalar)(i * constants::two_pi<Scalar> / rings);
-      vector<Scalar,3> center(cos(angle1) * R, 0, sin(angle1) * R);
-      vector<Scalar,3> t1(cos(angle1), 0, sin(angle1));
-      vector<Scalar,3> t2(0, 1, 0);
-
-      for(std::size_t j = 0; j < nsides; ++j)
-      {
-        Scalar angle2 = (Scalar)(j*constants::two_pi<Scalar>/nsides);
-        positions.push_back(center + (Scalar)(sin(angle2) * r) * t1+(Scalar)(cos(angle2) * r) * t2);
-      //  m.texcoord(vhandles[k]).set(angle1/(2*3.14159f),angle2/(2*3.14159f)) ;
-        k++;
-      }
-    }
-    auto vhandles = m.add_vertices(positions);
-
-    for(std::size_t i = 0; i < rings; ++i)
-    {
-      for(std::size_t j = 0; j < nsides; ++j)
-      {
-        std::size_t a,b,c,d;
-        a = (i+1)%(rings)*(nsides)+j;
-        b = (i+1)%(rings)*(nsides)+(j+1)%(nsides);
-        c = i*(nsides)+(j+1)%(nsides);
-        d = i*(nsides)+j;
-        m.add_face(vhandles[a], vhandles[b], vhandles[c], vhandles[d]);
-      }
-    }
-    return m;
-  }
-  
-  template <typename Scalar, typename Scalar2>
-  mesh<Scalar> create_disk(Scalar2 radius, std::size_t slices)
-  {
-    mesh<Scalar> m;
-    std::vector<vector<Scalar,3>> positions;
-    positions.reserve(slices + 1);
-    positions.emplace_back(0, 0, 0);
-  
-    for(std::size_t i = 0; i < slices; ++i)
-    {
-      Scalar angle= -i * constants::two_pi<Scalar>/slices;
-      positions.emplace_back(cos(angle) * radius, 0, sin(angle) * radius);
-    }
-    auto vhandles = m.add_vertices(positions);
-    for(std::size_t i = 0; i < slices; ++i)
-    {
-      m.add_face(vhandles[0], vhandles[1 + i % slices], vhandles[1 + (1 + i) % slices]);
-    }
-  
-    return m;
-  }
-  
-  template <typename Scalar, typename Scalar2>
-  mesh<Scalar> create_octaeder(Scalar2 radius)
-  {
-    mesh<Scalar> m;
-  
-    std::vector<vector<Scalar,3>> positions;
-    positions.reserve(6);
-  
-    positions.emplace_back(0, radius, 0);
-  
-    for(std::size_t i = 0; i < 4; ++i)
-      positions.emplace_back((Scalar)cos(i * constants::pi_2<Scalar>) * radius, 0, -(Scalar)sin(i * constants::pi_2<Scalar>) * radius);
-
-    positions.emplace_back(0, -radius, 0);
-    auto vhandles = m.add_vertices(positions);
-
-    for(std::size_t i = 0; i < 4; i++)
-    {
-      m.add_face(vhandles[0], vhandles[i + 1], vhandles[(i + 1) % 4 + 1]);
-      m.add_face(vhandles[5], vhandles[(i + 1) % 4 + 1], vhandles[i + 1]);
-    }
-    return m;
-  }
-  
-  
-
-
-  
-  
-    //sphere
-    //radius
-    //segment count
-  
-  
-  
-    //tube
   
   
     //pyramid
@@ -2065,17 +2033,13 @@ mesh create_saddle(int stacks, int slices, const typename primitive_traits<mesh>
   return m;
 
 }
-
-
   */
   
     template <typename Scalar>
     void print_vertex_positions(const mesh<Scalar>& m)
     {
       for(auto pos: m.positions(m.vertices()))
-      {
         std::cout << pos << std::endl;
-      }
     }
   }
 }

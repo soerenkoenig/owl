@@ -25,7 +25,7 @@ namespace owl
       using index_type = Index;
       using difference_type = decltype(std::declval<Index>() - std::declval<Index>());
       
-      constexpr explicit handle(const index_type& index = invalid())
+      constexpr explicit handle(const index_type& index = invalid_index())
         : index_{index}
       {
       }
@@ -43,12 +43,12 @@ namespace owl
       
       bool is_valid() const
       {
-        return index_ != invalid();
+        return index_ != invalid_index();
       }
       
       void invalidate()
       {
-        index_ = invalid();
+        index_ = invalid_index();
       }
       handle& operator++()
       {
@@ -98,9 +98,6 @@ namespace owl
         return *this;
       }
     
-      
-    
-      
       bool operator==(const handle& other) const
       {
         return index_ == other.index_;
@@ -130,9 +127,14 @@ namespace owl
       {
         return  index_ >= other.index_;
       }
+    
+      constexpr static handle invalid()
+      {
+        return handle(invalid_index());
+      }
       
     private:
-      constexpr static index_type invalid()
+      constexpr static index_type invalid_index()
       {
         return std::numeric_limits<index_type>::max();
       }

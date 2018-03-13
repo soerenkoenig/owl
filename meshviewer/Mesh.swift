@@ -28,9 +28,9 @@ class Mesh: NSObject
         mesh_deinit(self.cpp_mesh_pointer)
     }
   
-    func create_geo_sphere()
+    func create_geo_sphere(radius : Float, numLevels : Int)
     {
-      mesh_create_geosphere(self.cpp_mesh_pointer, 10.0,  3)
+      mesh_create_geosphere(self.cpp_mesh_pointer, radius,  numLevels)
     }
   
     func create_box()

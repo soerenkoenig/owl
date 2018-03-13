@@ -18,6 +18,7 @@
 		28175DB91F95BD14004ECB87 /* stop_watch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28175DB71F95BD14004ECB87 /* stop_watch.cpp */; };
 		28175DBA1F95BD14004ECB87 /* stop_watch.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 28175DB81F95BD14004ECB87 /* stop_watch.hpp */; };
 		28175DBC1F95BEF0004ECB87 /* stop_watch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28175DBB1F95BEF0004ECB87 /* stop_watch.cpp */; };
+		284972922057F8C300028ABC /* Grid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 284972912057F8C300028ABC /* Grid.swift */; };
 		284C09C51F9681D40062BFF1 /* matrix.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 284C09C41F9681D40062BFF1 /* matrix.cpp */; };
 		284C09C91F968F5C0062BFF1 /* container_traits.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 284C09C81F968F5C0062BFF1 /* container_traits.cpp */; };
 		284C09CB1F9B0B370062BFF1 /* step_iterator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 284C09CA1F9B0B370062BFF1 /* step_iterator.cpp */; };
@@ -133,6 +134,7 @@
 		28175DB71F95BD14004ECB87 /* stop_watch.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = stop_watch.cpp; sourceTree = "<group>"; };
 		28175DB81F95BD14004ECB87 /* stop_watch.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = stop_watch.hpp; sourceTree = "<group>"; };
 		28175DBB1F95BEF0004ECB87 /* stop_watch.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = stop_watch.cpp; sourceTree = "<group>"; };
+		284972912057F8C300028ABC /* Grid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Grid.swift; path = meshviewer/Grid.swift; sourceTree = SOURCE_ROOT; };
 		284C09C21F96806F0062BFF1 /* matrix.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = matrix.hpp; sourceTree = "<group>"; };
 		284C09C31F9680AD0062BFF1 /* linear_index.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = linear_index.hpp; sourceTree = "<group>"; };
 		284C09C41F9681D40062BFF1 /* matrix.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = matrix.cpp; sourceTree = "<group>"; };
@@ -592,6 +594,7 @@
 				28A19CBB2051327D00D012F9 /* wrapper.cpp */,
 				28A19CBA2051327D00D012F9 /* MeshViewer-Bridging-Header.h */,
 				289CAEE8205133960016894A /* Mesh.swift */,
+				284972912057F8C300028ABC /* Grid.swift */,
 			);
 			path = MeshViewer;
 			sourceTree = "<group>";
@@ -833,6 +836,7 @@
 				28A19CAD205131C400D012F9 /* AppDelegate.swift in Sources */,
 				289CAEE9205133960016894A /* Mesh.swift in Sources */,
 				2873F7ED2051388B003BE1D7 /* ViewController.swift in Sources */,
+				284972922057F8C300028ABC /* Grid.swift in Sources */,
 				28A19CBC2051327D00D012F9 /* wrapper.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
