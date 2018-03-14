@@ -17,8 +17,6 @@ extern "C" void mesh_create_geosphere(void * mesh, float radius, size_t levels)
 {
   owl::math::mesh<float>* m = (owl::math::mesh<float> *)mesh;
   *m = owl::math::create_geodesic_sphere<float>(radius, levels);
-  m->triangulate();
-  
 }
 
 extern "C" void mesh_create_box(void * mesh)
@@ -183,7 +181,7 @@ extern "C" void mesh_triangulate(void* mesh)
 {
   owl::math::mesh<float>* m = (owl::math::mesh<float>*)mesh;
   owl::math::check_mesh(*m);
-  m->triangulate();  
+  m->triangulate_monoton();  
 }
 
 /*

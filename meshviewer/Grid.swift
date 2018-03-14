@@ -35,8 +35,11 @@ class Grid : NSObject
    
       let meshGeom =  SCNGeometry(sources: [sourcePositions,sourceTexCoords, sourceNormals], elements: [element])
       meshGeom.firstMaterial?.emission.contents = NSImage.Name("checker")
-      meshGeom.firstMaterial?.emission.wrapS = .clampToBorder
-      meshGeom.firstMaterial?.emission.wrapT = .clampToBorder
+     // meshGeom.firstMaterial?.emission.wrapS = .clampToBorder
+      //meshGeom.firstMaterial?.emission.wrapT = .clampToBorder
+      meshGeom.firstMaterial?.isDoubleSided = true
+     
+     
       
       return meshGeom;
     }

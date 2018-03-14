@@ -1282,8 +1282,92 @@ namespace owl
         return {he, he_opp};
       }
     
+      void triangulate_monoton(face_handle f)
+      {
+        auto n = valence(f);
+        if(n <= 3)
+          return;
+      
+        auto nml = compute_face_normal(f);
+      
+        std::size_t u,v;
+        std::tie(u,v) = min_abs_components(nml);
+    
+        auto less_equal = [this,&u,&v](vertex_handle v_a, vertex_handle v_b)
+          {
+            const auto& a = position(v_a);
+            const auto& b = position(v_b);
+            return (a[u] < b[u]) || (a[u] == b[u] && a[v] <= b[v]);
+          };
+      
+        auto edge_sign = [this,&u,&v,&less_equal]( vertex_handle a, vertex_handle b, vertex_handle c)
+          {
+            assert(less_equal( a, b ) && less_equal(b, c));
+            const auto& posa = position(a);
+            const auto& posb = position(b);
+            const auto& posc = position(c);
+          
+            auto gapL = posb[u] - posa[u];
+            auto gapR = posc[u] - posb[u];
+
+            if(gapL + gapR > 0)
+              return (posb[v] - posc[v]) * gapL + (posb[v] - posa[v]) * gapR;
+            
+            return Scalar{0};
+          };
+      
+        auto edge_goes_left = [this,&less_equal](halfedge_handle he)
+          {
+            return less_equal( target(he), origin(he) );
+          };
+      
+        auto edge_goes_right = [this,&less_equal](halfedge_handle he)
+          {
+            return less_equal( origin(he), target(he) );
+          };
+      
+
+        halfedge_handle up = halfedge(f);
+        while(less_equal( target(up), origin(up) ))
+          up = prev(up);
+      
+        while(less_equal( origin(up), target(up) ))
+          up = next(up);
+      
+        halfedge_handle lo = prev(up);
+      
+        while( next(up) != lo )
+        {
+          if(less_equal(target(up), origin(lo)))
+          {
+            while(next(lo) != up && (edge_goes_left( next(lo) )
+              || edge_sign( origin(lo), target(lo), target(next(lo)) ) <= 0))
+            {
+              lo = opposite(insert_edge(next(lo), lo));
+            }
+            lo = prev(lo);
+          }
+          else
+          {
+            /* lo->Org is on the left.  We can make CCW triangles from up->Dst. */
+            while(next(lo) != up && (edge_goes_right(prev(up))
+             || edge_sign(target(up), origin(up), origin(prev(up))) >= 0))
+            {
+              up = opposite(insert_edge(up, prev(up)));
+            }
+            up = next(up);
+          }
+        }
+
+        assert( next(lo) != up );
+        while( next(next(lo)) != up )
+        {
+          lo = opposite(insert_edge( next(lo), lo ));
+        }
+      }
+    
       //triangulate convex face
-      void triangulate(face_handle f)
+      void triangulate_convex(face_handle f)
       {
         assert(is_convex(f));
         auto n = valence(f);
@@ -1299,10 +1383,18 @@ namespace owl
         }
       }
     
-      void triangulate(bool update_normals = true)
+      void triangulate_monoton(bool update_normals = true)
       {
         for(auto f : faces())
-          triangulate(f);
+          triangulate_monoton(f);
+      
+        this->update_normals();
+      }
+    
+      void triangulate_convex(bool update_normals = true)
+      {
+        for(auto f : faces())
+          triangulate_convex(f);
         
         this->update_normals();
       }

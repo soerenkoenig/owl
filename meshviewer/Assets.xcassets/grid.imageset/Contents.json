@@ -2,11 +2,11 @@
   "images" : [
     {
       "idiom" : "universal",
+      "filename" : "grid.png",
       "scale" : "1x"
     },
     {
       "idiom" : "universal",
-      "filename" : "checker.jpg",
       "scale" : "2x"
     },
     {
