@@ -60,8 +60,7 @@ namespace test
     CHECK(torus.num_edges() == 4608);
     CHECK(torus.is_closed());
     CHECK(torus.is_quad_mesh());
-    for(auto f: torus.faces())
-      CHECK(torus.is_convex(f));
+   
   
     auto octaeder = create_octaeder<float>(1);
     CHECK(octaeder.num_faces() == 8);

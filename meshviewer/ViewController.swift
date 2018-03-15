@@ -9,16 +9,37 @@
 import Cocoa
 import SceneKit
 
-class ViewController: NSViewController {
+class ViewController: NSViewController{
 
+  @IBOutlet weak var wireframeButton: NSButton!
+  
+  @IBOutlet weak var showGridButton: NSButton!
+  
   @IBOutlet weak var sceneView: SCNView!
+  
+  var meshNode: SCNNode?
+  var mesh: Mesh?
   
   override func viewDidLoad() {
     super.viewDidLoad()
     sceneSetup()
     resetCamera()
   }
-
+  @IBAction func wireFrameButtonPressed(_ sender: NSButton) {
+    if sender.state == .on
+    {
+      meshNode?.geometry = mesh?.edgeGeometry()
+      meshNode?.geometry?.firstMaterial?.lightingModel = SCNMaterial.LightingModel.constant
+      meshNode?.geometry?.firstMaterial?.diffuse.contents  = #colorLiteral(red: 0.9254902005, green: 0.2352941185, blue: 0.1019607857, alpha: 1)
+      print("wireframe on")
+    }
+    else
+    {
+      meshNode?.geometry = mesh?.triangleGeometry()
+      print("wireframe off")
+    }
+  }
+  
   override var representedObject: Any? {
     didSet {
     // Update the view, if already loaded.
@@ -57,23 +78,26 @@ class ViewController: NSViewController {
     scene.rootNode.addChildNode(cameraNode)
   
  
-     let m = Mesh()
-     m.create_geo_sphere(radius: 4, numLevels: 5)
-     m.create_box()
-     m.triangulate()
+    // let m = Mesh.create_geo_sphere(radius: 4, numLevels: 5)
+   //
+   
+     self.mesh = Mesh.create_torus(radius1:1, radius2:2)
+    // self.mesh = Mesh.create_tetrahedron()
+    // let m =   Mesh.create_box()
+     self.mesh?.triangulate()
     //  m.create_box()
-    print("number of vertices: \(m.vertexCount)")
-    print("number of edges: \(m.edgeCount)")
-    print("number of halfedges: \(m.halfedgeCount)")
-    print("number of faces: \(m.faceCount)")
+    print("number of vertices: \(self.mesh!.vertexCount)")
+    print("number of edges: \(self.mesh!.edgeCount)")
+    print("number of halfedges: \(self.mesh!.halfedgeCount)")
+    print("number of faces: \(self.mesh!.faceCount)")
     
-    let meshGeom = m.edgeGeometry()
+    let meshGeom = self.mesh!.edgeGeometry()
 //let meshGeom = m.triangleGeometry()
-    let meshNode = SCNNode(geometry: meshGeom)
-    meshNode.position = SCNVector3(0,(meshNode.boundingBox.max.y - meshNode.boundingBox.min.y) / 2 ,0)
+    self.meshNode = SCNNode(geometry: meshGeom)
+    self.meshNode!.position = SCNVector3(0,(self.meshNode!.boundingBox.max.y - self.meshNode!.boundingBox.min.y) / 2 ,0)
     meshGeom.firstMaterial?.lightingModel = SCNMaterial.LightingModel.constant
     meshGeom.firstMaterial?.diffuse.contents  = #colorLiteral(red: 0.9254902005, green: 0.2352941185, blue: 0.1019607857, alpha: 1)
-    scene.rootNode.addChildNode(meshNode)
+    scene.rootNode.addChildNode(meshNode!)
     
     
     sceneView.scene = scene
@@ -81,7 +105,7 @@ class ViewController: NSViewController {
     sceneView.allowsCameraControl = true
     sceneView.backgroundColor = #colorLiteral(red: 0.1019607857, green: 0.2784313858, blue: 0.400000006, alpha: 1)
     
-    print(meshNode.boundingBox)
+    print(meshNode!.boundingBox)
   }
 
 

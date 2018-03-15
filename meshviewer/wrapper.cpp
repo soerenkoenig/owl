@@ -25,6 +25,18 @@ extern "C" void mesh_create_box(void * mesh)
   *m = owl::math::create_box<float>();
 }
 
+extern "C" void mesh_create_torus(void * mesh, float r, float R, std::size_t nsides, std::size_t rings)
+{
+  owl::math::mesh<float>* m = (owl::math::mesh<float> *)mesh;
+  *m = owl::math::create_torus<float>(r, R, nsides, rings);
+}
+
+extern "C" void mesh_create_tetrahedron(void * mesh)
+{
+  owl::math::mesh<float>* m = (owl::math::mesh<float> *)mesh;
+  *m = owl::math::create_tetradedron<float>();
+}
+
 extern "C" size_t mesh_num_vertices(void * mesh)
 {
   return ((owl::math::mesh<float> *)mesh)->num_vertices();
@@ -180,8 +192,8 @@ extern "C" void mesh_edge_halfedge_indices_deinit(void* indices)
 extern "C" void mesh_triangulate(void* mesh)
 {
   owl::math::mesh<float>* m = (owl::math::mesh<float>*)mesh;
-  owl::math::check_mesh(*m);
-  m->triangulate_monoton();  
+  check_mesh(*m);
+  triangulate_monoton(*m);
 }
 
 /*

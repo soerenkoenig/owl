@@ -4,6 +4,7 @@
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="13771"/>
         <plugIn identifier="com.apple.SceneKitIBPlugin" version="13771"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+        <capability name="stacking Non-gravity area distributions on NSStackView" minToolsVersion="7.0" minSystemVersion="10.11"/>
     </dependencies>
     <scenes>
         <!--Application-->
@@ -710,19 +711,86 @@
                         <rect key="frame" x="0.0" y="0.0" width="800" height="600"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <sceneView translatesAutoresizingMaskIntoConstraints="NO" id="iyx-yr-is3">
+                            <splitView dividerStyle="thin" vertical="YES" translatesAutoresizingMaskIntoConstraints="NO" id="0FM-5d-l2m">
                                 <rect key="frame" x="0.0" y="0.0" width="800" height="600"/>
-                            </sceneView>
+                                <subviews>
+                                    <customView id="7ah-mQ-e2F">
+                                        <rect key="frame" x="0.0" y="0.0" width="624" height="600"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
+                                        <subviews>
+                                            <sceneView translatesAutoresizingMaskIntoConstraints="NO" id="iyx-yr-is3">
+                                                <rect key="frame" x="0.0" y="0.0" width="619" height="600"/>
+                                            </sceneView>
+                                        </subviews>
+                                        <constraints>
+                                            <constraint firstAttribute="trailing" secondItem="iyx-yr-is3" secondAttribute="trailing" constant="5" id="GLH-YG-Xmi"/>
+                                            <constraint firstItem="iyx-yr-is3" firstAttribute="top" secondItem="7ah-mQ-e2F" secondAttribute="top" id="bO7-0k-Uoj"/>
+                                            <constraint firstItem="iyx-yr-is3" firstAttribute="leading" secondItem="7ah-mQ-e2F" secondAttribute="leading" id="czz-V8-dqR"/>
+                                            <constraint firstAttribute="bottom" secondItem="iyx-yr-is3" secondAttribute="bottom" id="fIJ-9r-ENf"/>
+                                        </constraints>
+                                    </customView>
+                                    <customView id="tos-82-aGM">
+                                        <rect key="frame" x="625" y="0.0" width="175" height="600"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <subviews>
+                                            <stackView distribution="fillEqually" orientation="vertical" alignment="leading" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="yFa-2E-NF2">
+                                                <rect key="frame" x="0.0" y="564" width="79" height="36"/>
+                                                <subviews>
+                                                    <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="dMp-gh-89S">
+                                                        <rect key="frame" x="-2" y="20" width="83" height="18"/>
+                                                        <buttonCell key="cell" type="check" title="wireframe" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="NSE-Ef-Pnl">
+                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                            <font key="font" metaFont="system"/>
+                                                        </buttonCell>
+                                                        <connections>
+                                                            <action selector="wireFrameButtonPressed:" target="XfG-lQ-9wD" id="rUY-or-uog"/>
+                                                        </connections>
+                                                    </button>
+                                                    <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="VEG-VW-hM6">
+                                                        <rect key="frame" x="-2" y="-2" width="82" height="18"/>
+                                                        <buttonCell key="cell" type="check" title="show grid" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="YOd-R4-xdY">
+                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                            <font key="font" metaFont="system"/>
+                                                        </buttonCell>
+                                                    </button>
+                                                </subviews>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="36" id="AIj-pz-acP"/>
+                                                    <constraint firstAttribute="width" constant="79" id="OeS-hp-s7x"/>
+                                                </constraints>
+                                                <visibilityPriorities>
+                                                    <integer value="1000"/>
+                                                    <integer value="1000"/>
+                                                </visibilityPriorities>
+                                                <customSpacing>
+                                                    <real value="3.4028234663852886e+38"/>
+                                                    <real value="3.4028234663852886e+38"/>
+                                                </customSpacing>
+                                            </stackView>
+                                        </subviews>
+                                        <constraints>
+                                            <constraint firstItem="yFa-2E-NF2" firstAttribute="top" secondItem="tos-82-aGM" secondAttribute="top" id="Kg7-bt-KWk"/>
+                                            <constraint firstItem="yFa-2E-NF2" firstAttribute="leading" secondItem="tos-82-aGM" secondAttribute="leading" id="ZcB-ld-jHA"/>
+                                        </constraints>
+                                    </customView>
+                                </subviews>
+                                <holdingPriorities>
+                                    <real value="250"/>
+                                    <real value="250"/>
+                                </holdingPriorities>
+                            </splitView>
                         </subviews>
                         <constraints>
-                            <constraint firstItem="iyx-yr-is3" firstAttribute="top" secondItem="m2S-Jp-Qdl" secondAttribute="top" id="4YP-JF-nMa"/>
-                            <constraint firstAttribute="bottom" secondItem="iyx-yr-is3" secondAttribute="bottom" id="QuR-GQ-j5z"/>
-                            <constraint firstItem="iyx-yr-is3" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" id="jFV-qZ-Udv"/>
-                            <constraint firstAttribute="trailing" secondItem="iyx-yr-is3" secondAttribute="trailing" id="tOV-To-XbO"/>
+                            <constraint firstAttribute="trailing" secondItem="0FM-5d-l2m" secondAttribute="trailing" id="1Is-Qs-qM9"/>
+                            <constraint firstAttribute="bottom" secondItem="0FM-5d-l2m" secondAttribute="bottom" id="50s-Wv-XlA"/>
+                            <constraint firstItem="0FM-5d-l2m" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" id="AWe-bZ-MpZ"/>
+                            <constraint firstItem="0FM-5d-l2m" firstAttribute="top" secondItem="m2S-Jp-Qdl" secondAttribute="top" id="i4P-te-B4c"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="sceneView" destination="iyx-yr-is3" id="wpU-be-3mi"/>
+                        <outlet property="showGridButton" destination="VEG-VW-hM6" id="BQJ-xw-8WV"/>
+                        <outlet property="wireframeButton" destination="dMp-gh-89S" id="5Lk-mn-xVW"/>
                     </connections>
                 </viewController>
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>

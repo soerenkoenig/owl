@@ -10,6 +10,10 @@ void mesh_create_geosphere(void * mesh, float radius, size_t levels);
 
 void mesh_create_box(void * mesh);
 
+void mesh_create_torus(void * mesh, float r, float R, size_t nsides, size_t rings);
+
+void mesh_create_tetrahedron(void * mesh);
+
 size_t mesh_num_vertices(void * mesh);
 
 size_t mesh_num_edges(void * mesh);

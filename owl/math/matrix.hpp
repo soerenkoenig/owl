@@ -1227,16 +1227,36 @@ namespace owl
       if(xabs >= yabs)
       {
         if(xabs >= zabs)
-          return {1,2};
+        {
+          if(nml[0] >= 0)
+            return {1,2};
+          else
+            return {2,1};
+        }
         else
-          return {0,1};
+        {
+          if(nml[2] >= 0)
+            return {0,1};
+          else
+            return {1,0};
+        }
       }
       else
       {
-       if(yabs >= zabs)
-          return {2,0};
+        if(yabs >= zabs)
+        {
+          if(nml[1] >= 0)
+            return {2,0};
+          else
+            return {0,2};
+        }
         else
-          return {0,1};
+        {
+          if(nml[2] >= 0)
+            return {0,1};
+          else
+            return {1,0};
+        }
       }
     }
   

@@ -23,20 +23,40 @@ class Mesh: NSObject
         self.cpp_mesh_pointer = mesh_init()
         super.init()
     }
-    
+  
+  
     deinit {
         mesh_deinit(self.cpp_mesh_pointer)
     }
   
-    func create_geo_sphere(radius : Float, numLevels : Int)
+    static func create_geo_sphere(radius : Float, numLevels : Int) -> Mesh
     {
-      mesh_create_geosphere(self.cpp_mesh_pointer, radius,  numLevels)
+      let mesh = Mesh();
+      mesh_create_geosphere(mesh.cpp_mesh_pointer, radius,  numLevels)
+      return mesh;
     }
   
-    func create_box()
+    static func create_box()-> Mesh
     {
-      mesh_create_box(self.cpp_mesh_pointer)
+      let mesh = Mesh();
+      mesh_create_box(mesh.cpp_mesh_pointer)
+      return mesh;
     }
+  
+    static func create_torus(radius1 : Float, radius2 : Float)-> Mesh
+    {
+      let mesh = Mesh();
+      mesh_create_torus(mesh.cpp_mesh_pointer, radius1, radius2, 10, 20)
+      return mesh;
+    }
+  
+    static func create_tetrahedron()-> Mesh
+    {
+      let mesh = Mesh();
+      mesh_create_tetrahedron(mesh.cpp_mesh_pointer)
+      return mesh;
+    }
+  
   
     func triangulate()
     {
