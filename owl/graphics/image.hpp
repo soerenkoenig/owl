@@ -146,7 +146,41 @@ namespace owl
           bool on_horz_line = x % (spacing+1) == 0;
           bool on_vert_line = y % (spacing+1) == 0;
           img(x,y) = on_horz_line || on_vert_line ? color::rgb8u(50,50,50) : color::rgb8u(255,255,255);
+          bool on_boundary = (x < 2 || y < 2 || x >= w-2 || y >= h-2);
+          bool on_vert_center_line = std::abs((int)(x - (w/2))) < 2;
+          bool on_horz_center_line = std::abs((int)(y - (h/2))) < 2;
+          if(on_vert_center_line || on_horz_center_line || on_boundary)
+            img(x,y) = color::rgb8u(50,50,50);
         }
+
+      return img;
+    }
+  
+  
+    inline rgb8u_image create_grid_color(std::size_t n_x, std::size_t n_y, std::size_t spacing = 4)
+    {
+      std::size_t w = n_x + (n_x-1)*spacing;
+      std::size_t h = n_y + (n_y-1)*spacing;
+      rgb8u_image img(w,h);
+      for(std::size_t y = 0; y < h; ++y)
+        for(std::size_t x = 0; x < w; ++x)
+        {
+          bool on_horz_line = x % (spacing+1) == 0;
+          bool on_vert_line = y % (spacing+1) == 0;
+    
+          bool on_vert_center_line = std::abs((int)(x - (w/2))) < 2;
+          bool on_horz_center_line = std::abs((int)(y - (h/2))) < 2;
+          bool on_boundary = (x < 2 || y < 2 || x >= w-2 || y >= h-2);
+          img(x,y) = on_horz_line || on_vert_line ? color::rgb8u(155,155,155) : color::rgb8u(0,0,0);
+           if(on_boundary)
+            img(x,y) = color::rgb8u(155,155,155);
+          if(on_horz_center_line)
+            img(x,y) = color::rgb8u(255,100,100);
+          if(on_vert_center_line)
+            img(x,y) = color::rgb8u(100,100,255);
+        
+        }
+
       return img;
     }
   }

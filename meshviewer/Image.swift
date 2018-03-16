@@ -30,6 +30,13 @@ class Image: NSObject
     return image
   }
   
+  static func createGridColor(_ nx : Int,_ ny : Int,_ spacing : Int = 4) -> Image
+  {
+    let image = Image();
+    image_create_grid_color(image.cpp_image_pointer, Int32(nx), Int32(ny), Int32(spacing))
+    return image
+  }
+  
   deinit {
     image_deinit(self.cpp_image_pointer)
   }

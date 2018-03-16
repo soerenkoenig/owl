@@ -245,5 +245,11 @@ extern "C" void image_create_grid(void* img, int nx, int ny, int spacing)
    *im = owl::graphics::create_grid(nx,ny,spacing);
 }
 
+extern "C" void image_create_grid_color(void* img, int nx, int ny, int spacing)
+{
+   owl::graphics::rgb8u_image* im = (owl::graphics::rgb8u_image*) img;
+   *im = owl::graphics::create_grid_color(nx,ny,spacing);
+}
+
 
 

@@ -55,7 +55,7 @@ class ViewController: NSViewController{
   
   func resetCamera()
   {
-    sceneView.pointOfView?.position = SCNVector3Make(20, 10, 1)
+    sceneView.pointOfView?.position = SCNVector3Make(0, 15, 15)
     sceneView.pointOfView?.look(at:SCNVector3(0,0,0), up: SCNVector3(0,1,0), localFront: SCNVector3(0,0,-1))
   //  sceneView.pointOfView?.look(at:SCNVector3(0,0,0));
   }
@@ -65,8 +65,8 @@ class ViewController: NSViewController{
     
     let scene = SCNScene()
     let grid = Grid()
-    let floorGeometry = grid.geometry();
-    let floorNode = SCNNode(geometry: floorGeometry)
+   
+    let floorNode = grid.node()
 
     scene.rootNode.addChildNode(floorNode)
    /* floorGeometry.firstMaterial?.lightingModel = SCNMaterial.LightingModel.constant

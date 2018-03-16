@@ -5,8 +5,31 @@ import SceneKit
 class Grid : NSObject
 {
   
-  
-  
+    func node() ->SCNNode
+    {
+    
+      let gridNode = SCNNode();
+      
+      let textX = SCNText(string: "x", extrusionDepth: 0.0)
+      
+      let textXNode = SCNNode(geometry: textX)
+      textXNode.scale = SCNVector3(0.02,0.02,0.02)
+      textXNode.position = SCNVector3(10,0,0)
+      textXNode.eulerAngles.x = -3.1415972/2;
+      gridNode.addChildNode(textXNode)
+   
+      let textZ = SCNText(string: "z", extrusionDepth: 0.0)
+      let textZNode = SCNNode(geometry: textZ)
+      textZNode.scale = SCNVector3(0.02,0.02,0.02)
+      textZNode.position = SCNVector3(0,0,10)
+      textZNode.eulerAngles.x = -3.1415972/2;
+      gridNode.addChildNode(textZNode)
+     
+      let floorNode = SCNNode(geometry: geometry())
+    
+      gridNode.addChildNode(floorNode)
+      return gridNode;
+    }
   
     func geometry() -> SCNGeometry
     {
@@ -16,42 +39,30 @@ class Grid : NSObject
       let posData = Data(bytes: pos, count: MemoryLayout<Float32>.size*4 * pos.count)
       let texcoordData = Data(bytes: tex, count: MemoryLayout<Float32>.size*2 * tex.count)
       
-
-     
-    //  let n = MemoryLayout<SCNVector4>.size * pos.count
-      //let posData = NSData(bytes: pointer, length: n)
       
       let sourcePositions = SCNGeometrySource(data: posData, semantic: SCNGeometrySource.Semantic.vertex, vectorCount: 4, usesFloatComponents: true, componentsPerVector: 3, bytesPerComponent: MemoryLayout<Float32>.size, dataOffset: 0, dataStride: MemoryLayout<Float32>.size*3)
       
-     // let sourcePositions = SCNGeometrySource(vertices: pos)
       let sourceNormals = SCNGeometrySource(normals: normals)
       
-       let sourceTexCoords = SCNGeometrySource(data: texcoordData, semantic: SCNGeometrySource.Semantic.texcoord, vectorCount: 5, usesFloatComponents: true, componentsPerVector: 2, bytesPerComponent: MemoryLayout<Float32>.size, dataOffset: 0, dataStride: MemoryLayout<Float32>.size*2)
+      let sourceTexCoords = SCNGeometrySource(data: texcoordData, semantic: SCNGeometrySource.Semantic.texcoord, vectorCount: 5, usesFloatComponents: true, componentsPerVector: 2, bytesPerComponent: MemoryLayout<Float32>.size, dataOffset: 0, dataStride: MemoryLayout<Float32>.size*2)
       
       let ind:[Int32] = [0,2,1,0,3,2]
-     // let ind:[Int32] = [0,2,1]
       
       let element = SCNGeometryElement(indices : ind, primitiveType: .triangles)
    
       let meshGeom =  SCNGeometry(sources: [sourcePositions,sourceTexCoords, sourceNormals], elements: [element])
      // meshGeom.firstMaterial?.diffuse.contents = NSImage.Name("checker")
-      meshGeom.firstMaterial?.transparent.contents = Image.createGrid(20,20,160).image()
-       meshGeom.firstMaterial?.transparent.mipFilter = .linear
+      meshGeom.firstMaterial?.transparent.contents = Image.createGrid(21,21,49).image()
+      meshGeom.firstMaterial?.transparent.mipFilter = .linear
       meshGeom.firstMaterial?.transparencyMode = .rgbZero
       meshGeom.firstMaterial?.transparency = 1
-      meshGeom.firstMaterial?.emission.contents = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
-    
-       //  meshGeom.firstMaterial?.blendMode = .alpha
-      
-      
-    
-      
-     // meshGeom.firstMaterial?.emission.wrapS = .clampToBorder
-      //meshGeom.firstMaterial?.emission.wrapT = .clampToBorder
+      meshGeom.firstMaterial?.emission.contents = Image.createGridColor(21,21,49).image()
+      meshGeom.firstMaterial?.emission.mipFilter = .nearest
+      meshGeom.firstMaterial?.diffuse.contents = Image.createGridColor(21,21,49).image()
+      meshGeom.firstMaterial?.diffuse.mipFilter = .nearest
       meshGeom.firstMaterial?.isDoubleSided = true
+      meshGeom.firstMaterial?.lightingModel = SCNMaterial.LightingModel.constant
      
-     
-      
       return meshGeom;
     }
   
