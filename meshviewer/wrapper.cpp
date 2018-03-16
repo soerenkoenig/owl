@@ -204,5 +204,46 @@ extern "C" bool mesh_load(void * mesh, const char* filename)
 }*/
 
 
+#include "owl/graphics/image.hpp"
+
+extern "C" void* image_init()
+{
+  return new owl::graphics::rgb8u_image();
+}
+
+extern "C" void* image_init2(int width, int height)
+{
+  return new owl::graphics::rgb8u_image(width, height);
+}
+
+extern "C" void image_deinit(void * img)
+{
+  delete (owl::graphics::rgb8u_image*) img;
+}
+
+extern "C" int image_width(void * img)
+{
+   owl::graphics::rgb8u_image* im = (owl::graphics::rgb8u_image*) img;
+   return (int)im->width();
+}
+
+extern "C" int image_height(void * img)
+{
+   owl::graphics::rgb8u_image* im = (owl::graphics::rgb8u_image*) img;
+   return (int)im->height();
+}
+
+extern "C" void* image_raw_data(void* img)
+{
+   owl::graphics::rgb8u_image* im = (owl::graphics::rgb8u_image*) img;
+   return (void*)im->data();
+}
+
+extern "C" void image_create_grid(void* img, int nx, int ny, int spacing)
+{
+   owl::graphics::rgb8u_image* im = (owl::graphics::rgb8u_image*) img;
+   *im = owl::graphics::create_grid(nx,ny,spacing);
+}
+
 
 

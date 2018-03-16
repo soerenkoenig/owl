@@ -133,6 +133,22 @@ namespace owl
     };
     
     using rgb8u_image = image<owl::color::rgb8u>;
+  
+  
+    inline rgb8u_image create_grid(std::size_t n_x, std::size_t n_y, std::size_t spacing = 4)
+    {
+      std::size_t w = n_x + (n_x-1)*spacing;
+      std::size_t h = n_y + (n_y-1)*spacing;
+      rgb8u_image img(w,h);
+      for(std::size_t y = 0; y < h; ++y)
+        for(std::size_t x = 0; x < w; ++x)
+        {
+          bool on_horz_line = x % (spacing+1) == 0;
+          bool on_vert_line = y % (spacing+1) == 0;
+          img(x,y) = on_horz_line || on_vert_line ? color::rgb8u(50,50,50) : color::rgb8u(255,255,255);
+        }
+      return img;
+    }
   }
 }
 

@@ -26,6 +26,7 @@
 		2857F0301FF128B200DEF030 /* gamma_correction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2857F02F1FF128B200DEF030 /* gamma_correction.cpp */; };
 		2857F0321FF2F54C00DEF030 /* colors_names.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2857F0311FF2F54C00DEF030 /* colors_names.cpp */; };
 		285D63941FC8C67D007EBB23 /* angle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 285D63931FC8C67D007EBB23 /* angle.cpp */; };
+		285EE876205BB9A9004EA3B9 /* Image.swift in Sources */ = {isa = PBXBuildFile; fileRef = 285EE875205BB9A9004EA3B9 /* Image.swift */; };
 		286563CE1FE86A73003758E1 /* color_maps.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 286563CD1FE86A73003758E1 /* color_maps.cpp */; };
 		286F1DF11F9E67A500FCC209 /* map_iterator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 286F1DF01F9E67A500FCC209 /* map_iterator.cpp */; };
 		286F1DF31F9E6C4E00FCC209 /* filter_iterator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 286F1DF21F9E6C4E00FCC209 /* filter_iterator.cpp */; };
@@ -161,6 +162,7 @@
 		285E00E7203EC1FA0081CBA3 /* material.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = material.hpp; sourceTree = "<group>"; };
 		285E00E8203EC2480081CBA3 /* camera.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = camera.hpp; sourceTree = "<group>"; };
 		285E00E9203ED5F90081CBA3 /* graph.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = graph.hpp; sourceTree = "<group>"; };
+		285EE875205BB9A9004EA3B9 /* Image.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Image.swift; sourceTree = "<group>"; };
 		286563CC1FE864AC003758E1 /* color_maps.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = color_maps.hpp; sourceTree = "<group>"; };
 		286563CD1FE86A73003758E1 /* color_maps.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = color_maps.cpp; sourceTree = "<group>"; };
 		286F1DF01F9E67A500FCC209 /* map_iterator.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = map_iterator.cpp; sourceTree = "<group>"; };
@@ -595,6 +597,7 @@
 				28A19CBA2051327D00D012F9 /* MeshViewer-Bridging-Header.h */,
 				289CAEE8205133960016894A /* Mesh.swift */,
 				284972912057F8C300028ABC /* Grid.swift */,
+				285EE875205BB9A9004EA3B9 /* Image.swift */,
 			);
 			path = MeshViewer;
 			sourceTree = "<group>";
@@ -834,6 +837,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				28A19CAD205131C400D012F9 /* AppDelegate.swift in Sources */,
+				285EE876205BB9A9004EA3B9 /* Image.swift in Sources */,
 				289CAEE9205133960016894A /* Mesh.swift in Sources */,
 				2873F7ED2051388B003BE1D7 /* ViewController.swift in Sources */,
 				284972922057F8C300028ABC /* Grid.swift in Sources */,

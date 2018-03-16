@@ -61,7 +61,6 @@ namespace test
     CHECK(torus.is_closed());
     CHECK(torus.is_quad_mesh());
    
-  
     auto octaeder = create_octaeder<float>(1);
     CHECK(octaeder.num_faces() == 8);
     CHECK(octaeder.num_vertices() == 6);

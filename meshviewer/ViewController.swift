@@ -67,6 +67,7 @@ class ViewController: NSViewController{
     let grid = Grid()
     let floorGeometry = grid.geometry();
     let floorNode = SCNNode(geometry: floorGeometry)
+
     scene.rootNode.addChildNode(floorNode)
    /* floorGeometry.firstMaterial?.lightingModel = SCNMaterial.LightingModel.constant
     floorGeometry.firstMaterial!.diffuse.contents = #colorLiteral(red: 0.05882352963, green: 0.180392161, blue: 0.2470588237, alpha: 1)*/
