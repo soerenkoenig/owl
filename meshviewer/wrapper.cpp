@@ -2,7 +2,6 @@
 
 #include "owl/math/mesh.hpp"
 
-
 extern "C" void * mesh_init()
 {
   return new owl::math::mesh<float>();
@@ -10,7 +9,7 @@ extern "C" void * mesh_init()
 
 extern "C" void mesh_deinit(void * mesh)
 {
-    delete (owl::math::mesh<float> *) mesh;
+  delete (owl::math::mesh<float> *) mesh;
 }
 
 extern "C" void mesh_create_geosphere(void * mesh, float radius, size_t levels)
@@ -197,10 +196,9 @@ extern "C" void mesh_triangulate(void* mesh)
 }
 
 /*
-
 extern "C" bool mesh_load(void * mesh, const char* filename)
 {
-    return ((math::mesh<MyFloat>*)mesh)->load(filename);
+    return ((math::mesh<float>*)mesh)->load(filename);
 }*/
 
 
@@ -245,10 +243,10 @@ extern "C" void image_create_grid(void* img, int nx, int ny, int spacing)
    *im = owl::graphics::create_grid(nx,ny,spacing);
 }
 
-extern "C" void image_create_grid_color(void* img, int nx, int ny, int spacing)
+extern "C" void image_create_grid_color(void* img, int nx, int ny, int spacing, uint32_t xcolor, uint32_t ycolor)
 {
    owl::graphics::rgb8u_image* im = (owl::graphics::rgb8u_image*) img;
-   *im = owl::graphics::create_grid_color(nx,ny,spacing);
+  *im = owl::graphics::create_grid_color(nx, ny, spacing, owl::color::rgb8u::hex(xcolor), owl::color::rgb8u::hex(ycolor));
 }
 
 

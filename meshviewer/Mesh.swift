@@ -7,6 +7,16 @@ public extension String {
     }
 }
 
+public extension NSColor {
+     var hexUInt32: UInt32 {
+        let red = UInt32(self.redComponent * 0xFF)
+        let green = UInt32(self.greenComponent * 0xFF)
+        let blue = UInt32(self.blueComponent * 0xFF)
+        let alpha = UInt32(self.alphaComponent * 0xFF)
+        return (alpha << 24) + (red << 16) + (green << 8) + blue
+    }
+}
+
 enum MeshPrimitives {
     case geoSphere
     case sphere
@@ -124,7 +134,6 @@ class Mesh: NSObject
   
     func triangleGeometry() -> SCNGeometry
     {
-      mesh_print_vertex_positions(self.cpp_mesh_pointer)
     
       let positionPtr = UnsafeMutableRawPointer(mesh_halfedge_position_data_init(self.cpp_mesh_pointer))
       let positionData = Data(bytes: positionPtr!, count: MemoryLayout<Float32>.size * halfedgeCount * 3)

@@ -49,7 +49,7 @@ void* image_init2(int width, int height);
 
 void image_create_grid(void* img, int nx, int ny, int spacing);
 
-void image_create_grid_color(void* img, int nx, int ny, int spacing);
+void image_create_grid_color(void* img, int nx, int ny, int spacing, uint32_t xcolor, uint32_t ycolor);
 
 void image_deinit(void* img);
 

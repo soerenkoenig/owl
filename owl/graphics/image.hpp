@@ -157,7 +157,7 @@ namespace owl
     }
   
   
-    inline rgb8u_image create_grid_color(std::size_t n_x, std::size_t n_y, std::size_t spacing = 4)
+    inline rgb8u_image create_grid_color(std::size_t n_x, std::size_t n_y, std::size_t spacing = 4, const  color::rgb8u& x_color = {255, 100, 100}, const color::rgb8u& y_color = {100, 100, 255})
     {
       std::size_t w = n_x + (n_x-1)*spacing;
       std::size_t h = n_y + (n_y-1)*spacing;
@@ -175,9 +175,9 @@ namespace owl
            if(on_boundary)
             img(x,y) = color::rgb8u(155,155,155);
           if(on_horz_center_line)
-            img(x,y) = color::rgb8u(255,100,100);
+            img(x,y) = x_color;
           if(on_vert_center_line)
-            img(x,y) = color::rgb8u(100,100,255);
+            img(x,y) = y_color;
         
         }
 

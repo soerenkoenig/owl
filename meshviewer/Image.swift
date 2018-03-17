@@ -30,10 +30,10 @@ class Image: NSObject
     return image
   }
   
-  static func createGridColor(_ nx : Int,_ ny : Int,_ spacing : Int = 4) -> Image
+  static func createGridColor(_ nx : Int,_ ny : Int,_ spacing : Int = 4,_ xcolor: NSColor = #colorLiteral(red: 0.7450980544, green: 0.1568627506, blue: 0.07450980693, alpha: 1) ,_ zcolor: NSColor = #colorLiteral(red: 0.1019607857, green: 0.2784313858, blue: 0.400000006, alpha: 1) ) -> Image
   {
     let image = Image();
-    image_create_grid_color(image.cpp_image_pointer, Int32(nx), Int32(ny), Int32(spacing))
+    image_create_grid_color(image.cpp_image_pointer, Int32(nx), Int32(ny), Int32(spacing),xcolor.hexUInt32, zcolor.hexUInt32)
     return image
   }
   
