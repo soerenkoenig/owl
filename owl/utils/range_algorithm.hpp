@@ -40,7 +40,13 @@ namespace owl
     template<typename Range, typename T>
     inline auto find(Range&& rng, const T& value)
     {
-      return std::find(std::begin(std::forward<Range>(rng)), std::end(std::forward<Range>(rng)), value);
+      return std::find(std::begin(rng), std::end(rng), value);
+    }
+  
+    template<typename Range, typename Pred>
+    inline auto find_if(Range&& rng, Pred&& cond)
+    {
+      return std::find_if(std::begin(rng), std::end(rng), std::forward<Pred>(cond));
     }
   
     template<typename InputRange, typename OutIter, typename BinaryOperation>

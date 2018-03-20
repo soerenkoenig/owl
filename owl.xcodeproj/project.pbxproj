@@ -18,6 +18,11 @@
 		28175DB91F95BD14004ECB87 /* stop_watch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28175DB71F95BD14004ECB87 /* stop_watch.cpp */; };
 		28175DBA1F95BD14004ECB87 /* stop_watch.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 28175DB81F95BD14004ECB87 /* stop_watch.hpp */; };
 		28175DBC1F95BEF0004ECB87 /* stop_watch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28175DBB1F95BEF0004ECB87 /* stop_watch.cpp */; };
+		28431BBD205FCC14006AE1E2 /* libboost_filesystem-mt.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 280418F51FDC4ACF004EA43B /* libboost_filesystem-mt.dylib */; };
+		28431BBE205FCC41006AE1E2 /* libboost_system-mt.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 280418F81FDC4B4B004EA43B /* libboost_system-mt.dylib */; };
+		28431BC0205FCCD6006AE1E2 /* ply.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28431BBF205FCCD6006AE1E2 /* ply.cpp */; };
+		28431BC1205FCDC4006AE1E2 /* libboost_filesystem-mt.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 280418F51FDC4ACF004EA43B /* libboost_filesystem-mt.dylib */; };
+		28431BC2205FCDD7006AE1E2 /* libboost_system-mt.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 280418F81FDC4B4B004EA43B /* libboost_system-mt.dylib */; };
 		284972922057F8C300028ABC /* Grid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 284972912057F8C300028ABC /* Grid.swift */; };
 		284C09C51F9681D40062BFF1 /* matrix.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 284C09C41F9681D40062BFF1 /* matrix.cpp */; };
 		284C09C91F968F5C0062BFF1 /* container_traits.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 284C09C81F968F5C0062BFF1 /* container_traits.cpp */; };
@@ -135,6 +140,8 @@
 		28175DB71F95BD14004ECB87 /* stop_watch.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = stop_watch.cpp; sourceTree = "<group>"; };
 		28175DB81F95BD14004ECB87 /* stop_watch.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = stop_watch.hpp; sourceTree = "<group>"; };
 		28175DBB1F95BEF0004ECB87 /* stop_watch.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = stop_watch.cpp; sourceTree = "<group>"; };
+		28431BBC205FC899006AE1E2 /* ply.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = ply.hpp; sourceTree = "<group>"; };
+		28431BBF205FCCD6006AE1E2 /* ply.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ply.cpp; sourceTree = "<group>"; };
 		284972912057F8C300028ABC /* Grid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Grid.swift; path = meshviewer/Grid.swift; sourceTree = SOURCE_ROOT; };
 		284C09C21F96806F0062BFF1 /* matrix.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = matrix.hpp; sourceTree = "<group>"; };
 		284C09C31F9680AD0062BFF1 /* linear_index.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = linear_index.hpp; sourceTree = "<group>"; };
@@ -267,6 +274,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				28431BC2205FCDD7006AE1E2 /* libboost_system-mt.dylib in Frameworks */,
+				28431BC1205FCDC4006AE1E2 /* libboost_filesystem-mt.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -292,6 +301,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				28431BBE205FCC41006AE1E2 /* libboost_system-mt.dylib in Frameworks */,
+				28431BBD205FCC14006AE1E2 /* libboost_filesystem-mt.dylib in Frameworks */,
 				289CAEEC205135F90016894A /* libowl.dylib in Frameworks */,
 				289CAEEB205135F40016894A /* SceneKit.framework in Frameworks */,
 			);
@@ -394,6 +405,15 @@
 			path = utils;
 			sourceTree = "<group>";
 		};
+		28431BBB205FC87A006AE1E2 /* io */ = {
+			isa = PBXGroup;
+			children = (
+				28431BBC205FC899006AE1E2 /* ply.hpp */,
+				28431BBF205FCCD6006AE1E2 /* ply.cpp */,
+			);
+			path = io;
+			sourceTree = "<group>";
+		};
 		2857F02D1FF1252200DEF030 /* color */ = {
 			isa = PBXGroup;
 			children = (
@@ -438,6 +458,7 @@
 		2883C2431F91BA7F007DDB3C /* owl */ = {
 			isa = PBXGroup;
 			children = (
+				28431BBB205FC87A006AE1E2 /* io */,
 				28A19C422046AD0700D012F9 /* render */,
 				2896D08D2030861000E9241D /* scene */,
 				2857F02D1FF1252200DEF030 /* color */,
@@ -778,6 +799,7 @@
 				28BB756A1FB0F6CC009A6290 /* signal.cpp in Sources */,
 				28175DB91F95BD14004ECB87 /* stop_watch.cpp in Sources */,
 				2816E6A91FA139AB00CCE00A /* file_utils.cpp in Sources */,
+				28431BC0205FCCD6006AE1E2 /* ply.cpp in Sources */,
 				2857F0301FF128B200DEF030 /* gamma_correction.cpp in Sources */,
 				D1993BCF1FBB1D94005737F9 /* buffer.cpp in Sources */,
 				2857F0321FF2F54C00DEF030 /* colors_names.cpp in Sources */,
@@ -1062,9 +1084,13 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = AS2VL7PB8X;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_C_LANGUAGE_STANDARD = c11;
 				INFOPLIST_FILE = MeshViewer/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/opt/local/lib,
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = b.MeshViewer;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
@@ -1085,9 +1111,13 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = AS2VL7PB8X;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_C_LANGUAGE_STANDARD = c11;
 				INFOPLIST_FILE = MeshViewer/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/opt/local/lib,
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = b.MeshViewer;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "MeshViewer/MeshViewer-Bridging-Header.h";

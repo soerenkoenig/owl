@@ -46,6 +46,13 @@ class Mesh: NSObject
       return mesh;
     }
   
+     static func load(filename:String) -> Mesh
+    {
+      let mesh = Mesh();
+      mesh_load_ply(mesh.cpp_mesh_pointer, filename.cCharArray)
+      return mesh;
+    }
+  
     static func create_box()-> Mesh
     {
       let mesh = Mesh();

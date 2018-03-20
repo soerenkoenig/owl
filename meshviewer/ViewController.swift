@@ -73,9 +73,11 @@ class ViewController: NSViewController{
     cameraNode.look(at:SCNVector3(0,0,0), up: SCNVector3(0,1,0), localFront: SCNVector3(0,0,-1))
     scene.rootNode.addChildNode(cameraNode)
   
-    self.mesh = Mesh.create_geo_sphere(radius: 4, numLevels: 5)
+   // self.mesh = Mesh.create_geo_sphere(radius: 4, numLevels: 5)
     
     // self.mesh = Mesh.create_torus(radius1:1, radius2:2)
+    
+    self.mesh = Mesh.load(filename:"/Users/skoenig/Downloads/Armadillo.ply")
     // self.mesh = Mesh.create_tetrahedron()
     // self.mesh = Mesh.create_box()
     self.mesh?.triangulate()

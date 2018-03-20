@@ -52,7 +52,6 @@ namespace owl
     using face_property_handle = owl::utils::indexed_property_handle<T,face_tag>;
   
 
-  
     class status_flags
     {
     public:
@@ -60,45 +59,7 @@ namespace owl
         : bits_(0)
       {}
     
-      bool is_selected() const
-      {
-        return bits_.test(0);
-      }
-  
-      void select()
-      {
-        bits_.set(0, true);
-      }
-  
-      void deselect()
-      {
-        bits_.set(0, false);
-      }
-  
-      void invert_selection()
-      {
-        if(is_selected())
-          deselect();
-        else
-          select();
-      }
-    
-      bool is_modified() const
-      {
-        return bits_.test(1);
-      }
-    
-      void modify()
-      {
-        bits_.set(1, true);
-      }
-    
-      void unmodify()
-      {
-        bits_.set(0, false);
-      }
-    
-       /*  bool is_removed() const
+      bool is_removed() const
       {
         return bits_.test(0);
       }
@@ -111,7 +72,30 @@ namespace owl
       void restore()
       {
         bits_.set(0, false);
-      }*/
+      }
+    
+      bool is_selected() const
+      {
+        return bits_.test(1);
+      }
+  
+      void select()
+      {
+        bits_.set(1, true);
+      }
+  
+      void deselect()
+      {
+        bits_.set(1, false);
+      }
+  
+      void invert_selection()
+      {
+        if(is_selected())
+          deselect();
+        else
+          select();
+      }
     
     private:
       std::bitset<8> bits_;
@@ -241,12 +225,12 @@ namespace owl
         return make_handle_range(halfedge(f), step, deref);
       }
     
-      auto halfedges(face_handle f) const
+      auto inner_halfedges(face_handle f) const
       {
-        return halfedges(f, halfedge(f));
+        return inner_halfedges(f, halfedge(f));
       }
     
-      auto halfedges(face_handle f, halfedge_handle he_start) const
+      auto inner_halfedges(face_handle f, halfedge_handle he_start) const
       {
         halfedge_handle he = halfedge(f);
         while(he != he_start)
@@ -370,13 +354,13 @@ namespace owl
       }
     
       template<typename Handle>
-      void selected(Handle h)
+      void select(Handle h)
       {
         return status(h).select();
       }
     
       template<typename Handle>
-      void deselected(Handle h)
+      void deselect(Handle h)
       {
         return status(h).deselect();
       }
@@ -535,6 +519,39 @@ namespace owl
       {
         return !incoming(v).is_valid();
       }
+  
+      const status_flags& status(vertex_handle v) const
+      {
+        return vertices_[v.index()].status;
+      }
+    
+      status_flags& status(vertex_handle v)
+      {
+        return vertices_[v.index()].status;
+      }
+    
+      const status_flags& status(face_handle f) const
+      {
+        return faces_[f.index()].status;
+      }
+    
+      status_flags& status(face_handle f)
+      {
+        return faces_[f.index()].status;
+      }
+    
+      const status_flags& status(edge_handle e) const
+      {
+        return edges_[e.index()].status;
+      }
+    
+      status_flags& status(edge_handle e)
+      {
+        return edges_[e.index()].status;
+      }
+    
+    
+    
     
       bool is_sharp(edge_handle e, const angle<Scalar>& max_angle = degrees<Scalar>(44)) const
       {
@@ -884,7 +901,8 @@ namespace owl
       vector<3> compute_vertex_normal(vertex_handle v) const
       {
         auto nml = vector<3>::zero();
-      
+        if(v.index() == 217)
+          return nml;
         for(auto he : incoming_halfedges(v))
           nml += compute_sector_normal(he, false);
       
@@ -1026,6 +1044,11 @@ namespace owl
       template <typename VertexHandleRange, typename = std::enable_if_t<is_vertex_handle_range<VertexHandleRange>::value>>
       face_handle add_face(VertexHandleRange&& vertices)
       {
+        if(std::size(vertices) < 3)
+        {
+          std::cout << "not enough vertices"<<std::endl;
+          return face_handle::invalid();
+        }
         face_handle f = face_handle{faces_.size()};
       
         std::vector<halfedge_handle> hes;
@@ -1096,10 +1119,58 @@ namespace owl
         return f;
       }
     
+      /*//mark vertex v and all incident faces and edges as removed
+      void remove(vertex_handle v, bool remove_isolated_vertices)
+      {
+        std::vector<face_handle> incident_faces;
+      
+        for(auto he : incoming(v))
+          if(face(he).is_valid())
+            incident_faces.push_back(face(he));
+        for(auto f: incident_faces)
+          remove(f, remove_isolated_vertices);
+        status(v).remove();
+      }
+    
+      //mark
+      void remove(edge_handle e)
+      {
+        status(e).remove();
+        auto [he1, he2] = halfedges(e);
+      
+      }
+    
+      void remove(face_handle f)
+      {
+        status(f).remove();
+        for(auto he : inner_halfedges(f))
+          face(he).invalidate();
+      }
+    */
+    
+    
+      void remove_isolated_vertices()
+      {
+        for(auto v: vertices())
+          if(is_isolated(v) && !is_removed(v))
+            remove(v);
+      }
+    
+      void erase_removed_vertices()
+      {
+        auto verts = vertices();
+        auto last = verts.end();
+        auto first = utils::find_if(verts, [this](vertex_handle v) { return status(v).removed(); });
+        if(first != last)
+          for(auto i = first; ++i != last; )
+            if (!status(*i).removed())
+              move(*i, *first++);
+      }
+    
       template <typename TexCoordRange, typename = std::enable_if_t<is_vector_range<TexCoordRange,2>::value>>
       void set_face_texcoords(face_handle f, TexCoordRange&& texcoords)
       {
-        owl::utils::copy(texcoords,this->texcoords(halfedges(f)).begin());
+        owl::utils::copy(texcoords,this->texcoords(inner_halfedges(f)).begin());
       }
     
       template <typename NormalRange, typename = std::enable_if_t<is_vector_range<NormalRange,3>::value>>
@@ -1229,7 +1300,7 @@ namespace owl
       halfedge_handle outgoing(vertex_handle v) const
       {
         if(is_isolated(v))
-          return halfedge_handle{};
+          return halfedge_handle::invalid();
         return opposite(incoming(v));
       }
   
@@ -1273,7 +1344,7 @@ namespace owl
 
       edge_handle find_edge(vertex_handle from, vertex_handle to) const
       {
-        halfedge_handle he = find_halfedge(from,to);
+        halfedge_handle he = find_halfedge(from, to);
         if(he.is_valid())
           return edge(he);
 
@@ -1330,7 +1401,7 @@ namespace owl
     
       face_handle& face(halfedge_handle he)
       {
-       return operator[](he).face;
+        return operator[](he).face;
       }
     
       halfedge_handle& halfedge(face_handle f)
@@ -1399,6 +1470,160 @@ namespace owl
         return edge_properties_.add_elem();
       }
     
+     /* void swap(vertex_handle a, vertex_handle b)
+      {
+        for(auto he : incoming_halfedges(a))
+          target(he) = b;
+      
+        for(auto he : incoming_halfedges(b))
+          target(he) = a;
+      
+        std::swap(incoming(a), incoming(b));
+      
+        std::swap(vertices_[a.index()], vertices_[b.index()]);
+        vertex_properties_.swap(a.index(), b.index());
+      }
+    
+      void swap(face_handle a, face_handle b)
+      {
+        for(auto he : halfedges(a))
+          face(he) = b;
+      
+        for(auto he : halfedges(b))
+          face(he) = a;
+      
+        std::swap(halfedge(a), halfedge(b));
+      
+        std::swap(faces_[a.index()], faces_[b.index()]);
+        face_properties_.swap(a.index(), b.index());
+      }
+    
+      void swap(edge_handle a, edge_handle b)
+      {
+        auto[hea1, hea2] = halfedges(a);
+        auto[heb1, heb2] = halfedges(b);
+      
+        vertex_handle target_hea1 = target(hea1);
+        vertex_handle target_hea2 = target(hea2);
+        vertex_handle target_heb1 = target(heb1);
+        vertex_handle target_heb2 = target(heb2);
+      
+        face_handle face_hea1 = face(hea1);
+        face_handle face_hea2 = face(hea2);
+        face_handle face_heb1 = face(heb1);
+        face_handle face_heb2 = face(heb2);
+      
+        halfedge_handle prev_hea1 = prev(hea1);
+        halfedge_handle prev_hea2 = prev(hea2);
+        halfedge_handle prev_heb1 = prev(heb1);
+        halfedge_handle prev_heb2 = prev(heb2);
+      
+        if(incoming(target_hea1) == hea1)
+          incoming(target_hea1) = heb1;
+        if(incoming(target_hea2) == hea2)
+          incoming(target_hea2) = heb2;
+        if(incoming(target_heb1) == heb1)
+          incoming(target_heb1) = hea1;
+        if(incoming(target_heb2) == heb2)
+          incoming(target_heb2) = hea2;
+      
+        if(halfedge(face_hea1) == hea1)
+          halfedge(face_hea1) = heb1;
+        if(halfedge(face_hea2) == hea2)
+          halfedge(face_hea2) = heb2;
+      
+        if(halfedge(face_heb1) == heb1)
+          halfedge(face_heb1) = hea1;
+        if(halfedge(face_heb2) == heb2)
+          halfedge(face_heb2) = hea2;
+      
+        next(prev_hea1) = heb1;
+        next(prev_hea2) = heb2;
+        next(prev_heb1) = hea1;
+        next(prev_heb2) = hea2;
+      
+        halfedge_properties_.swap(hea1.index(), heb1.index());
+        halfedge_properties_.swap(hea2.index(), heb2.index());
+        std::swap(edges_[a.index()], edges_[b.index()]);
+        edge_properties_.swap(a.index(), b.index());
+      }*/
+    
+    
+      // all references of from must be replaced by to
+      //data stored under to is replaced by from
+      void move(vertex_handle to, vertex_handle from)
+      {
+        for(auto he : incoming_halfedges(from))
+          target(he) = to;
+        incoming(to) = std::move(incoming(from));
+        vertices_[to.index()] = std::move(vertices_[from.index()]);
+        vertex_properties_.move(to.index(), from.index());
+        incoming(from).invalidate();
+      }
+    
+      // all references of from must be replaced by to
+      //data stored under to is replaced by from
+      void move(face_handle to, face_handle from)
+      {
+        for(auto he : inner_halfedges(from))
+          face(he) = to;
+      
+        halfedge(from) = halfedge(to);
+      
+        faces_[to.index()] = std::move(faces_[from.index()]);
+        face_properties_.move(to.index(), from.index());
+      }
+    
+    /*  void move(edge_handle form, edge_handle to)
+      {
+        auto[hea1, hea2] = halfedges(a);
+        auto[heb1, heb2] = halfedges(b);
+      
+        vertex_handle target_hea1 = target(hea1);
+        vertex_handle target_hea2 = target(hea2);
+        vertex_handle target_heb1 = target(heb1);
+        vertex_handle target_heb2 = target(heb2);
+      
+        face_handle face_hea1 = face(hea1);
+        face_handle face_hea2 = face(hea2);
+        face_handle face_heb1 = face(heb1);
+        face_handle face_heb2 = face(heb2);
+      
+        halfedge_handle prev_hea1 = prev(hea1);
+        halfedge_handle prev_hea2 = prev(hea2);
+        halfedge_handle prev_heb1 = prev(heb1);
+        halfedge_handle prev_heb2 = prev(heb2);
+      
+        if(incoming(target_hea1) == hea1)
+          incoming(target_hea1) = heb1;
+        if(incoming(target_hea2) == hea2)
+          incoming(target_hea2) = heb2;
+        if(incoming(target_heb1) == heb1)
+          incoming(target_heb1) = hea1;
+        if(incoming(target_heb2) == heb2)
+          incoming(target_heb2) = hea2;
+      
+        if(halfedge(face_hea1) == hea1)
+          halfedge(face_hea1) = heb1;
+        if(halfedge(face_hea2) == hea2)
+          halfedge(face_hea2) = heb2;
+      
+        if(halfedge(face_heb1) == heb1)
+          halfedge(face_heb1) = hea1;
+        if(halfedge(face_heb2) == heb2)
+          halfedge(face_heb2) = hea2;
+      
+        next(prev_hea1) = heb1;
+        next(prev_hea2) = heb2;
+        next(prev_heb1) = hea1;
+        next(prev_heb2) = hea2;
+      
+        halfedge_properties_.move(hea1.index(), heb1.index());
+        halfedge_properties_.move(hea2.index(), heb2.index());
+        edges_[to.index()] = std::move(edges_[from.index()]);
+        edge_properties_.move(from.index(), to.index());
+      }
+    */
       std::vector<edge_t> edges_;
       std::vector<vertex_t> vertices_;
       std::vector<face_t> faces_;
@@ -1701,32 +1926,55 @@ namespace owl
      {
        if(m.is_isolated(v))
        {
-         std::cout << "mesh contains isolated vertex "<< v << std::endl;
-         ++count_error;
+       //  std::cout << "mesh contains isolated vertex "<< v << std::endl;
+         //++count_error;
        }
        else
        {
+         if(m.status(m.edge(m.incoming(v))).is_removed())
+         {
+           std::cout << "mesh contains removed incoming halfedge at vertex "<< v << std::endl;
+            ++count_error;
+         }
          if(m.target(m.incoming(v)) != v)
          {
-          std::cout << "mesh contains inconsistent incoming halfedge at vertex "<< v << std::endl;
-         ++count_error;
+           std::cout << "mesh contains inconsistent incoming halfedge at vertex "<< v << std::endl;
+           ++count_error;
          }
        }
      }
    
      for(auto f: m.faces())
      {
-       if(!m.halfedge(f).is_valid() )
-        {
-           std::cout << "halfedge of face " << f << "is invalid "<<std::endl;
-          ++count_error;
-        }
-       for(auto he : m.halfedges(f))
+       if(m.status(f).is_removed())
        {
-         if(m.face(he) != f)
+         if(m.halfedge(f).is_valid())
          {
-           std::cout << "face " << f << "contains inconsistent halfedge "<< he <<std::endl;
-            ++count_error;
+            std::cout << "removed face " << f << "is referencing an halfedge " << std::endl;
+           ++count_error;
+         }
+         continue;
+       }
+     
+       if(!m.halfedge(f).is_valid() )
+       {
+           std::cout << "halfedge of face " << f << "is invalid "<<std::endl;
+           ++count_error;
+       }
+       else
+       {
+          if(m.status(m.edge(m.halfedge(f))).is_removed())
+          {
+            std::cout << "halfedge of face " << f << "is removed"<<std::endl;
+             ++count_error;
+          }
+         for(auto he : m.inner_halfedges(f))
+         {
+           if(m.face(he) != f)
+           {
+             std::cout << "face " << f << "contains inconsistent halfedge "<< he <<std::endl;
+              ++count_error;
+           }
          }
        }
      }

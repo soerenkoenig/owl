@@ -50,6 +50,7 @@ namespace owl
       {
         index_ = invalid_index();
       }
+    
       handle& operator++()
       {
         ++index_;
@@ -215,9 +216,7 @@ namespace owl
         operator++();
         return tmp;
       }
-    
-    
-    
+  
       bool operator==(const handle_iterator &other) const
       {
         return std::tie(current_, lab_count_) == std::tie(other.current_, other.lab_count_);
@@ -256,13 +255,15 @@ namespace owl
     };
   
     template <typename Handle, typename Next, typename Deref>
-    handle_iterator<Handle,Next,Deref> make_handle_iterator(Handle current, std::size_t lab_count = 0, Next next = default_next{}, Deref deref = default_deref() )
+    handle_iterator<Handle,Next,Deref> make_handle_iterator(Handle current,
+      std::size_t lab_count = 0, Next next = default_next{}, Deref deref = default_deref() )
     {
       return handle_iterator<Handle,Next,Deref>(current, next, deref, lab_count);
     }
   
     template <typename Handle, typename Next = default_next, typename Deref = default_deref>
-    auto make_handle_range(Handle first, std::size_t lab_count_first, Handle last, std::size_t lab_count_last = 1, Next next = default_next{}, Deref deref = default_deref())
+    auto make_handle_range(Handle first, std::size_t lab_count_first,
+      Handle last, std::size_t lab_count_last = 1, Next next = default_next{}, Deref deref = default_deref())
     {
       return make_iterator_range(make_handle_iterator(first, lab_count_first, next, deref),
         make_handle_iterator(last, lab_count_last, next, deref));
@@ -274,7 +275,6 @@ namespace owl
       return make_iterator_range(make_handle_iterator(first, first.is_valid() ? 0 : 1, next, deref),
         make_handle_iterator(first, 1, next, deref));
     }
-
   }
 }
 

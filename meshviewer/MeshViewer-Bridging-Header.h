@@ -29,7 +29,7 @@ size_t mesh_num_quads(void* mesh);
 void* mesh_halfedge_position_data_init(void* mesh);
 void mesh_halfedge_position_data_deinit(void* pos);
 
-void* mesh_halfedge_normal_data_init(void * mesh);
+void* mesh_halfedge_normal_data_init(void* mesh);
 void mesh_halfedge_normal_data_deinit(void* nmls);
 
 void* mesh_triangle_halfedge_indices_init(void* mesh);
@@ -41,6 +41,8 @@ void mesh_edge_halfedge_indices_deinit(void* indices);
 void mesh_triangulate(void* mesh);
 
 void mesh_print_vertex_positions(void * mesh);
+
+bool mesh_load_ply(void* mesh, const char* filename);
 
 //image
 void* image_init();

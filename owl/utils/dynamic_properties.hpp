@@ -104,7 +104,7 @@ namespace owl
         }
         else
         {
-          p = property_handle<T>{std::distance(std::begin(properties_), it)};
+          p = property_handle<T>{std::distance(properties_.begin(), it)};
           *it = std::make_unique<property<T>>(name);
         }
         return p;
@@ -170,7 +170,7 @@ namespace owl
   
       virtual void resize(std::size_t n) = 0;
     
-      virtual void swap(std::size_t i, std::size_t j) = 0;
+      virtual void move(std::size_t to, std::size_t from) = 0;
     
       virtual std::unique_ptr<indexed_property_base> clone() const = 0;
     
@@ -200,9 +200,9 @@ namespace owl
         values.resize(n);
       }
     
-      void swap(std::size_t i, std::size_t j) override
+      void move(std::size_t to, std::size_t from) override
       {
-        std::swap(values[i], values[j]);
+        values[to] = std::move(values[from]);
       }
     
       std::unique_ptr<indexed_property_base> clone() const override
@@ -268,25 +268,27 @@ namespace owl
         properties_.clear();
       }
     
-      void swap(std::size_t i, std::size_t j)
+      template <typename Func>
+      void for_each_property(Func f)
       {
         for(auto& p: properties_)
           if(p)
-            p->swap(i, j);
+            f(*p);
+      }
+    
+      void move(std::size_t to, std::size_t from)
+      {
+        for_each_property([&](auto& p){ p.move(to, from); });
       }
     
       void reserve(std::size_t n)
       {
-       for(auto& p: properties_)
-         if(p)
-           p->reserve(n);
+        for_each_property([&](auto& p){ p.reserve(n); });
       }
     
       void resize(std::size_t n)
       {
-       for(auto& p: properties_)
-          if(p)
-            p->resize(n);
+        for_each_property([&](auto& p){ p.resize(n); });
       }
     
       void clear()

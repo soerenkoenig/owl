@@ -1,6 +1,7 @@
 #include <stdio.h>
 
 #include "owl/math/mesh.hpp"
+#include "owl/io/ply.hpp"
 
 extern "C" void * mesh_init()
 {
@@ -154,7 +155,7 @@ extern "C" int* mesh_triangle_halfedge_indices_init(void* mesh)
   for(auto f: m->faces())
   {
     std::size_t n = 0;
-    for(auto he: m->halfedges(f))
+    for(auto he: m->inner_halfedges(f))
     {
       indices[i++] = (int)he.index();
       n++;
@@ -191,15 +192,17 @@ extern "C" void mesh_edge_halfedge_indices_deinit(void* indices)
 extern "C" void mesh_triangulate(void* mesh)
 {
   owl::math::mesh<float>* m = (owl::math::mesh<float>*)mesh;
-  check_mesh(*m);
   triangulate_monoton(*m);
 }
 
-/*
-extern "C" bool mesh_load(void * mesh, const char* filename)
+
+extern "C" bool mesh_load_ply(void* mesh, const char* filename)
 {
-    return ((math::mesh<float>*)mesh)->load(filename);
-}*/
+   owl::math::mesh<float>* m = (owl::math::mesh<float>*)mesh;
+   bool success =  owl::io::read_ply(*m,filename);
+  std::cout << m->bounds()<<std::endl;
+   return success;
+}
 
 
 #include "owl/graphics/image.hpp"
