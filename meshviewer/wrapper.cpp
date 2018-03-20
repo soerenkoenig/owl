@@ -1,19 +1,21 @@
 #include <stdio.h>
 
 #include "owl/math/mesh.hpp"
-#include "owl/io/ply.hpp"
+#include "owl/math/mesh_triangulation.hpp"
+#include "owl/math/mesh_primitives.hpp"
+#include "owl/math/mesh_io.hpp"
 
-extern "C" void * mesh_init()
+extern "C" void* mesh_init()
 {
   return new owl::math::mesh<float>();
 }
 
-extern "C" void mesh_deinit(void * mesh)
+extern "C" void mesh_deinit(void* mesh)
 {
   delete (owl::math::mesh<float> *) mesh;
 }
 
-extern "C" void mesh_create_geosphere(void * mesh, float radius, size_t levels)
+extern "C" void mesh_create_geosphere(void* mesh, float radius, size_t levels)
 {
   owl::math::mesh<float>* m = (owl::math::mesh<float> *)mesh;
   *m = owl::math::create_geodesic_sphere<float>(radius, levels);
@@ -21,53 +23,53 @@ extern "C" void mesh_create_geosphere(void * mesh, float radius, size_t levels)
 
 extern "C" void mesh_create_box(void * mesh)
 {
-  owl::math::mesh<float>* m = (owl::math::mesh<float> *)mesh;
+  owl::math::mesh<float>* m = (owl::math::mesh<float>*)mesh;
   *m = owl::math::create_box<float>();
 }
 
-extern "C" void mesh_create_torus(void * mesh, float r, float R, std::size_t nsides, std::size_t rings)
+extern "C" void mesh_create_torus(void* mesh, float r, float R, std::size_t nsides, std::size_t rings)
 {
   owl::math::mesh<float>* m = (owl::math::mesh<float> *)mesh;
   *m = owl::math::create_torus<float>(r, R, nsides, rings);
 }
 
-extern "C" void mesh_create_tetrahedron(void * mesh)
+extern "C" void mesh_create_tetrahedron(void* mesh)
 {
   owl::math::mesh<float>* m = (owl::math::mesh<float> *)mesh;
   *m = owl::math::create_tetradedron<float>();
 }
 
-extern "C" size_t mesh_num_vertices(void * mesh)
+extern "C" size_t mesh_num_vertices(void* mesh)
 {
-  return ((owl::math::mesh<float> *)mesh)->num_vertices();
+  return ((owl::math::mesh<float>*)mesh)->num_vertices();
 }
 
 extern "C" size_t mesh_num_edges(void * mesh)
 {
-  return ((owl::math::mesh<float> *)mesh)->num_edges();
+  return ((owl::math::mesh<float>*)mesh)->num_edges();
 }
 
-extern "C" size_t mesh_num_halfedges(void * mesh)
+extern "C" size_t mesh_num_halfedges(void* mesh)
 {
-  return ((owl::math::mesh<float> *)mesh)->num_halfedges();
+  return ((owl::math::mesh<float>*)mesh)->num_halfedges();
 }
 
-extern "C" size_t mesh_num_faces(void * mesh)
+extern "C" size_t mesh_num_faces(void* mesh)
 {
-  return ((owl::math::mesh<float> *)mesh)->num_faces();
+  return ((owl::math::mesh<float>*)mesh)->num_faces();
 }
 
-extern "C" size_t mesh_num_triangles(void * mesh)
+extern "C" size_t mesh_num_triangles(void* mesh)
 {
   return ((owl::math::mesh<float> *)mesh)->num_triangles();
 }
 
-extern "C" size_t mesh_num_quads(void * mesh)
+extern "C" size_t mesh_num_quads(void* mesh)
 {
-  return ((owl::math::mesh<float> *)mesh)->num_quads();
+  return ((owl::math::mesh<float>*)mesh)->num_quads();
 }
 
-extern "C" void mesh_edge_indices(void * mesh, int* indices)
+extern "C" void mesh_edge_indices(void* mesh, int* indices)
 {
   owl::math::mesh<float>& m = *((owl::math::mesh<float>*) mesh);
   for(auto e: m.edges())
@@ -76,7 +78,7 @@ extern "C" void mesh_edge_indices(void * mesh, int* indices)
   }
 }
 
-extern "C" void mesh_triangle_indices(void * mesh, int* indices)
+extern "C" void mesh_triangle_indices(void* mesh, int* indices)
 {
   owl::math::mesh<float>& m = *((owl::math::mesh<float>*) mesh);
   for(auto f: m.faces())
@@ -89,7 +91,7 @@ extern "C" void mesh_triangle_indices(void * mesh, int* indices)
   }
 }
 
-extern "C" void mesh_quad_indices(void * mesh, int* indices)
+extern "C" void mesh_quad_indices(void* mesh, int* indices)
 {
   owl::math::mesh<float>& m = *((owl::math::mesh<float>*) mesh);
   for(auto f: m.faces())
@@ -102,7 +104,7 @@ extern "C" void mesh_quad_indices(void * mesh, int* indices)
   }
 }
 
-extern "C" void mesh_print_vertex_positions(void * mesh)
+extern "C" void mesh_print_vertex_positions(void* mesh)
 {
    owl::math::print_vertex_positions(*(const owl::math::mesh<float>*)mesh);
 }
@@ -142,7 +144,7 @@ extern "C" void* mesh_halfedge_normal_data_init(void * mesh)
   return normals;
 }
 
-extern "C" void mesh_halfedge_normal_data_deinit( void * nmls)
+extern "C" void mesh_halfedge_normal_data_deinit(void* nmls)
 {
   delete[] (float*)nmls;
 }
@@ -199,7 +201,7 @@ extern "C" void mesh_triangulate(void* mesh)
 extern "C" bool mesh_load_ply(void* mesh, const char* filename)
 {
    owl::math::mesh<float>* m = (owl::math::mesh<float>*)mesh;
-   bool success =  owl::io::read_ply(*m,filename);
+   bool success =  owl::math::read_ply(*m,filename);
   std::cout << m->bounds()<<std::endl;
    return success;
 }
@@ -217,18 +219,18 @@ extern "C" void* image_init2(int width, int height)
   return new owl::graphics::rgb8u_image(width, height);
 }
 
-extern "C" void image_deinit(void * img)
+extern "C" void image_deinit(void* img)
 {
   delete (owl::graphics::rgb8u_image*) img;
 }
 
-extern "C" int image_width(void * img)
+extern "C" int image_width(void* img)
 {
    owl::graphics::rgb8u_image* im = (owl::graphics::rgb8u_image*) img;
    return (int)im->width();
 }
 
-extern "C" int image_height(void * img)
+extern "C" int image_height(void* img)
 {
    owl::graphics::rgb8u_image* im = (owl::graphics::rgb8u_image*) img;
    return (int)im->height();

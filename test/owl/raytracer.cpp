@@ -1,6 +1,8 @@
 #include "owl/render/raytracer.hpp"
 #include "owl/scene/view.hpp"
 #include "owl/scene/mesh.hpp"
+#include "owl/scene/view.hpp"
+#include "owl/math/mesh_primitives.hpp"
 #include "owl/graphics/image.hpp"
 #include "owl/scene/look_at_constraint.hpp"
 #include "owl/scene/grid.hpp"

@@ -1,6 +1,11 @@
+//#include <stdint.h>
+//#include <stdbool.h>
 
-#include <stdint.h>
-#include <stdbool.h>
+typedef unsigned long long size_t;
+
+typedef unsigned int uint32_t;
+
+typedef  int bool;
 
 void* mesh_init();
 

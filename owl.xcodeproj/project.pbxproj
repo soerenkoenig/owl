@@ -41,7 +41,6 @@
 		28757C801FCF5A45001720F1 /* plane.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28757C7F1FCF5A44001720F1 /* plane.cpp */; };
 		2883C2561F91BAFA007DDB3C /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2883C2551F91BAFA007DDB3C /* main.cpp */; };
 		2883C25B1F91BB33007DDB3C /* libowl.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2883C2411F91BA7F007DDB3C /* libowl.dylib */; };
-		288410B81FA600E800CE68DA /* obj.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 288410B71FA600E800CE68DA /* obj.cpp */; };
 		288410BE1FA63F9700CE68DA /* owl.png in CopyFiles */ = {isa = PBXBuildFile; fileRef = 288410BD1FA63F1F00CE68DA /* owl.png */; };
 		288410C01FA63FDF00CE68DA /* cube.mtl in CopyFiles */ = {isa = PBXBuildFile; fileRef = 288410BB1FA6071F00CE68DA /* cube.mtl */; };
 		288410C11FA63FE200CE68DA /* cube.obj in CopyFiles */ = {isa = PBXBuildFile; fileRef = 288410BA1FA606BE00CE68DA /* cube.obj */; };
@@ -188,8 +187,6 @@
 		2883C25E1F91BD38007DDB3C /* catch.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = catch.hpp; sourceTree = "<group>"; };
 		288407B51FF51E190022A590 /* color_names.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = color_names.hpp; sourceTree = "<group>"; };
 		288407B61FFAC7BB0022A590 /* image.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = image.hpp; sourceTree = "<group>"; };
-		288410B61FA6006A00CE68DA /* obj.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = obj.hpp; sourceTree = "<group>"; };
-		288410B71FA600E800CE68DA /* obj.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = obj.cpp; sourceTree = "<group>"; };
 		288410BA1FA606BE00CE68DA /* cube.obj */ = {isa = PBXFileReference; lastKnownFileType = text; path = cube.obj; sourceTree = "<group>"; };
 		288410BB1FA6071F00CE68DA /* cube.mtl */ = {isa = PBXFileReference; lastKnownFileType = text; path = cube.mtl; sourceTree = "<group>"; };
 		288410BD1FA63F1F00CE68DA /* owl.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = owl.png; sourceTree = "<group>"; };
@@ -243,6 +240,10 @@
 		28C66FAD1FC5643A00F9C0D1 /* variant.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = variant.hpp; sourceTree = "<group>"; };
 		28CA4D3D1FAA6F4E00C753D6 /* uuid.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = uuid.cpp; sourceTree = "<group>"; };
 		28CA4D3F1FAAF95A00C753D6 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
+		28CE67D1206192D200232EA0 /* mesh_triangulation.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = mesh_triangulation.hpp; sourceTree = "<group>"; };
+		28CE67D22061937E00232EA0 /* mesh_primitives.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = mesh_primitives.hpp; sourceTree = "<group>"; };
+		28CE67D32061946600232EA0 /* obj.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = obj.hpp; sourceTree = "<group>"; };
+		28CE67D42061950800232EA0 /* mesh_io.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = mesh_io.hpp; sourceTree = "<group>"; };
 		28E3DA5A20455FA500D6CAFE /* range_algorithm.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = range_algorithm.hpp; sourceTree = "<group>"; };
 		28E3DA5B204580BB00D6CAFE /* property.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = property.hpp; sourceTree = "<group>"; };
 		28E3DA5C204580D600D6CAFE /* property.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = property.cpp; sourceTree = "<group>"; };
@@ -315,7 +316,6 @@
 			isa = PBXGroup;
 			children = (
 				2816E6A11FA12F8600CCE00A /* image_temp.hpp */,
-				288410B61FA6006A00CE68DA /* obj.hpp */,
 				288407B61FFAC7BB0022A590 /* image.hpp */,
 			);
 			path = graphics;
@@ -344,7 +344,6 @@
 				286F1DF21F9E6C4E00FCC209 /* filter_iterator.cpp */,
 				D172B67A1F9F197C0039A121 /* count_iterator.cpp */,
 				2816E6A51FA133EF00CCE00A /* image.cpp */,
-				288410B71FA600E800CE68DA /* obj.cpp */,
 				28CA4D3D1FAA6F4E00C753D6 /* uuid.cpp */,
 				D15138AF1FB196E9009D3414 /* non_copyable.cpp */,
 				28BB756B1FB3D030009A6290 /* signal.cpp */,
@@ -410,6 +409,7 @@
 			children = (
 				28431BBC205FC899006AE1E2 /* ply.hpp */,
 				28431BBF205FCCD6006AE1E2 /* ply.cpp */,
+				28CE67D32061946600232EA0 /* obj.hpp */,
 			);
 			path = io;
 			sourceTree = "<group>";
@@ -575,6 +575,9 @@
 				2896D0912035875C00E9241D /* utils.hpp */,
 				2896D09220358A5900E9241D /* physical_properties.hpp */,
 				286FE412203A02AC006BF193 /* mesh.hpp */,
+				28CE67D1206192D200232EA0 /* mesh_triangulation.hpp */,
+				28CE67D22061937E00232EA0 /* mesh_primitives.hpp */,
+				28CE67D42061950800232EA0 /* mesh_io.hpp */,
 			);
 			path = math;
 			sourceTree = "<group>";
@@ -825,7 +828,6 @@
 				D172B67B1F9F197C0039A121 /* count_iterator.cpp in Sources */,
 				28BB756C1FB3D030009A6290 /* signal.cpp in Sources */,
 				284C09C91F968F5C0062BFF1 /* container_traits.cpp in Sources */,
-				288410B81FA600E800CE68DA /* obj.cpp in Sources */,
 				286F1DF31F9E6C4E00FCC209 /* filter_iterator.cpp in Sources */,
 				28757C801FCF5A45001720F1 /* plane.cpp in Sources */,
 				2883C2561F91BAFA007DDB3C /* main.cpp in Sources */,

@@ -1,21 +1,26 @@
+//
+//           .___.
+//           {o,o}
+//          ./)_)
+//      owl --"-"---
+//
+//  Copyright © 2018 Sören König. All rights reserved.
+//
+
 #pragma once
-#include <vector>
-#include <array>
-#include <string>
-#include <map>
-#include <fstream>
-#include <sstream>
+
+#include <memory>
 #include <iostream>
-
-#include "owl/utils/file_utils.hpp"
-
-
+#include <boost/filesystem.hpp>
+#include <boost/filesystem/fstream.hpp>
+#include "owl/math/mesh.hpp"
+#include "owl/color/color.hpp"
 
 namespace owl
 {
-  namespace graphics
+  namespace io
   {
-    struct mtl_info
+ /*  struct mtl_info
     {
       std::string name;
       std::array<float,4> ambient;
@@ -534,15 +539,8 @@ namespace owl
         }
 
       }
-
+*/
 
     };
-    }
+  }
 }
-
-
-
-
-
-
-

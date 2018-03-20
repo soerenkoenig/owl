@@ -1,5 +1,6 @@
 #include "owl/math/mesh.hpp"
-#include "owl/io/ply.hpp"
+#include "owl/math/mesh_io.hpp"
+#include "owl/math/mesh_primitives.hpp"
 #include "owl/math/physical_properties.hpp"
 #include "owl/math/approx.hpp"
 #include "catch/catch.hpp"
@@ -32,7 +33,7 @@ TEST_CASE( "add_face_s", "[math]" )
   {
     using namespace owl::math;
     mesh<float> m;
-    owl::io::read_ply(m,"/Users/skoenig/Downloads/bun_zipper.ply");
+    owl::math::read_ply(m,"/Users/skoenig/Downloads/bun_zipper.ply");
     CHECK(check_mesh(m) == 0);
   }
   
@@ -41,7 +42,7 @@ TEST_CASE( "add_face_s", "[math]" )
     using namespace owl::math;
     mesh<float> m;
   
-    owl::io::read_ply(m,"test.ply");
+    owl::math::read_ply(m,"test.ply");
     CHECK(m.num_faces() == 6);
     check_mesh(m);
   }
