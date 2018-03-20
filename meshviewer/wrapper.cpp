@@ -226,32 +226,33 @@ extern "C" void image_deinit(void* img)
 
 extern "C" int image_width(void* img)
 {
-   owl::graphics::rgb8u_image* im = (owl::graphics::rgb8u_image*) img;
-   return (int)im->width();
+  owl::graphics::rgb8u_image* im = (owl::graphics::rgb8u_image*) img;
+  return (int)im->width();
 }
 
 extern "C" int image_height(void* img)
 {
-   owl::graphics::rgb8u_image* im = (owl::graphics::rgb8u_image*) img;
-   return (int)im->height();
+  owl::graphics::rgb8u_image* im = (owl::graphics::rgb8u_image*) img;
+  return (int)im->height();
 }
 
 extern "C" void* image_raw_data(void* img)
 {
-   owl::graphics::rgb8u_image* im = (owl::graphics::rgb8u_image*) img;
-   return (void*)im->data();
+  owl::graphics::rgb8u_image* im = (owl::graphics::rgb8u_image*) img;
+  return (void*)im->data();
 }
 
 extern "C" void image_create_grid(void* img, int nx, int ny, int spacing)
 {
-   owl::graphics::rgb8u_image* im = (owl::graphics::rgb8u_image*) img;
-   *im = owl::graphics::create_grid(nx,ny,spacing);
+  owl::graphics::rgb8u_image* im = (owl::graphics::rgb8u_image*) img;
+  *im = owl::graphics::create_grid(nx,ny,spacing);
 }
 
 extern "C" void image_create_grid_color(void* img, int nx, int ny, int spacing, uint32_t xcolor, uint32_t ycolor)
 {
-   owl::graphics::rgb8u_image* im = (owl::graphics::rgb8u_image*) img;
-  *im = owl::graphics::create_grid_color(nx, ny, spacing, owl::color::rgb8u::hex(xcolor), owl::color::rgb8u::hex(ycolor));
+  owl::graphics::rgb8u_image* im = (owl::graphics::rgb8u_image*) img;
+  *im = owl::graphics::create_grid_color(nx, ny, spacing, owl::color::rgb8u::hex(xcolor),
+  owl::color::rgb8u::hex(ycolor));
 }
 
 
