@@ -12,12 +12,51 @@
 #include "owl/color/color.hpp"
 #include "owl/math/mesh.hpp"
 #include "owl/io/ply.hpp"
+#include "owl/io/off.hpp"
 
 namespace owl
 {
   namespace math
   {
-   template <typename Scalar>
+    template <typename Scalar>
+    bool read_off(math::mesh<Scalar>& mesh, const boost::filesystem::path& p)
+    {
+      if(!exists(p))
+        return false;
+    
+      if(!is_regular_file(p))
+        return false;
+    
+      mesh.clear();
+      io::off_reader reader;
+      reader.open(p);
+      
+      if(!reader.is_open())
+        return false;
+    
+      reader.listen_2_counts([&mesh](const std::size_t& num_vertices, const std::size_t& num_faces)
+        {
+          mesh.reserve_vertices(num_vertices);
+          mesh.reserve_faces(num_faces);
+        });
+    
+      reader.listen_2_vertex([&mesh](const float& x, const float& y,const float& z)
+        {
+          mesh.add_vertex(vector<Scalar,3>(x,y,z));
+        });
+    
+      reader.listen_2_face([&mesh](const std::vector<std::size_t>& indices)
+        {
+          std::vector<math::vertex_handle> vertex_indices;
+          for(auto v: indices)
+            vertex_indices.push_back(math::vertex_handle(v));
+          mesh.add_face(vertex_indices);
+        });
+   
+      return reader.read();
+    }
+  
+    template <typename Scalar>
     bool read_ply(math::mesh<Scalar>& mesh, const boost::filesystem::path& p)
     {
       if(!exists(p))

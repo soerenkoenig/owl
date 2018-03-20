@@ -1317,7 +1317,7 @@ namespace owl
         while(next_prev_he != he)
         {
           prev_he = next_prev_he;
-          next_prev_he = next(prev_he);
+          next_prev_he = next(next_prev_he);
         }
         return prev_he;
       }

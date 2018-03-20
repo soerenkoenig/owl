@@ -33,8 +33,16 @@ TEST_CASE( "add_face_s", "[math]" )
   {
     using namespace owl::math;
     mesh<float> m;
-    owl::math::read_ply(m,"/Users/skoenig/Downloads/bun_zipper.ply");
-    CHECK(check_mesh(m) == 0);
+    owl::math::read_ply(m, "/Users/skoenig/Downloads/bun_zipper.ply");
+ ///   CHECK(check_mesh(m) == 0);
+  }
+  
+  TEST_CASE( "read off", "[math]" )
+  {
+    using namespace owl::math;
+    mesh<float> m;
+    owl::math::read_off(m, "/Users/skoenig/Downloads/178_raptor.off");
+    //CHECK(check_mesh(m) == 0);
   }
   
   TEST_CASE( "add_face4", "[math]" )
