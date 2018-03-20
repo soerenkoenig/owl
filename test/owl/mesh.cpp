@@ -45,6 +45,14 @@ TEST_CASE( "add_face_s", "[math]" )
     //CHECK(check_mesh(m) == 0);
   }
   
+   TEST_CASE( "read cow", "[math]" )
+  {
+    using namespace owl::math;
+    mesh<float> m;
+    owl::math::read_ply(m, "/Users/skoenig/Downloads/cow.ply");
+    CHECK(check_mesh(m) == 0);
+  }
+  
   TEST_CASE( "add_face4", "[math]" )
   {
     using namespace owl::math;

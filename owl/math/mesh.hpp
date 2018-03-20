@@ -1059,7 +1059,11 @@ namespace owl
           if (!he.is_valid())
             he = halfedge(add_edge(v.prev, v.current));
           else
-            assert(is_boundary(he));
+          {
+            if(!is_boundary(he))
+              return face_handle::invalid();
+            //assert(is_boundary(he));
+          }
           face(he) = f;
           hes.push_back(he);
         }
