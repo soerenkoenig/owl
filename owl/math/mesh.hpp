@@ -1020,7 +1020,7 @@ namespace owl
       auto add_vertices(std::size_t n)
       {
         vertices_.resize(num_vertices() + n);
-        return vertex_properties_.add_elem(n);
+        return vertex_properties_.add_elems(n);
       }
     
       template <typename VectorRange, typename = std::enable_if_t<is_vector_range<VectorRange>::value>>
@@ -1068,54 +1068,60 @@ namespace owl
       
         for(auto he : owl::utils::make_adjacent_range(hes))
         {
-          if(next(he.current) != he.next)
+          if(next(he.current) == he.next)
+            continue;
+          // fix next pointer of incoming halfedges of target(he.current)
+          auto he_outer = opposite(he.next);
+          auto he_outer_next = next(he_outer);
+          if(he_outer_next.is_valid())
           {
-            auto he_outer = opposite(he.next);
-            auto he_outer_next = next(he_outer);
-            if(he_outer_next.is_valid())
+            while(he_outer_next != he.next)
             {
-              while(he_outer_next != he.next || he_outer == he.current)
-              {
-                he_outer = opposite(he_outer_next);
-                he_outer_next = next(he_outer);
-              }
               if(he_outer == he.current)
-              {
-                auto he_a = opposite(he.next);
-                while(!is_boundary(he_a))
-                  he_a = next_incoming(he_a);
-                auto he_b = prev(he.next);
-                next(he_b) = next(he_a);
-                next(he_a) = next(he_outer);
-                next(he_outer) = he.next;
-              }
-              else
-               next(he_outer) = opposite(he.current);
+                break;
+              he_outer = opposite(he_outer_next);
+              he_outer_next = next(he_outer);
+            }
+            if(he_outer == he.current)
+            {
+              auto he_a = opposite(he.next);
+              while(!is_boundary(he_a))
+                he_a = next_incoming(he_a);
+            
+             // auto he_b = prev(he.next);
+             auto he_b = opposite(he.next);
+             while(next(he_b) != he.next)
+              he_b = next_incoming(he_b);
+            
+              next(he_b) = next(he_a);
+              next(he_a) = next(he_outer);
+              next(he_outer) = he.next;
             }
             else
-            {
-              if(next(he.current).is_valid())
-                next(he_outer) = next(he.current);
-              else
-              {
-                auto he_p = incoming(target(he.current));
-                if(he_p.is_valid() && is_boundary(he_p))
-                {
-                 next(he_outer) = next(he_p);
-                 next(he_p) = opposite(he.current);
-                }
-                else
-                  next(he_outer) = opposite(he.current);
-              }
-            }
-            next(he.current) = he.next;
-            auto v = target(he.current);
-            if(is_isolated(v))
-              incoming(v) = he.current;
-            adjust_incoming(v);
+             next(he_outer) = opposite(he.current); ///buggy
           }
+          else
+          {
+            if(next(he.current).is_valid())
+              next(he_outer) = next(he.current);
+            else
+            {
+              auto he_p = incoming(target(he.current));
+              if(he_p.is_valid() && is_boundary(he_p))
+              {
+               next(he_outer) = next(he_p);
+               next(he_p) = opposite(he.current);
+              }
+              else
+                next(he_outer) = opposite(he.current);
+            }
+          }
+          next(he.current) = he.next;
+          auto v = target(he.current);
+          if(is_isolated(v))
+            incoming(v) = he.current;
+          adjust_incoming(v);
         }
-      
         return f;
       }
     

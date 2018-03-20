@@ -1,4 +1,5 @@
 #include "owl/math/mesh.hpp"
+#include "owl/io/ply.hpp"
 #include "owl/math/physical_properties.hpp"
 #include "owl/math/approx.hpp"
 #include "catch/catch.hpp"
@@ -6,7 +7,74 @@
 
 namespace test
 {
+
+
+TEST_CASE( "add_face_s", "[math]" )
+  {
+    using namespace owl::math;
+    mesh<float> m;
+    auto verts = m.add_vertices(7);
+    auto f0 = m.add_face(verts[1], verts[2], verts[0]);
+    auto f1 = m.add_face(verts[6], verts[0], verts[5]);
+    auto f2 = m.add_face(verts[0], verts[3], verts[4]);
   
+    auto f3 = m.add_face(verts[5], verts[0], verts[4]);
+  
+    auto f4 = m.add_face(verts[2], verts[3], verts[0]);
+    CHECK(check_mesh(m) == 0);
+ /*  for(auto he : m.halfedges())
+    {
+      std::cout << "he: "<<he << ": target(he) = " << m.target(he) <<", origin(he) = "<<m.origin(he) << ", next(he) = "<<((const mesh<float>&)m).next(he)<<std::endl;
+    }*/
+  }
+
+  TEST_CASE( "add_face3", "[math]" )
+  {
+    using namespace owl::math;
+    mesh<float> m;
+    owl::io::read_ply(m,"/Users/skoenig/Downloads/bun_zipper.ply");
+    CHECK(check_mesh(m) == 0);
+  }
+  
+  TEST_CASE( "add_face4", "[math]" )
+  {
+    using namespace owl::math;
+    mesh<float> m;
+  
+    owl::io::read_ply(m,"test.ply");
+    CHECK(m.num_faces() == 6);
+    check_mesh(m);
+  }
+  
+  TEST_CASE( "add_face", "[math]" )
+  {
+    using namespace owl::math;
+    mesh<float> m;
+    auto verts = m.add_vertices(10);
+    auto f0 = m.add_face(verts[0], verts[1], verts[2]);
+    auto f1 = m.add_face(verts[3], verts[4], verts[5]);
+    auto f2 = m.add_face(verts[6], verts[7], verts[8]);
+    auto f3 = m.add_face(verts[0], verts[3], verts[6]);
+    auto f4 = m.add_face(verts[0], verts[6], verts[8]);
+    auto f5 = m.add_face(verts[2], verts[4], verts[3], verts[0]);
+    CHECK(m.num_faces() == 6);
+    check_mesh(m);
+  }
+  
+  
+  TEST_CASE( "add_face2", "[math]" )
+  {
+    using namespace owl::math;
+    mesh<float> m;
+    auto verts = m.add_vertices(6);
+    auto f0 = m.add_face(verts[0], verts[1], verts[2]);
+    auto f1 = m.add_face(verts[1], verts[3], verts[4]);
+    auto f2 = m.add_face(verts[2], verts[4], verts[5]);
+    auto f3 = m.add_face(verts[1], verts[4], verts[2]);
+ 
+    CHECK(m.num_faces() == 4);
+    check_mesh(m);
+  }
   
 
   TEST_CASE( "primitives", "[math]" )
@@ -74,6 +142,8 @@ namespace test
     CHECK(disc.num_edges() == 2 * 48);
     CHECK(disc.is_open());
     CHECK(disc.is_triangle_mesh());
+  
+  
   
   }
 }

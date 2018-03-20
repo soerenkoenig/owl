@@ -77,7 +77,10 @@ class ViewController: NSViewController{
     
     // self.mesh = Mesh.create_torus(radius1:1, radius2:2)
     
-    self.mesh = Mesh.load(filename:"/Users/skoenig/Downloads/Armadillo.ply")
+  //  self.mesh = Mesh.load(filename:"/Users/skoenig/Downloads/Armadillo.ply")
+    // self.mesh = Mesh.load(filename:"/Users/skoenig/Downloads/bun_zipper.ply")
+      self.mesh = Mesh.load(filename:"/Users/skoenig/Downloads/xyzrgb_dragon.ply")
+      print("Mesh statistics: # faces =\(self.mesh!.faceCount), # vertices =\(self.mesh!.vertexCount)")
     // self.mesh = Mesh.create_tetrahedron()
     // self.mesh = Mesh.create_box()
     self.mesh?.triangulate()
