@@ -12,6 +12,7 @@
 #include <vector>
 #include "owl/utils/handle.hpp"
 #include "owl/utils/count_iterator.hpp"
+#include "owl/utils/map_iterator.hpp"
 #include "owl/utils/range_algorithm.hpp"
 #include "owl/color/color.hpp"
 
