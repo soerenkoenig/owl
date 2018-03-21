@@ -47,7 +47,7 @@
 		288A6F971F91BE4400783E52 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 288A6F961F91BE4400783E52 /* main.cpp */; };
 		288A6F9B1F91BE5400783E52 /* libowl.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2883C2411F91BA7F007DDB3C /* libowl.dylib */; };
 		288A6FA81F91CA9E00783E52 /* binary_serialization.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 288A6FA61F91CA9E00783E52 /* binary_serialization.cpp */; };
-		2896D09020343A5E00E9241D /* quaterion.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2896D08F20343A5E00E9241D /* quaterion.cpp */; };
+		2896D09020343A5E00E9241D /* quaternion.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2896D08F20343A5E00E9241D /* quaternion.cpp */; };
 		2896D094203613BA00E9241D /* physical_properties.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2896D093203613BA00E9241D /* physical_properties.cpp */; };
 		289CAEE9205133960016894A /* Mesh.swift in Sources */ = {isa = PBXBuildFile; fileRef = 289CAEE8205133960016894A /* Mesh.swift */; };
 		289CAEEB205135F40016894A /* SceneKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 289CAEEA205135F40016894A /* SceneKit.framework */; };
@@ -206,7 +206,7 @@
 		2896D08B202F21C400E9241D /* euler_angles.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = euler_angles.hpp; sourceTree = "<group>"; };
 		2896D08C2030807E00E9241D /* quaternion.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = quaternion.hpp; sourceTree = "<group>"; };
 		2896D08E2030863100E9241D /* node.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = node.hpp; sourceTree = "<group>"; };
-		2896D08F20343A5E00E9241D /* quaterion.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = quaterion.cpp; sourceTree = "<group>"; };
+		2896D08F20343A5E00E9241D /* quaternion.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = quaternion.cpp; sourceTree = "<group>"; };
 		2896D0912035875C00E9241D /* utils.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = utils.hpp; sourceTree = "<group>"; };
 		2896D09220358A5900E9241D /* physical_properties.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = physical_properties.hpp; sourceTree = "<group>"; };
 		2896D093203613BA00E9241D /* physical_properties.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = physical_properties.cpp; sourceTree = "<group>"; };
@@ -359,7 +359,7 @@
 				28043CE31FE1ABE800AE177A /* connected_components.cpp */,
 				2857F02A1FEF280700DEF030 /* colors.cpp */,
 				286563CD1FE86A73003758E1 /* color_maps.cpp */,
-				2896D08F20343A5E00E9241D /* quaterion.cpp */,
+				2896D08F20343A5E00E9241D /* quaternion.cpp */,
 				2896D093203613BA00E9241D /* physical_properties.cpp */,
 				286FE413203AC81F006BF193 /* mesh.cpp */,
 				28E3DA5C204580D600D6CAFE /* property.cpp */,
@@ -821,7 +821,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2896D09020343A5E00E9241D /* quaterion.cpp in Sources */,
+				2896D09020343A5E00E9241D /* quaternion.cpp in Sources */,
 				D1993BCC1FBADB1E005737F9 /* base64.cpp in Sources */,
 				D15138B01FB196E9009D3414 /* non_copyable.cpp in Sources */,
 				D1C330571FCDA37C007E446E /* ray.cpp in Sources */,

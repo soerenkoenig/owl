@@ -169,7 +169,6 @@ namespace owl
         return std::forward<T>(val)++;
       }
     };
-
   
     template <typename Handle, typename Next, typename Deref = default_deref>
     class handle_iterator
@@ -186,13 +185,11 @@ namespace owl
       template<typename N, typename D>
       handle_iterator(const Handle& current, N&& n, D&& d, std::size_t lab_count = 0)
         : current_{current}
-        , initial_{current}
         , next(std::forward<N>(n))
         , deref(std::forward<D>(d))
-        , lab_count_{lab_count}
       {
       }
-      
+    
       handle_iterator(const handle_iterator& other) = default;
     
       handle_iterator& operator=(const handle_iterator& other) = default;
@@ -205,8 +202,6 @@ namespace owl
       handle_iterator& operator++()
       {
         current_ = next(current_);
-        if(current_ == initial_)
-          ++lab_count_;
         return *this;
       }
     
@@ -219,33 +214,90 @@ namespace owl
   
       bool operator==(const handle_iterator &other) const
       {
-        return std::tie(current_, lab_count_) == std::tie(other.current_, other.lab_count_);
+        return current_ == other.current_;
       }
     
       bool operator!=(const handle_iterator &other) const
       {
+        return current_ != other.current_;
+      }
+    
+    private:
+      Handle current_;
+      Next next;
+      Deref deref;
+    };
+  
+    template <typename Handle, typename Next, typename Deref>
+    handle_iterator<Handle, Next, Deref> make_handle_iterator(Handle current,
+       Next next = default_next{}, Deref deref = default_deref() )
+    {
+      return handle_iterator<Handle, Next, Deref>(current, next, deref);
+    }
+  
+    template <typename Handle, typename Next = default_next, typename Deref = default_deref>
+    auto make_handle_iterator_range(Handle first, Handle last, Next next = default_next{}, Deref deref = default_deref())
+    {
+      return make_iterator_range(make_handle_iterator(first, next, deref),
+        make_handle_iterator(last, next, deref));
+    }
+  
+    template <typename Handle, typename Next, typename Deref = default_deref>
+    class handle_circulator
+    {
+    public:
+      using iterator_category = typename std::forward_iterator_tag;
+      using value_type = decltype(std::declval<Deref>()(std::declval<Handle>()));
+      using difference_type = decltype(std::declval<std::size_t>() - std::declval<std::size_t>());
+      using pointer = void;
+      using reference = void;
+      using size_type = std::size_t;
+    
+    
+      template<typename N, typename D>
+      handle_circulator(const Handle& current, N&& n, D&& d, std::size_t lab_count = 0)
+        : current_{current}
+        , initial_{current}
+        , next(std::forward<N>(n))
+        , deref(std::forward<D>(d))
+        , lab_count_{lab_count}
+      {
+      }
+      
+      handle_circulator(const handle_circulator& other) = default;
+    
+      handle_circulator& operator=(const handle_circulator& other) = default;
+    
+      auto operator*() const
+      {
+        return deref(current_);
+      }
+    
+      handle_circulator& operator++()
+      {
+        current_ = next(current_);
+        if(current_ == initial_)
+          ++lab_count_;
+        return *this;
+      }
+    
+      handle_circulator operator++(int)
+      {
+        auto tmp = *this;
+        operator++();
+        return tmp;
+      }
+  
+      bool operator==(const handle_circulator &other) const
+      {
+        return std::tie(current_, lab_count_) == std::tie(other.current_, other.lab_count_);
+      }
+    
+      bool operator!=(const handle_circulator &other) const
+      {
         return std::tie(current_, lab_count_) != std::tie(other.current_, other.lab_count_);
       }
-    
-      bool operator<(const handle_iterator &other) const
-      {
-        return std::tie(current_, lab_count_) < std::tie(other.current_, other.lab_count_);
-      }
-    
-      bool operator>(const handle_iterator &other) const
-      {
-        return std::tie(current_, lab_count_) > std::tie(other.current_, other.lab_count_);
-      }
-    
-      bool operator<=(const handle_iterator &other) const
-      {
-        return std::tie(current_, lab_count_) <= std::tie(other.current_, other.lab_count_);
-      }
-    
-      bool operator>=(const handle_iterator &other) const
-      {
-        return std::tie(current_, lab_count_) >= std::tie(other.current_, other.lab_count_);
-      }
+  
     private:
       Handle current_;
       Handle initial_;
@@ -255,25 +307,25 @@ namespace owl
     };
   
     template <typename Handle, typename Next, typename Deref>
-    handle_iterator<Handle,Next,Deref> make_handle_iterator(Handle current,
+    handle_circulator<Handle, Next, Deref> make_handle_circulator(Handle current,
       std::size_t lab_count = 0, Next next = default_next{}, Deref deref = default_deref() )
     {
-      return handle_iterator<Handle,Next,Deref>(current, next, deref, lab_count);
+      return handle_circulator<Handle, Next, Deref>(current, next, deref, lab_count);
     }
   
     template <typename Handle, typename Next = default_next, typename Deref = default_deref>
-    auto make_handle_range(Handle first, std::size_t lab_count_first,
+    auto make_handle_circulator_range(Handle first, std::size_t lab_count_first,
       Handle last, std::size_t lab_count_last = 1, Next next = default_next{}, Deref deref = default_deref())
     {
-      return make_iterator_range(make_handle_iterator(first, lab_count_first, next, deref),
-        make_handle_iterator(last, lab_count_last, next, deref));
+      return make_iterator_range(make_handle_circulator(first, lab_count_first, next, deref),
+        make_handle_circulator(last, lab_count_last, next, deref));
     }
   
      template <typename Handle, typename Next = default_next, typename Deref = default_deref>
-    auto make_handle_range(Handle first, Next next = default_next{}, Deref deref = default_deref())
+    auto make_handle_circulator_range(Handle first, Next next = default_next{}, Deref deref = default_deref())
     {
-      return make_iterator_range(make_handle_iterator(first, first.is_valid() ? 0 : 1, next, deref),
-        make_handle_iterator(first, 1, next, deref));
+      return make_iterator_range(make_handle_circulator(first, first.is_valid() ? 0 : 1, next, deref),
+        make_handle_circulator(first, 1, next, deref));
     }
   }
 }

@@ -57,6 +57,14 @@ namespace owl
         std::forward<BinaryOperation>(binary_op));
     }
   
+    template< typename Range, class T >
+    constexpr void fill( Range&& rng, const T& value)
+    {
+      std::fill(std::begin(rng), std::end(rng), value);
+    }
+  
+  
+  
     template<typename Range, typename Pred>
     inline auto all_of(const Range& rng, Pred&& cond)
     {

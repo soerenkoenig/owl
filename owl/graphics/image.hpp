@@ -10,13 +10,24 @@
 #pragma once
 
 #include <vector>
-
+#include "owl/utils/handle.hpp"
+#include "owl/utils/count_iterator.hpp"
+#include "owl/utils/range_algorithm.hpp"
 #include "owl/color/color.hpp"
 
 namespace owl
 {
   namespace graphics
   {
+    struct pixel_tag{};
+    using pixel_handle = owl::utils::handle<pixel_tag>;
+  
+    struct row_tag{};
+    using row_handle = owl::utils::handle<row_tag>;
+  
+    struct column_tag{};
+    using column_handle = owl::utils::handle<column_tag>;
+  
     template <typename Color>
     class image
     {
@@ -29,6 +40,16 @@ namespace owl
       using const_pointer = const Color*;
       using value_type = Color;
       using reference = Color&;
+    
+      template <typename Range>
+      using is_pixel_handle_range =  std::is_same<typename utils::container_traits<std::decay_t<Range>>::value_type, pixel_handle>;
+    
+      template <typename Range>
+      using is_row_handle_range =  std::is_same<typename utils::container_traits<std::decay_t<Range>>::value_type, row_handle>;
+    
+      template <typename Range>
+      using is_column_handle_range =  std::is_same<typename utils::container_traits<std::decay_t<Range>>::value_type, column_handle>;
+    
     
       image() = default;
     
@@ -56,7 +77,7 @@ namespace owl
         return data_.data();
       }
 
-      iterator begin()
+      /*iterator begin()
       {
         return data_.begin();
       }
@@ -84,7 +105,7 @@ namespace owl
       const_iterator end() const
       {
         return data_.end();
-      }
+      }*/
     
       size_type size() const
       {
@@ -101,30 +122,106 @@ namespace owl
         return height_;
       }
     
-      color_type& operator()(size_type x, size_type y)
+      color_type& color(pixel_handle p)
       {
-        return data_[y * width_ + x];
-      }
-
-      const color_type& operator()(size_type x, size_type y) const
-      {
-        return data_[y * width_ + x];
+        return data_[p.index()];
       }
     
-      color_type& operator()(size_type i)
+      const color_type& color(pixel_handle p) const
       {
-        return data_[i];
+        return data_[p.index()];
+      }
+    
+      template <typename PixelHandleRange, typename = std::enable_if_t<is_pixel_handle_range<PixelHandleRange>::value>>
+      auto colors(PixelHandleRange&& pixels) const
+      {
+        return utils::map_range([this](pixel_handle p)->const auto&{ return color(p); },
+          std::forward<PixelHandleRange>(pixels));
       }
 
-      const color_type& operator()(size_type i) const
+      template <typename PixelHandleRange, typename = std::enable_if_t<is_pixel_handle_range<PixelHandleRange>::value>>
+      auto colors(PixelHandleRange&& pixels)
       {
-        return data_[i];
+        return utils::map_range([this](pixel_handle p)->auto&{ return color(p); },
+          std::forward<PixelHandleRange>(pixels));
+      }
+    
+      pixel_handle pixel(size_type col_x, size_type row_y) const
+      {
+        return pixel_handle(row_y * width_ + col_x);
+      }
+    
+      std::pair<column_handle, row_handle> position(pixel_handle p) const
+      {
+        return {column(p), row(p)};
+      }
+    
+      column_handle column(pixel_handle p) const
+      {
+        return column_handle(p.index() % width_);
+      }
+    
+      column_handle column(std::size_t x) const
+      {
+        return x < num_columns() ? column_handle(x) : column_handle::invalid();
+      }
+    
+      row_handle row(pixel_handle p) const
+      {
+        return row_handle(p.index() / width_);
+      }
+    
+      row_handle row(std::size_t y) const
+      {
+        return y < num_rows() ? row_handle(y) : row_handle::invalid();
       }
     
       bool is_inside(size_type x, size_type y) const
       {
         return (x < width_ && y < height_);
       }
+    
+      std::size_t num_pixels() const
+      {
+        return width_ * height_;
+      }
+    
+      auto pixels() const
+      {
+        return utils::make_counting_range(pixel_handle(0), pixel_handle(num_pixels()));
+      }
+    
+      std::size_t num_rows() const
+      {
+        return height_;
+      }
+    
+      std::size_t num_columns() const
+      {
+        return width_;
+      }
+    
+      auto rows() const
+      {
+        return utils::make_counting_range(row_handle(0), row_handle(num_rows()));
+      }
+    
+      auto columns() const
+      {
+        return utils::make_counting_range(column_handle(0), column_handle(num_columns()));
+      }
+    
+      auto pixels(row_handle r) const
+      {
+        return utils::make_counting_range(pixel_handle(r.index() * width_), pixel_handle((r.index() + 1) * width_));
+      }
+    
+      auto pixels(column_handle c) const
+      {
+        return utils::make_handle_iterator_range(pixel_handle(c.index()), pixel_handle(c.index() + num_pixels()),
+          [this](pixel_handle p){ return pixel_handle(p.index() + width_); });
+      }
+  
     
     private:
       size_type width_;
@@ -137,22 +234,28 @@ namespace owl
   
     inline rgb8u_image create_grid(std::size_t n_x, std::size_t n_y, std::size_t spacing = 4)
     {
-      std::size_t w = n_x + (n_x-1)*spacing;
-      std::size_t h = n_y + (n_y-1)*spacing;
+      std::size_t w = n_x + (n_x - 1) * spacing;
+      std::size_t h = n_y + (n_y - 1) * spacing;
       rgb8u_image img(w,h);
-      for(std::size_t y = 0; y < h; ++y)
-        for(std::size_t x = 0; x < w; ++x)
-        {
-          bool on_horz_line = x % (spacing+1) == 0;
-          bool on_vert_line = y % (spacing+1) == 0;
-          img(x,y) = on_horz_line || on_vert_line ? color::rgb8u(50,50,50) : color::rgb8u(255,255,255);
-          bool on_boundary = (x < 2 || y < 2 || x >= w-2 || y >= h-2);
-          bool on_vert_center_line = std::abs((int)(x - (w/2))) < 2;
-          bool on_horz_center_line = std::abs((int)(y - (h/2))) < 2;
-          if(on_vert_center_line || on_horz_center_line || on_boundary)
-            img(x,y) = color::rgb8u(50,50,50);
-        }
-
+  
+      owl::utils::fill(img.colors(img.pixels()), color::rgb8u(255,255,255));
+    
+      for(std::size_t x = 0; x < w; x += spacing+1)
+        utils::fill(img.colors(img.pixels(img.column(x))), color::rgb8u(0,0,0));
+    
+      for(std::size_t y = 0; y < h; y += spacing+1)
+        utils::fill(img.colors(img.pixels(img.row(y))), color::rgb8u(0,0,0));
+    
+      for(std::size_t i = 0; i < 4; ++i)
+      {
+        utils::fill(img.colors(img.pixels(img.column(i))), color::rgb8u(50,50,50));
+        utils::fill(img.colors(img.pixels(img.column(w-1-i))), color::rgb8u(50,50,50));
+        utils::fill(img.colors(img.pixels(img.row(i))), color::rgb8u(50,50,50));
+        utils::fill(img.colors(img.pixels(img.row(h-1-i))), color::rgb8u(50,50,50));
+        utils::fill(img.colors(img.pixels(img.column(w/2 -2+i))), color::rgb8u(50,50,50));
+        utils::fill(img.colors(img.pixels(img.row(h/2-2+i))), color::rgb8u(50,50,50));
+      }
+    
       return img;
     }
   
@@ -161,26 +264,16 @@ namespace owl
     {
       std::size_t w = n_x + (n_x-1)*spacing;
       std::size_t h = n_y + (n_y-1)*spacing;
-      rgb8u_image img(w,h);
-      for(std::size_t y = 0; y < h; ++y)
-        for(std::size_t x = 0; x < w; ++x)
-        {
-          bool on_horz_line = x % (spacing+1) == 0;
-          bool on_vert_line = y % (spacing+1) == 0;
+      rgb8u_image img(w, h);
     
-          bool on_vert_center_line = std::abs((int)(x - (w/2))) < 2;
-          bool on_horz_center_line = std::abs((int)(y - (h/2))) < 2;
-          bool on_boundary = (x < 2 || y < 2 || x >= w-2 || y >= h-2);
-          img(x,y) = on_horz_line || on_vert_line ? color::rgb8u(155,155,155) : color::rgb8u(0,0,0);
-           if(on_boundary)
-            img(x,y) = color::rgb8u(155,155,155);
-          if(on_horz_center_line)
-            img(x,y) = x_color;
-          if(on_vert_center_line)
-            img(x,y) = y_color;
-        
-        }
-
+      owl::utils::fill(img.colors(img.pixels()), color::rgb8u(155,155,155));
+    
+      for(std::size_t x = w/2 -2; x < w/2+3; ++x)
+        owl::utils::fill(img.colors(img.pixels(img.column(x))), y_color);
+    
+      for(std::size_t y = h/2 -3; y < h/2+3; ++y)
+        owl::utils::fill(img.colors(img.pixels(img.row(y))), x_color);
+    
       return img;
     }
   }

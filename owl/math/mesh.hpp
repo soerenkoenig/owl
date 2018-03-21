@@ -169,7 +169,7 @@ namespace owl
         while(target(he) != v_start)
           he = next(he);
       
-        return make_handle_range(he, step, deref);
+        return make_handle_circulator_range(he, step, deref);
       }
 
       auto vertices(face_handle f) const
@@ -194,7 +194,7 @@ namespace owl
     
       auto incoming_halfedges(vertex_handle v) const
       {
-        return make_handle_range(incoming(v),
+        return make_handle_circulator_range(incoming(v),
           [this](halfedge_handle he)
           {
             return next_incoming(he);
@@ -203,7 +203,7 @@ namespace owl
 
       auto outgoing_halfedges(vertex_handle v) const
       {
-        return make_handle_range(outgoing(v),
+        return make_handle_circulator_range(outgoing(v),
           [this](halfedge_handle he)
           {
             return next_outgoing(he);
@@ -222,7 +222,7 @@ namespace owl
           return edge(he);
         };
       
-        return make_handle_range(halfedge(f), step, deref);
+        return make_handle_circulator_range(halfedge(f), step, deref);
       }
     
       auto inner_halfedges(face_handle f) const
@@ -236,7 +236,7 @@ namespace owl
         while(he != he_start)
           he = next(he);
       
-        return make_handle_range(he,
+        return make_handle_circulator_range(he,
           [this](halfedge_handle he)
           {
             return next(he);
@@ -245,7 +245,7 @@ namespace owl
     
       auto halfedges(halfedge_handle he) const
       {
-        return make_handle_range(he,
+        return make_handle_circulator_range(he,
           [this](halfedge_handle he)
           {
             return next(he);
@@ -264,7 +264,7 @@ namespace owl
           return opposite(he);
         };
 
-        return make_handle_range(halfedge(f), step, deref);
+        return make_handle_circulator_range(halfedge(f), step, deref);
       }
 
       const math::vector<Scalar,3>& position(vertex_handle v) const
