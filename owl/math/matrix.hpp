@@ -413,6 +413,26 @@ namespace owl
       return data_[3];
     }
     
+    value_type& front()
+    {
+      return data_.front();
+    }
+    
+    const value_type& front() const
+    {
+      return data_.front();
+    }
+    
+    value_type& back()
+    {
+      return data_.back();
+    }
+    
+    const value_type& back() const
+    {
+      return data_.back();
+    }
+    
     reference operator[](size_type pos)
     {
       return data_[pos];

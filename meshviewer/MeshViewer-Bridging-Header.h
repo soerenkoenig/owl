@@ -1,5 +1,5 @@
-//#include <stdint.h>
-//#include <stdbool.h>
+//#import <stdint.h>
+//#import <stdbool.h>
 
 typedef unsigned long long size_t;
 
@@ -45,9 +45,11 @@ void mesh_edge_halfedge_indices_deinit(void* indices);
 
 void mesh_triangulate(void* mesh);
 
+void mesh_auto_center_and_scale(void* mesh);
+
 void mesh_print_vertex_positions(void * mesh);
 
-bool mesh_load_ply(void* mesh, const char* filename);
+bool mesh_load(void* mesh, const char* filename);
 
 //image
 void* image_init();

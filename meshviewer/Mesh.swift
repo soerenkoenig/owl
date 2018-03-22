@@ -49,7 +49,7 @@ class Mesh: NSObject
      static func load(filename:String) -> Mesh
     {
       let mesh = Mesh();
-      mesh_load_ply(mesh.cpp_mesh_pointer, filename.cCharArray)
+      mesh_load(mesh.cpp_mesh_pointer, filename.cCharArray)
       return mesh;
     }
   
@@ -78,6 +78,11 @@ class Mesh: NSObject
     func triangulate()
     {
       mesh_triangulate(self.cpp_mesh_pointer)
+    }
+  
+    func auto_center_and_scale()
+    {
+      mesh_auto_center_and_scale(self.cpp_mesh_pointer);
     }
     
   

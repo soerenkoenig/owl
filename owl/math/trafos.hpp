@@ -11,6 +11,7 @@
 
 #include "owl/math/matrix.hpp"
 #include "owl/math/angle.hpp"
+#include "owl/math/interval.hpp"
 
 namespace owl
 {
@@ -302,7 +303,61 @@ namespace owl
                0,     0,     0,            1;
       return m;
     }
+
   
+    template <typename Scalar>
+    matrix<Scalar,4,4> auto_center_and_scale(const box<Scalar>& source, const box<Scalar>& dest)
+    {
+      auto svec = comp_div(dest.extents(), source.extents());
+      auto s = *std::min_element(svec.begin(), svec.end());
+      auto cd = dest.center();
+      cd.y() = dest.lower_bound.y();
+      auto cs = source.center();
+      cs.y() = source.lower_bound.y();
+      auto tr = cd/s -  cs;
+      return uniform_scale<Scalar,4>(s)* translate<Scalar>(tr) ;
+    }
   
+    template <typename Scalar, std::size_t N>
+    vector<Scalar, N+1> homog_point(const vector<Scalar, N>& pos)
+    {
+      vector<Scalar, N+1> v;
+      v << pos, 1;
+      return v;
+    }
+  
+    template <typename Scalar, std::size_t N>
+    vector<Scalar, N+1> homog_normal(const vector<Scalar, N>& nml)
+    {
+      vector<Scalar, N+1> v;
+      v << nml, 0;
+      return v;
+    }
+  
+    template <typename Scalar, std::size_t N>
+    inline vector<Scalar, N-1> unhomog_point(const vector<Scalar, N>& pos)
+    {
+      vector<Scalar, N-1> v;
+      auto pit = pos.begin();
+      auto vit = v.begin();
+      auto vend = v.end();
+      auto& w = pos.back();
+      while(vit != vend)
+        *vit++ = *pit++ / w;
+      return v;
+    }
+  
+    template <typename Scalar, std::size_t N>
+    inline vector<Scalar, N-1> unhomog_normal(const vector<Scalar, N>& nml)
+    {
+      vector<Scalar, N-1> v;
+      auto nit = nml.begin();
+      auto vit = v.begin();
+      auto vend = v.end();
+      while(vit != vend)
+        *vit++ = *nit++;
+      return v;
+    }
+
   }
 }

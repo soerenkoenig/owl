@@ -4,6 +4,7 @@
 #include "owl/math/mesh_triangulation.hpp"
 #include "owl/math/mesh_primitives.hpp"
 #include "owl/math/mesh_io.hpp"
+#include "owl/math/trafos.hpp"
 
 extern "C" void* mesh_init()
 {
@@ -197,13 +198,23 @@ extern "C" void mesh_triangulate(void* mesh)
   triangulate_monoton(*m);
 }
 
-
-extern "C" bool mesh_load_ply(void* mesh, const char* filename)
+extern "C" void mesh_auto_center_and_scale(void* mesh)
 {
-   owl::math::mesh<float>* m = (owl::math::mesh<float>*)mesh;
-   bool success =  owl::math::read_ply(*m,filename);
-  std::cout << m->bounds()<<std::endl;
-   return success;
+  float s = 10;
+  owl::math::mesh<float>* m = (owl::math::mesh<float>*)mesh;
+  std::cout <<" bounds: before" << m->bounds() << std::endl;
+  auto acs = owl::math::auto_center_and_scale(m->bounds(),
+    owl::math::box<float>(s * owl::math::vector3f(-0.5, 0, -0.5), s*owl::math::vector3f(0.5,1,0.5)));
+  transform(*m, acs);
+  std::cout << "bounds: after:"<< m->bounds() << std::endl;
+}
+
+
+extern "C" bool mesh_load(void* mesh, const char* filename)
+{
+  owl::math::mesh<float>* m = (owl::math::mesh<float>*)mesh;
+  bool success =  owl::math::read(*m,filename);
+  return success;
 }
 
 

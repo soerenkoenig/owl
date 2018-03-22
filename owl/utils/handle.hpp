@@ -51,6 +51,18 @@ namespace owl
         index_ = invalid_index();
       }
     
+      handle& operator+=(const difference_type& n)
+      {
+        index_ += n;
+        return *this;
+      }
+    
+      handle& operator-=(const difference_type& n)
+      {
+        index_ += n;
+        return *this;
+      }
+    
       handle& operator++()
       {
         ++index_;
@@ -87,17 +99,6 @@ namespace owl
         return handle{index_ + other};
       }
     
-      handle& operator+=(const difference_type& n)
-      {
-        index_ += n;
-        return *this;
-      }
-    
-      handle& operator-=(const handle& h)
-      {
-        index_ -= h.index_;
-        return *this;
-      }
     
       bool operator==(const handle& other) const
       {
@@ -166,7 +167,7 @@ namespace owl
       template <typename T>
       T operator()(T&& val) const
       {
-        return std::forward<T>(val)++;
+        return ++std::forward<T>(val);
       }
     };
   

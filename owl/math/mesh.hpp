@@ -394,14 +394,14 @@ namespace owl
       template <typename FaceHandleRange, typename = std::enable_if_t<is_face_handle_range<FaceHandleRange>::value>>
       auto normals(FaceHandleRange&& faces) const
       {
-        return utils::map_range([this](face_handle f)-> auto&{ return normal(f);},
+        return utils::map_range([this](face_handle f)->const auto&{ return normal(f);},
           std::forward<FaceHandleRange>(faces));
       }
 
       template <typename FaceHandleRange, typename = std::enable_if_t<is_face_handle_range<FaceHandleRange>::value>>
       auto normals(FaceHandleRange&& faces)
       {
-        return utils::map_range([this](face_handle f)->const auto&{ return normal(f);},
+        return utils::map_range([this](face_handle f)->auto&{ return normal(f);},
           std::forward<FaceHandleRange>(faces));
       }
 
@@ -1654,6 +1654,38 @@ namespace owl
      return count_error;
    }
   
+  
+  
+  
+   template<typename Scalar>
+   void transform(mesh<Scalar>& mesh, const matrix<Scalar,4,4>& point_trafo,
+     const matrix<Scalar,4,4>& normal_trafo, bool auto_normalize = true)
+   {
+      for(auto& pos : mesh.positions(mesh.vertices()))
+        pos = unhomog_point(point_trafo * homog_point(pos));
+   
+      for(auto& nml : mesh.normals(mesh.halfedges()))
+        nml = unhomog_normal(normal_trafo * homog_normal(nml));
+   
+      for(auto& nml : mesh.normals(mesh.faces()))
+        nml = unhomog_normal(normal_trafo * homog_normal(nml));
+   
+      if(auto_normalize)
+      {
+        for(auto& nml : mesh.normals(mesh.halfedges()))
+          nml.normalize();
+   
+        for(auto& nml : mesh.normals(mesh.faces()))
+          nml.normalize();
+      }
+   }
+  
+   template<typename Scalar>
+   void transform(mesh<Scalar>& mesh, const matrix<Scalar,4,4>& point_trafo,
+     bool auto_normalize = true)
+   {
+     transform(mesh, point_trafo, transpose(invert(point_trafo)), auto_normalize);
+   }
   
     template <typename Scalar>
     void print_vertex_positions(const mesh<Scalar>& m)

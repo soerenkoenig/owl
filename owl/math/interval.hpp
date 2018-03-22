@@ -192,6 +192,10 @@ namespace owl
         return inside(other.lower_bound) && inside(other.upper_bound);
       }
     
+      auto center() const
+      {
+        return (lower_bound + upper_bound) / 2;
+      }
       
       
       //ensures p is inside the interval

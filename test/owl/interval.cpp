@@ -6,6 +6,7 @@ namespace test
 {
   
   
+  
   TEST_CASE( "interval", "[math]" )
   {
     using namespace owl::math;
@@ -14,6 +15,7 @@ namespace test
     b.insert(vector3f(-1,-1,-1));
     b.insert(vector3f(1,1,1));
     CHECK(b.inside(vector3f(0,0,0)));
+    
     
     interval<float> range;
    

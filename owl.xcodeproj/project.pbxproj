@@ -19,7 +19,7 @@
 		28175DBA1F95BD14004ECB87 /* stop_watch.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 28175DB81F95BD14004ECB87 /* stop_watch.hpp */; };
 		28175DBC1F95BEF0004ECB87 /* stop_watch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28175DBB1F95BEF0004ECB87 /* stop_watch.cpp */; };
 		28431BBD205FCC14006AE1E2 /* libboost_filesystem-mt.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 280418F51FDC4ACF004EA43B /* libboost_filesystem-mt.dylib */; };
-		28431BBE205FCC41006AE1E2 /* libboost_system-mt.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 280418F81FDC4B4B004EA43B /* libboost_system-mt.dylib */; };
+		28431BBE205FCC41006AE1E2 /* libboost_system-mt.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 280418F81FDC4B4B004EA43B /* libboost_system-mt.dylib */; settings = {ATTRIBUTES = (Required, ); }; };
 		28431BC0205FCCD6006AE1E2 /* ply.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28431BBF205FCCD6006AE1E2 /* ply.cpp */; };
 		28431BC1205FCDC4006AE1E2 /* libboost_filesystem-mt.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 280418F51FDC4ACF004EA43B /* libboost_filesystem-mt.dylib */; };
 		28431BC2205FCDD7006AE1E2 /* libboost_system-mt.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 280418F81FDC4B4B004EA43B /* libboost_system-mt.dylib */; };
@@ -38,6 +38,7 @@
 		286FE414203AC81F006BF193 /* mesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 286FE413203AC81F006BF193 /* mesh.cpp */; };
 		287090AA1FC8BDF600356338 /* matrix.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 287090A91FC8BDF600356338 /* matrix.cpp */; };
 		2873F7ED2051388B003BE1D7 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2873F7EC2051388B003BE1D7 /* ViewController.swift */; };
+		287445D32063E6380061328D /* libowl.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2883C2411F91BA7F007DDB3C /* libowl.dylib */; };
 		28757C801FCF5A45001720F1 /* plane.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28757C7F1FCF5A44001720F1 /* plane.cpp */; };
 		2883C2561F91BAFA007DDB3C /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2883C2551F91BAFA007DDB3C /* main.cpp */; };
 		2883C25B1F91BB33007DDB3C /* libowl.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2883C2411F91BA7F007DDB3C /* libowl.dylib */; };
@@ -51,7 +52,6 @@
 		2896D094203613BA00E9241D /* physical_properties.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2896D093203613BA00E9241D /* physical_properties.cpp */; };
 		289CAEE9205133960016894A /* Mesh.swift in Sources */ = {isa = PBXBuildFile; fileRef = 289CAEE8205133960016894A /* Mesh.swift */; };
 		289CAEEB205135F40016894A /* SceneKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 289CAEEA205135F40016894A /* SceneKit.framework */; };
-		289CAEEC205135F90016894A /* libowl.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2883C2411F91BA7F007DDB3C /* libowl.dylib */; };
 		28A19C452046B6CA00D012F9 /* raytracer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28A19C442046B6CA00D012F9 /* raytracer.cpp */; };
 		28A19CAD205131C400D012F9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28A19CAC205131C400D012F9 /* AppDelegate.swift */; };
 		28A19CB1205131C400D012F9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 28A19CB0205131C400D012F9 /* Assets.xcassets */; };
@@ -305,9 +305,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				287445D32063E6380061328D /* libowl.dylib in Frameworks */,
 				28431BBE205FCC41006AE1E2 /* libboost_system-mt.dylib in Frameworks */,
 				28431BBD205FCC14006AE1E2 /* libboost_filesystem-mt.dylib in Frameworks */,
-				289CAEEC205135F90016894A /* libowl.dylib in Frameworks */,
 				289CAEEB205135F40016894A /* SceneKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -490,9 +490,9 @@
 		2883C25A1F91BB33007DDB3C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				289CAEEA205135F40016894A /* SceneKit.framework */,
-				280418F81FDC4B4B004EA43B /* libboost_system-mt.dylib */,
 				280418F51FDC4ACF004EA43B /* libboost_filesystem-mt.dylib */,
+				280418F81FDC4B4B004EA43B /* libboost_system-mt.dylib */,
+				289CAEEA205135F40016894A /* SceneKit.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -943,6 +943,7 @@
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
+				SWIFT_VERSION = 4.0;
 				USER_HEADER_SEARCH_PATHS = "\"$(SRCROOT)/\" \"$(SRCROOT)/thirdparty\"";
 			};
 			name = Debug;
@@ -995,6 +996,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = macosx;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_VERSION = 4.0;
 				USER_HEADER_SEARCH_PATHS = "\"$(SRCROOT)/\" \"$(SRCROOT)/thirdparty\"";
 			};
 			name = Release;
@@ -1093,18 +1095,18 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = AS2VL7PB8X;
 				GCC_C_LANGUAGE_STANDARD = c11;
+				HEADER_SEARCH_PATHS = /opt/local/include/;
 				INFOPLIST_FILE = MeshViewer/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					/opt/local/lib,
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = b.MeshViewer;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OBJC_BRIDGING_HEADER = "MeshViewer/MeshViewer-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.0;
+				SYSTEM_HEADER_SEARCH_PATHS = "";
+				USER_HEADER_SEARCH_PATHS = "\"$(SRCROOT)/\" \"$(SRCROOT)/thirdparty\"";
 			};
 			name = Debug;
 		};
@@ -1120,17 +1122,17 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = AS2VL7PB8X;
 				GCC_C_LANGUAGE_STANDARD = c11;
+				HEADER_SEARCH_PATHS = /opt/local/include/;
 				INFOPLIST_FILE = MeshViewer/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					/opt/local/lib,
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = b.MeshViewer;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "MeshViewer/MeshViewer-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				SWIFT_VERSION = 4.0;
+				SYSTEM_HEADER_SEARCH_PATHS = "";
+				USER_HEADER_SEARCH_PATHS = "\"$(SRCROOT)/\" \"$(SRCROOT)/thirdparty\"";
 			};
 			name = Release;
 		};

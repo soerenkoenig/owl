@@ -15,6 +15,7 @@
 #include "owl/utils/map_iterator.hpp"
 #include "owl/utils/range_algorithm.hpp"
 #include "owl/color/color.hpp"
+#include "owl/math/interval.hpp"
 
 namespace owl
 {
@@ -152,6 +153,11 @@ namespace owl
         return pixel_handle(row_y * width_ + col_x);
       }
     
+      pixel_handle pixel(const math::vector<size_type,2>& pos) const
+      {
+        return pixel_handle(pos.y() * width_ + pos.x());
+      }
+    
       std::pair<column_handle, row_handle> position(pixel_handle p) const
       {
         return {column(p), row(p)};
@@ -222,8 +228,38 @@ namespace owl
         return utils::make_handle_iterator_range(pixel_handle(c.index()), pixel_handle(c.index() + num_pixels()),
           [this](pixel_handle p){ return pixel_handle(p.index() + width_); });
       }
-  
     
+      math::rectangle<std::size_t> region(std::size_t x, std::size_t y, std::size_t w, std::size_t h)
+      {
+        return math::rectangle<std::size_t>(math::vector<std::size_t,2>(x,y), math::vector<std::size_t,2>(x+w,y+h));
+      }
+    
+
+    
+  
+      auto pixels(const math::rectangle<std::size_t>& region) const
+      {
+        struct region_stepper
+        {
+          pixel_handle operator()(pixel_handle p)
+          {
+            if(p == x_end_)
+            {
+              x_end_ += large_step_;
+              return x_begin_ += large_step_;
+            }
+            return ++p;
+          }
+          pixel_handle x_begin_;
+          pixel_handle x_end_;
+          pixel_handle::difference_type large_step_;
+        };
+      
+        pixel_handle first = pixel(region.lower_bound);
+        return utils::make_handle_iterator_range(first,pixel(region.lower_bound.x(), region.upper_bound.y() + 1),
+          region_stepper{first, pixel(region.upper_bound.x(), region.lower_bound.y()), width_});
+      }
+  
     private:
       size_type width_;
       size_type height_;
@@ -256,6 +292,8 @@ namespace owl
         utils::fill(img.colors(img.pixels(img.column(w/2 -2+i))), color::rgb8u(50,50,50));
         utils::fill(img.colors(img.pixels(img.row(h/2-2+i))), color::rgb8u(50,50,50));
       }
+    
+     // utils::fill(img.colors(img.pixels(img.region(10,10,30,30))), color::rgb8u(50,50,50));
     
       return img;
     }

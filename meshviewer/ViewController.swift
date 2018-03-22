@@ -78,22 +78,24 @@ class ViewController: NSViewController{
     // self.mesh = Mesh.create_torus(radius1:1, radius2:2)
     
   //  self.mesh = Mesh.load(filename:"/Users/skoenig/Downloads/Armadillo.ply")
-    // self.mesh = Mesh.load(filename:"/Users/skoenig/Downloads/bun_zipper.ply")
-     // self.mesh = Mesh.load(filename:"/Users/skoenig/Downloads/xyzrgb_dragon.ply")
-       self.mesh = Mesh.load(filename:"/Users/skoenig/Downloads/cow.ply")
-      print("Mesh statistics: # faces =\(self.mesh!.faceCount), # vertices =\(self.mesh!.vertexCount)")
+  //  self.mesh = Mesh.load(filename:"/Users/skoenig/Downloads/bun_zipper.ply")
+      self.mesh = Mesh.load(filename:"/Users/skoenig/Downloads/xyzrgb_dragon.ply")
+    //   self.mesh = Mesh.load(filename:"/Users/skoenig/Downloads/horse.off")
+      print("Mesh statistics: # faces = \(self.mesh!.faceCount), # vertices = \(self.mesh!.vertexCount)")
+      self.mesh!.auto_center_and_scale()
     // self.mesh = Mesh.create_tetrahedron()
     // self.mesh = Mesh.create_box()
     self.mesh?.triangulate()
  
     let meshGeom = mesh?.triangleGeometry()
     self.meshNode = SCNNode(geometry: meshGeom)
-    self.meshNode!.position = SCNVector3(0,(self.meshNode!.boundingBox.max.y - self.meshNode!.boundingBox.min.y) / 2 ,0)
+   // self.meshNode!.position = SCNVector3(0,(self.meshNode!.boundingBox.max.y - self.meshNode!.boundingBox.min.y) / 2 ,0)
     scene.rootNode.addChildNode(meshNode!)
     
     sceneView.scene = scene
     sceneView.autoenablesDefaultLighting = true
     sceneView.allowsCameraControl = true
+    sceneView.cameraControlConfiguration.allowsTranslation = true
     sceneView.backgroundColor = #colorLiteral(red: 0.05882352963, green: 0.180392161, blue: 0.2470588237, alpha: 1)
   }
 

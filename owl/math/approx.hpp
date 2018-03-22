@@ -163,7 +163,6 @@ namespace owl
     }
   
   
-  
     template <typename T>
     std::ostream& operator<<(std::ostream& out, const approximately<T>& a)
     {
