@@ -63,8 +63,6 @@ namespace owl
       std::fill(std::begin(rng), std::end(rng), value);
     }
   
-  
-  
     template<typename Range, typename Pred>
     inline auto all_of(const Range& rng, Pred&& cond)
     {
@@ -82,6 +80,5 @@ namespace owl
     {
       return std::count_if(std::begin(rng), std::end(rng),std::forward<Pred>(cond));
     }
-  
   }
 }
