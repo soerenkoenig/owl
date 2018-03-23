@@ -18,6 +18,35 @@ namespace owl
   {
     namespace detail
     {
+    
+    
+      template <typename T>
+      struct dimension_t
+      {
+        static constexpr std::size_t value = 1;
+      };
+    
+      template <typename Scalar, std::size_t Dimension>
+      struct dimension_t<vector<Scalar,Dimension>>
+      {
+        static constexpr std::size_t value = Dimension;
+      };
+    
+    
+    
+      template <typename T>
+      struct scalar_t
+      {
+        using type = T;
+      };
+    
+      template <typename Scalar, std::size_t Dimension>
+      struct scalar_t<vector<Scalar,Dimension>>
+      {
+        using type = Scalar;
+      };
+    
+    
       
       template <typename Scalar, std::size_t Dimension>
       struct interval_helper
@@ -53,18 +82,12 @@ namespace owl
         
         static bound_type minimum(const bound_type& a, const bound_type& b)
         {
-          bound_type bmin;
-          for(std::size_t i = 0; i < Dimension; ++i)
-            bmin(i) = interval_helper<Scalar,1>::minimum(a(i), b(i));
-          return bmin;
+          return comp_min(a,b);
         }
         
         static bound_type maximum(const bound_type& a, const bound_type& b)
         {
-          bound_type bmax;
-          for(std::size_t i = 0; i < Dimension; ++i)
-            bmax(i) = interval_helper<Scalar,1>::maximum(a(i), b(i));
-          return bmax;
+         return comp_max(a,b);
         }
         
         template<bool LowerBoundOpen, bool UpperBoundOpen>
@@ -74,6 +97,15 @@ namespace owl
               if(!interval_helper<Scalar,1>::template inside<LowerBoundOpen, UpperBoundOpen>(lo(i), hi(i), p(i)))
                 return false;
           return true;
+        }
+      
+        template<bool LowerBoundOpen, bool UpperBoundOpen>
+        static bool empty(const bound_type& lo, const bound_type& hi)
+        {
+           for(std::size_t i = 0; i < Dimension; ++i)
+              if(interval_helper<Scalar,1>::template empty<LowerBoundOpen, UpperBoundOpen>(lo(i), hi(i)))
+                return true;
+          return false;
         }
       };
       
@@ -134,6 +166,7 @@ namespace owl
           }
           return true;
         }
+      
         
         static bound_type minimum(const bound_type& a, const bound_type& b)
         {
@@ -144,7 +177,15 @@ namespace owl
         {
           return std::max(a, b);
         }
-        
+     
+        template<bool LowerBoundOpen, bool UpperBoundOpen>
+        static bool empty(const bound_type& lo, const bound_type& hi)
+        {
+          if constexpr(UpperBoundOpen || LowerBoundOpen)
+           return lo >= hi;
+          else
+            return lo > hi;
+        }
       };
       
     }
@@ -179,7 +220,7 @@ namespace owl
       
       bool overlaps(const interval& other) const
       {
-        return is_inside(other.lower_bound) || is_inside(other.upper_bound);
+         return !intersect(other).empty();
       }
       
       bool inside(const bound_type& p) const
@@ -192,12 +233,17 @@ namespace owl
         return inside(other.lower_bound) && inside(other.upper_bound);
       }
     
+      interval intersect(interval& other) const
+      {
+        return { helper_type_::maximum(lower_bound, other.lower_bound),
+         helper_type_::minimum(upper_bound, other.upper_bound)};
+      }
+    
       auto center() const
       {
         return (lower_bound + upper_bound) / 2;
       }
-      
-      
+    
       //ensures p is inside the interval
       void insert(const bound_type& p)
       {
@@ -210,6 +256,11 @@ namespace owl
           upper_bound = helper_type_::maximum(upper_bound, helper_type_::next(p));
         else
           upper_bound = helper_type_::maximum(upper_bound, p);
+      }
+    
+      bool empty() const
+      {
+        return helper_type_::template empty<LowerBoundOpen,UpperBoundOpen>(lower_bound, upper_bound);
       }
     
       auto extents() const
@@ -295,7 +346,19 @@ namespace owl
       };
     };
   
-   template <typename Scalar, bool LowerBoundOpen, bool UpperBoundOpen>
+    template <typename ValueRange, bool LowerBoundOpen = false, bool UpperBoundOpen = true>
+    auto bounds(ValueRange&& values)
+    {
+      using Value = std::decay_t<decltype(*std::begin(values))>;
+      using Scalar = typename detail::scalar_t<Value>::type;
+      interval<Scalar, detail::dimension_t<Value>::value, LowerBoundOpen, UpperBoundOpen> b;
+      for(const auto& v : values)
+        b.insert(v);
+  
+      return b;
+    }
+  
+    template <typename Scalar, bool LowerBoundOpen, bool UpperBoundOpen>
     std::ostream& operator<<(std::ostream& out, const interval<Scalar, 1, LowerBoundOpen, UpperBoundOpen>& inter)
     {
       return out << (LowerBoundOpen ? "( ":"[ ") <<inter.lower_bound << ", "<<inter.upper_bound<< (UpperBoundOpen ? ")":"]");

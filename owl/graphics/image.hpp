@@ -16,6 +16,7 @@
 #include "owl/utils/range_algorithm.hpp"
 #include "owl/color/color.hpp"
 #include "owl/math/interval.hpp"
+#include "owl/math/triangle.hpp"
 
 namespace owl
 {
@@ -79,7 +80,7 @@ namespace owl
         return data_.data();
       }
 
-      /*iterator begin()
+      iterator begin()
       {
         return data_.begin();
       }
@@ -107,7 +108,7 @@ namespace owl
       const_iterator end() const
       {
         return data_.end();
-      }*/
+      }
     
       size_type size() const
       {
@@ -234,9 +235,8 @@ namespace owl
         return math::rectangle<std::size_t>(math::vector<std::size_t,2>(x,y), math::vector<std::size_t,2>(x+w,y+h));
       }
     
-
     
-  
+
       auto pixels(const math::rectangle<std::size_t>& region) const
       {
         struct region_stepper
@@ -255,9 +255,16 @@ namespace owl
           pixel_handle::difference_type large_step_;
         };
       
+      
         pixel_handle first = pixel(region.lower_bound);
         return utils::make_handle_iterator_range(first,pixel(region.lower_bound.x(), region.upper_bound.y() + 1),
           region_stepper{first, pixel(region.upper_bound.x(), region.lower_bound.y()), width_});
+      }
+    
+      template<typename Scalar>
+      auto pixels(const math::triangle<Scalar,2>& triangle) const
+      {
+      
       }
   
     private:
@@ -315,6 +322,8 @@ namespace owl
     
       return img;
     }
+  
+    
   }
 }
 

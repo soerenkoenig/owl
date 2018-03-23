@@ -234,6 +234,9 @@
 		28BB75691FB0F6CC009A6290 /* signal.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = signal.cpp; sourceTree = "<group>"; };
 		28BB756B1FB3D030009A6290 /* signal.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = signal.cpp; sourceTree = "<group>"; };
 		28BB756D1FB6391C009A6290 /* approx.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = approx.hpp; sourceTree = "<group>"; };
+		28C06A422064F92E00239E24 /* rasterization.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = rasterization.hpp; sourceTree = "<group>"; };
+		28C06A432064FAF900239E24 /* triangle.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = triangle.hpp; sourceTree = "<group>"; };
+		28C06A442065068700239E24 /* image_io.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = image_io.hpp; sourceTree = "<group>"; };
 		28C66FA51FC1BA5600F9C0D1 /* handle.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = handle.hpp; sourceTree = "<group>"; };
 		28C66FA61FC1BF1D00F9C0D1 /* handle.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = handle.cpp; sourceTree = "<group>"; };
 		28C66FA81FC48B2200F9C0D1 /* optional.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = optional.hpp; sourceTree = "<group>"; };
@@ -320,6 +323,8 @@
 			children = (
 				2816E6A11FA12F8600CCE00A /* image_temp.hpp */,
 				288407B61FFAC7BB0022A590 /* image.hpp */,
+				28C06A422064F92E00239E24 /* rasterization.hpp */,
+				28C06A442065068700239E24 /* image_io.hpp */,
 			);
 			path = graphics;
 			sourceTree = "<group>";
@@ -583,6 +588,7 @@
 				28CE67D1206192D200232EA0 /* mesh_triangulation.hpp */,
 				28CE67D22061937E00232EA0 /* mesh_primitives.hpp */,
 				28CE67D42061950800232EA0 /* mesh_io.hpp */,
+				28C06A432064FAF900239E24 /* triangle.hpp */,
 			);
 			path = math;
 			sourceTree = "<group>";

@@ -968,10 +968,7 @@ namespace owl
     
       math::box<Scalar> bounds() const
       {
-        box<Scalar> bbox;
-        for(auto p : positions(vertices()))
-          bbox.insert(p);
-        return bbox;
+        return math::bounds(positions(vertices()));
       }
     
       bool is_open() const
@@ -1260,6 +1257,38 @@ namespace owl
       {
         mesh_properties_.remove_property(ph);
       }
+    
+    
+      template <typename T>
+      bool has_vertex_property(const std::string& name = "") const
+      {
+        return vertex_properties_.has_property<T>(name);
+      }
+    
+      template <typename T>
+      bool has_edge_property(const std::string& name = "") const
+      {
+        return edge_properties_.has_property(name);
+      }
+    
+      template <typename T>
+      bool has_halfedge_property(const std::string& name = "") const
+      {
+        return halfedge_properties_.has_property(name);
+      }
+    
+      template <typename T>
+      bool has_face_property(const std::string& name = "") const
+      {
+        return face_properties_.has_property(name);
+      }
+    
+      template <typename T>
+      void has_mesh_property(const std::string& name = "") const
+      {
+         return mesh_properties_.get_property(name);
+      }
+    
     
       const face_handle& face(halfedge_handle he) const
       {

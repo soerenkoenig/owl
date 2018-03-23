@@ -94,7 +94,7 @@ namespace owl
       }
     
       template <typename T>
-      property_handle<T>& add_property(property_handle<T>& p, const std::string& name = "")
+      void add_property(property_handle<T>& p, const std::string& name = "")
       {
         auto it = owl::utils::find(properties_, nullptr);
         if(it == properties_.end())
@@ -107,7 +107,24 @@ namespace owl
           p = property_handle<T>{std::distance(properties_.begin(), it)};
           *it = std::make_unique<property<T>>(name);
         }
-        return p;
+      }
+    
+      template <typename T>
+      property_handle<T> get_property(const std::string& name = "") const
+      {
+        auto it = owl::utils::find_if(properties_, [&name](auto& p)
+          {
+            return p && p->name == name && dynamic_cast<property<T>>(p.get());
+          });
+        if(it == properties_.end())
+          return property_handle<T>::invalid();
+        return { std::distance(properties_.begin(), it) };
+      }
+    
+      template <typename T>
+      bool has_property(const std::string& name = "") const
+      {
+        return get_property<T>(name).is_valid();
       }
     
       template <typename T>
@@ -243,6 +260,24 @@ namespace owl
         if(std::all_of(it, properties_.end(), [](auto& prop){ return prop == nullptr;}))
           properties_.erase(it, properties_.end());
         p.invalidate();
+      }
+    
+      template <typename T>
+      indexed_property_handle<T,Tag> get_property(const std::string& name = "") const
+      {
+        auto it = owl::utils::find_if(properties_, [&name](auto& p)
+          {
+            return p && p->name == name && dynamic_cast<indexed_property<T>>(p.get());
+          });
+        if(it == properties_.end())
+          return indexed_property_handle<T,Tag>::invalid();
+        return { std::distance(properties_.begin(), it) };
+      }
+    
+      template <typename T>
+      bool has_property(const std::string& name = "") const
+      {
+        return get_property<T>(name).is_valid();
       }
     
       template <typename T>
