@@ -1683,8 +1683,18 @@ namespace owl
      return count_error;
    }
   
+   template<typename Scalar>
+   bool is_closed(mesh<Scalar>& mesh)
+   {
+     return owl::utils::none_of(mesh.halfedges(),
+       [&mesh](auto he){ return mesh.is_boundary(he); });
+   }
   
-  
+   template<typename Scalar>
+   bool is_open(mesh<Scalar>& mesh)
+   {
+     return !is_closed(mesh);
+   }
   
    template<typename Scalar>
    void transform(mesh<Scalar>& mesh, const matrix<Scalar,4,4>& point_trafo,
