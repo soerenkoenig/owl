@@ -25,9 +25,6 @@ namespace test
         [&](){ return 2 * radius; }
        );
      }
-  
-  
-  
   };
 
   TEST_CASE( "property", "[utils]" )

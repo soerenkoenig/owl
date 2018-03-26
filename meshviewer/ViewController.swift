@@ -4,8 +4,8 @@ import SceneKit
 class ViewController: NSViewController{
 
   @IBOutlet weak var wireframeButton: NSButton!
-  
-  @IBOutlet weak var showGridButton: NSButton!
+
+  @IBOutlet weak var statusText: NSTextField!
   
   @IBOutlet weak var sceneView: SCNView!
   
@@ -17,6 +17,23 @@ class ViewController: NSViewController{
     super.viewDidLoad()
     sceneSetup()
     resetCamera()
+  }
+  
+  @IBAction func openDocument(_ sender: NSMenuItem) {
+   let openPanel = NSOpenPanel()
+    openPanel.allowsMultipleSelection = false
+    openPanel.canChooseDirectories = false
+    openPanel.canCreateDirectories = false
+    openPanel.canChooseFiles = true
+    openPanel.allowedFileTypes = ["off","ply"]
+    let i = openPanel.runModal()
+    if(i == NSApplication.ModalResponse.OK)
+    {
+      print(openPanel.url!)
+     
+      loadMesh(url:openPanel.url!.path)
+      NSDocumentController.shared.noteNewRecentDocumentURL(openPanel.url!)
+    }
   }
  
   @IBAction func showGridButtonPressed(_ sender: NSButton) {
@@ -55,6 +72,35 @@ class ViewController: NSViewController{
     }
   }
   
+  func loadMesh(url: String){
+    statusText.stringValue = "Status: Loading mesh \(url)"
+    let indicator: NSProgressIndicator = NSProgressIndicator(frame: NSRect(x: 10, y: 10, width: 400, height: 400));
+    //indicator.autoresizingMask =  NSViewHeightSizable | NSViewWidthSizable
+    indicator.usesThreadedAnimation = true
+    self.view.addSubview(indicator)
+    indicator.isBezeled = true
+    indicator.style = .spinning
+    indicator.controlTint = .clearControlTint
+    indicator.startAnimation(self)
+    
+   
+   DispatchQueue.global(qos: .background).async {
+      self.mesh = Mesh.load(filename:url)
+      self.mesh!.auto_center_and_scale()
+      self.mesh?.triangulate()
+    
+    
+      DispatchQueue.main.async{
+          self.meshNode?.geometry = self.mesh?.triangleGeometry()
+          print("Mesh statistics: # faces = \(self.mesh!.faceCount), # vertices = \(self.mesh!.vertexCount)")
+          indicator.stopAnimation(self)
+          indicator.removeFromSuperview()
+          self.statusText.stringValue = "Status: idle"
+      }
+    }
+    
+  }
+  
   func resetCamera() {
     sceneView.pointOfView?.position = SCNVector3Make(0, 15, 15)
     sceneView.pointOfView?.look(at:SCNVector3(0,0,0), up: SCNVector3(0,1,0), localFront: SCNVector3(0,0,-1))
@@ -73,25 +119,16 @@ class ViewController: NSViewController{
     cameraNode.look(at:SCNVector3(0,0,0), up: SCNVector3(0,1,0), localFront: SCNVector3(0,0,-1))
     scene.rootNode.addChildNode(cameraNode)
   
-   // self.mesh = Mesh.create_geo_sphere(radius: 4, numLevels: 5)
-    
+    // self.mesh = Mesh.create_geo_sphere(radius: 4, numLevels: 5)
     // self.mesh = Mesh.create_torus(radius1:1, radius2:2)
-    
-  //  self.mesh = Mesh.load(filename:"/Users/skoenig/Downloads/Armadillo.ply")
-  //  self.mesh = Mesh.load(filename:"/Users/skoenig/Downloads/bun_zipper.ply")
-      self.mesh = Mesh.load(filename:"/Users/skoenig/Downloads/xyzrgb_dragon.ply")
-    //   self.mesh = Mesh.load(filename:"/Users/skoenig/Downloads/horse.off")
-      print("Mesh statistics: # faces = \(self.mesh!.faceCount), # vertices = \(self.mesh!.vertexCount)")
-      self.mesh!.auto_center_and_scale()
     // self.mesh = Mesh.create_tetrahedron()
     // self.mesh = Mesh.create_box()
-    self.mesh?.triangulate()
+    // self.mesh?.triangulate()
  
-    let meshGeom = mesh?.triangleGeometry()
-    self.meshNode = SCNNode(geometry: meshGeom)
-   // self.meshNode!.position = SCNVector3(0,(self.meshNode!.boundingBox.max.y - self.meshNode!.boundingBox.min.y) / 2 ,0)
+   // let meshGeom = mesh?.triangleGeometry()
+    self.meshNode = SCNNode()
     scene.rootNode.addChildNode(meshNode!)
-    
+    loadMesh(url:"/Users/skoenig/Downloads/horse.off")
     sceneView.scene = scene
     sceneView.autoenablesDefaultLighting = true
     sceneView.allowsCameraControl = true

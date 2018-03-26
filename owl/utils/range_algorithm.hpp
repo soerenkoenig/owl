@@ -75,6 +75,12 @@ namespace owl
       return std::none_of(std::begin(rng), std::end(rng),std::forward<Pred>(cond));
     }
   
+     template<typename Range, typename Pred>
+    inline auto any_of(const Range& rng, Pred&& cond)
+    {
+      return std::any_of(std::begin(rng), std::end(rng),std::forward<Pred>(cond));
+    }
+  
     template<typename Range, typename Pred>
     inline auto count_if(const Range& rng, Pred&& cond)
     {

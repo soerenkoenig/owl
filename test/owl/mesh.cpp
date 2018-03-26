@@ -10,6 +10,7 @@ namespace test
 {
 
 
+
 TEST_CASE( "add_face_s", "[math]" )
   {
     using namespace owl::math;
@@ -22,13 +23,13 @@ TEST_CASE( "add_face_s", "[math]" )
     auto f3 = m.add_face(verts[5], verts[0], verts[4]);
   
     auto f4 = m.add_face(verts[2], verts[3], verts[0]);
-    CHECK(check_mesh(m) == 0);
+    CHECK(m.check_mesh() == 0);
  /*  for(auto he : m.halfedges())
     {
       std::cout << "he: "<<he << ": target(he) = " << m.target(he) <<", origin(he) = "<<m.origin(he) << ", next(he) = "<<((const mesh<float>&)m).next(he)<<std::endl;
     }*/
   }
-
+/*
   TEST_CASE( "add_face3", "[math]" )
   {
     using namespace owl::math;
@@ -43,14 +44,20 @@ TEST_CASE( "add_face_s", "[math]" )
     mesh<float> m;
     owl::math::read_off(m, "/Users/skoenig/Downloads/178_raptor.off");
     //CHECK(check_mesh(m) == 0);
-  }
+  }*/
   
-   TEST_CASE( "read cow", "[math]" )
+  TEST_CASE( "read cow", "[math]" )
   {
     using namespace owl::math;
     mesh<float> m;
-    owl::math::read_ply(m, "/Users/skoenig/Downloads/cow.ply");
-  //  CHECK(check_mesh(m) == 0);
+    owl::math::read_ply(m, "/Users/skoenig/Downloads/bun_zipper.ply");
+  
+    /* for(auto he: ((const mesh<float>&)m).halfedges(halfedge_handle(6436)))
+      std::cout << he <<" -> " <<((const mesh<float>&)m).next(he) << std::endl;
+  
+    for(auto he: ((const mesh<float>&)m).halfedges(halfedge_handle(6431)))
+      std::cout << he <<" -> " <<((const mesh<float>&)m).next(he) << std::endl;*/
+    CHECK(m.check_mesh() == 0);
   }
   
   TEST_CASE( "add_face4", "[math]" )
@@ -60,7 +67,7 @@ TEST_CASE( "add_face_s", "[math]" )
   
     owl::math::read_ply(m,"test.ply");
     CHECK(m.num_faces() == 6);
-    CHECK(check_mesh(m) == 0);
+    CHECK(m.check_mesh() == 0);
   }
   
   TEST_CASE( "add_face", "[math]" )
@@ -75,7 +82,7 @@ TEST_CASE( "add_face_s", "[math]" )
     auto f4 = m.add_face(verts[0], verts[6], verts[8]);
     auto f5 = m.add_face(verts[2], verts[4], verts[3], verts[0]);
     CHECK(m.num_faces() == 6);
-    CHECK(check_mesh(m) == 0);
+    CHECK(m.check_mesh() == 0);
   }
   
   
@@ -90,7 +97,7 @@ TEST_CASE( "add_face_s", "[math]" )
     auto f3 = m.add_face(verts[1], verts[4], verts[2]);
  
     CHECK(m.num_faces() == 4);
-    CHECK(check_mesh(m) == 0);
+    CHECK(m.check_mesh() == 0);
   }
   
 
@@ -108,7 +115,7 @@ TEST_CASE( "add_face_s", "[math]" )
     CHECK(b.num_halfedges() == 24);
     CHECK(b.is_quad_mesh());
     CHECK(b.is_closed());
-    CHECK(check_mesh(b) == 0);
+    CHECK(b.check_mesh() == 0);
   
     mesh<float> tet = create_tetradedron<float>();
     CHECK(tet.num_faces() == 4);
@@ -116,34 +123,34 @@ TEST_CASE( "add_face_s", "[math]" )
     CHECK(tet.num_edges() == 6);
     CHECK(tet.is_triangle_mesh());
     CHECK(tet.is_closed());
-    CHECK(check_mesh(tet) == 0);
+    CHECK(tet.check_mesh() == 0);
   
     auto ico = create_icosaeder<float>();
-    CHECK(check_mesh(ico) == 0);
+    CHECK(ico.check_mesh() == 0);
     CHECK(ico.num_vertices() == 12);
     CHECK(ico.num_faces() == 20);
     CHECK(ico.num_edges() == 30);
     CHECK(ico.is_closed());
-    CHECK(check_mesh(ico) == 0);
+    CHECK(ico.check_mesh() == 0);
   
     auto geo_sphere = create_geodesic_sphere<float>(2, 2);
     CHECK(geo_sphere.num_faces() == 20 * 4 * 4);
     CHECK(geo_sphere.is_closed());
-    CHECK(check_mesh(geo_sphere) == 0);
+    CHECK(geo_sphere.check_mesh() == 0);
   
     auto sph = create_sphere<float>(2);
     CHECK(sph.num_faces() == 48 * 48);
     CHECK(sph.num_vertices() == 2258);
     CHECK(sph.num_edges() == 4560);
     CHECK(sph.is_closed());
-    CHECK(check_mesh(sph) == 0);
+    CHECK(sph.check_mesh() == 0);
   
     auto cylinder = create_cylinder<float>(1, 2, 48, 48);
     CHECK(cylinder.num_faces() == 2400);
     CHECK(cylinder.num_vertices() == 2354);
     CHECK(cylinder.num_edges() == 4752);
     CHECK(cylinder.is_closed());
-    CHECK(check_mesh(cylinder) == 0);
+    CHECK(cylinder.check_mesh() == 0);
   
     auto torus = create_torus<float>(1, 2, 48, 48);
     CHECK(torus.num_faces() == 48 * 48);
@@ -151,7 +158,7 @@ TEST_CASE( "add_face_s", "[math]" )
     CHECK(torus.num_edges() == 4608);
     CHECK(torus.is_closed());
     CHECK(torus.is_quad_mesh());
-    CHECK(check_mesh(torus) == 0);
+    CHECK(torus.check_mesh() == 0);
   
    
     auto octaeder = create_octaeder<float>(1);
@@ -160,7 +167,7 @@ TEST_CASE( "add_face_s", "[math]" )
     CHECK(octaeder.num_edges() == 12);
     CHECK(octaeder.is_closed());
     CHECK(octaeder.is_triangle_mesh());
-    CHECK(check_mesh(octaeder) == 0);
+    CHECK(octaeder.check_mesh() == 0);
   
     auto disc = create_disk<float>(1, 48);
     CHECK(disc.num_faces() == 48);
@@ -168,7 +175,7 @@ TEST_CASE( "add_face_s", "[math]" )
     CHECK(disc.num_edges() == 2 * 48);
     CHECK(disc.is_open());
     CHECK(disc.is_triangle_mesh());
-    CHECK(check_mesh(disc) == 0);
+    CHECK(disc.check_mesh() == 0);
   
   
   

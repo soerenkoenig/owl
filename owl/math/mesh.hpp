@@ -486,7 +486,8 @@ namespace owl
 
       bool is_boundary(vertex_handle v) const
       {
-        return is_boundary(incoming(v));
+        auto he = incoming(v);
+        return !(he.is_valid() && face(he).is_valid());
       }
 
       bool is_boundary(halfedge_handle he) const
@@ -1035,6 +1036,297 @@ namespace owl
          return add_face(std::array<vertex_handle, sizeof...(vertices)> { std::forward<VertexHandles>(vertices)... });
       }
     
+    
+    
+    /*  bool check()
+      {
+        std::vector<face_handle> corrupt_faces;
+        for(auto he : halfedges())
+        {
+          if(face(he) != face(next(he)))
+          {
+            corrupt_faces.push_back(face(he));
+            corrupt_faces.push_back(face(next(he)));
+          
+            std::cout << he << " " <<next(he) << " " << next(next(he))<<std::endl;
+            std::cout <<face(he) << " " << face(next(he)) <<" " << face(next(next(he))) << std::endl;
+          
+          }
+        }
+        auto it = std::unique(corrupt_faces.begin(), corrupt_faces.end());
+        corrupt_faces.erase(it, corrupt_faces.end());
+      
+        std::vector<vertex_handle> corrupt_vertices;
+        for(auto v: vertices())
+        {
+          if(!is_boundary(v))
+          {
+            for(auto he: incoming_halfedges(v))
+            {
+                if(is_boundary(he))
+                {
+                  corrupt_vertices.push_back(v);
+                }
+            }
+          }
+        }
+        if(corrupt_faces.size() > 0 || corrupt_vertices.size() > 0)
+          return false;
+        return true;
+      }
+    
+    
+    
+      void print(face_handle f)
+      {
+        std::cout << "face "<<f<<": ";
+        for(auto he: inner_halfedges(f))
+        {
+            std::cout << he << " ";
+        }
+        std::cout << std::endl;
+      }
+    
+      void print_in_out(vertex_handle v)
+      {
+        std::cout << "halfedges of vertex "<< v << std::endl;
+        for(auto he : incoming_halfedges(v))
+        {
+          std::cout << "in: "<<he << (is_boundary(he)? "b":"") << ", out: "<< opposite(he) << (is_boundary(opposite(he))? "b":"") << " v:" << target(opposite(he))<<" face in: "<< face(he) << std::endl;
+        }
+      }
+    
+      void print_adj(face_handle f)
+      {
+        std::cout << "adj faces(" << f<< "):  ";
+        for(auto he : outer_halfedges(f))
+        {
+          if(face(he).is_valid())
+            std::cout << face(he) <<" ";
+        }
+        std::cout << std::endl;
+      }
+    
+      void print_verts(face_handle f)
+      {
+        std::cout << "vertices(" << f<< "):  ";
+        for(auto v : vertices(f))
+        {
+         std::cout << v << " ";
+        }
+        std::cout << std::endl;
+      }
+    */
+  /*    struct edge_data
+      {
+        halfedge_handle halfedge;
+        bool is_new;
+        bool needs_adjust;
+      };
+    
+      std::vector<edge_data> edge_data_;
+      std::vector<std::pair<halfedge_handle,halfedge_handle>> next_cache_;
+    
+      template <typename VertexHandleRange, typename = std::enable_if_t<is_vertex_handle_range<VertexHandleRange>::value>>
+      face_handle add_face(VertexHandleRange&& vertices)
+      {
+        size_t n = std::size(vertices);
+        halfedge_handle inner_next, inner_prev,
+                        outer_next, outer_prev,
+                        boundary_next, boundary_prev,
+                        patch_start, patch_end;
+        std:: vector<vertex_handle> vertex_handles(std::begin(vertices), std::end(vertices));
+      
+        // Check sufficient working storage available
+        if(edge_data_.size() < n)
+        {
+          edge_data_.resize(n);
+          next_cache_.resize(6*n);
+        }
+  
+        size_t next_cache_count = 0;
+  
+        // don't allow degenerated faces
+        assert (n > 2);
+  
+       // test for topological errors
+       for (std::size_t i=0, ii=1; i<n; ++i, ++ii, ii%=n)
+       {
+         if ( !is_boundary(vertex_handles[i]) )
+         {
+          // omerr() << "PolyMeshT::add_face: complex vertex\n";
+           return face_handle::invalid();
+         }
+  
+         // Initialise edge attributes
+         edge_data_[i].halfedge = find_halfedge(vertex_handles[i],
+                                                    vertex_handles[ii]);
+       edge_data_[i].is_new = !edge_data_[i].halfedge.is_valid();
+       edge_data_[i].needs_adjust = false;
+  
+       if (!edge_data_[i].is_new && !is_boundary(edge_data_[i].halfedge))
+       {
+        // omerr() << "PolyMeshT::add_face: complex edge\n";
+         return face_handle::invalid();
+       }
+     }
+  
+     // re-link patches if necessary
+     for (std::size_t i=0, ii=1; i<n; ++i, ++ii, ii%=n)
+     {
+       if (!edge_data_[i].is_new && !edge_data_[ii].is_new)
+       {
+         inner_prev = edge_data_[i].halfedge;
+        inner_next = edge_data_[ii].halfedge;
+  
+  
+         if (next(inner_prev) != inner_next)
+         {
+           // here comes the ugly part... we have to relink a whole patch
+  
+           // search a free gap
+           // free gap will be between boundary_prev and boundary_next
+           outer_prev = opposite(inner_next);
+           outer_next = opposite(inner_prev);
+           boundary_prev = outer_prev;
+           do
+             boundary_prev = opposite(next(boundary_prev));
+           while (!is_boundary(boundary_prev));
+           auto boundary_next = next(boundary_prev);
+  
+           // ok ?
+           if (boundary_prev == inner_prev)
+           {
+            // omerr() << "PolyMeshT::add_face: patch re-linking failed\n";
+             return face_handle::invalid();
+           }
+  
+           assert(is_boundary(boundary_prev));
+           assert(is_boundary(boundary_next));
+  
+           // other halfedges' handles
+            patch_start = next(inner_prev);
+            patch_end   = prev(inner_next);
+  
+           assert(boundary_prev.is_valid());
+           assert(patch_start.is_valid());
+           assert(patch_end.is_valid());
+           assert(boundary_next.is_valid());
+           assert(inner_prev.is_valid());
+           assert(inner_next.is_valid());
+  
+           // relink
+           next_cache_[next_cache_count++] = std::make_pair(boundary_prev, patch_start);
+           next_cache_[next_cache_count++] = std::make_pair(patch_end, boundary_next);
+           next_cache_[next_cache_count++] = std::make_pair(inner_prev, inner_next);
+         }
+       }
+     }
+  
+     // create missing edges
+     for (std::size_t i=0, ii=1; i<n; ++i, ++ii, ii%=n)
+       if (edge_data_[i].is_new)
+         edge_data_[i].halfedge = halfedge(add_edge(vertex_handles[i], vertex_handles[ii]));
+  
+     // create the face
+     face_handle fh(create_face(edge_data_[n-1].halfedge));
+  
+     // setup halfedges
+     for (std::size_t i=0, ii=1; i<n; ++i, ++ii, ii%=n)
+     {
+       auto vh         = vertex_handles[ii];
+  
+       inner_prev = edge_data_[i].halfedge;
+       inner_next = edge_data_[ii].halfedge;
+       assert(inner_prev.is_valid());
+       assert(inner_next.is_valid());
+  
+       size_t id = 0;
+       if (edge_data_[i].is_new)  id |= 1;
+       if (edge_data_[ii].is_new) id |= 2;
+  
+  
+       if (id)
+       {
+         auto outer_prev = opposite(inner_next);
+         auto outer_next = opposite(inner_prev);
+         assert(outer_prev.is_valid());
+         assert(outer_next.is_valid());
+  
+         // set outer links
+         switch (id)
+         {
+           case 1: // prev is new, next is old
+             boundary_prev = prev(inner_next);
+             assert(boundary_prev.is_valid());
+             next_cache_[next_cache_count++] = std::make_pair(boundary_prev, outer_next);
+             incoming(vh) = outer_next;
+             break;
+  
+           case 2: // next is new, prev is old
+             boundary_next = next(inner_prev);
+             assert(boundary_next.is_valid());
+             next_cache_[next_cache_count++] = std::make_pair(outer_prev, boundary_next);
+             incoming(vh) = boundary_next;
+             break;
+  
+           case 3: // both are new
+             if (!incoming(vh).is_valid())
+             {
+               incoming(vh) = outer_next;
+               next_cache_[next_cache_count++] = std::make_pair(outer_prev, outer_next);
+             }
+             else
+             {
+               boundary_next = incoming(vh);
+               boundary_prev = prev(boundary_next);
+               assert(boundary_prev.is_valid());
+               assert(boundary_next.is_valid());
+               next_cache_[next_cache_count++] = std::make_pair(boundary_prev, outer_next);
+               next_cache_[next_cache_count++] = std::make_pair(outer_prev, boundary_next);
+             }
+             break;
+         }
+  
+         // set inner link
+         next_cache_[next_cache_count++] = std::make_pair(inner_prev, inner_next);
+       }
+       else edge_data_[ii].needs_adjust = (incoming(vh) == inner_next);
+  
+  
+       // set face handle
+       face(edge_data_[i].halfedge) = fh;
+     }
+  
+     // process next halfedge cache
+     for (std::size_t i = 0; i < next_cache_count; ++i)
+       next(next_cache_[i].first) = next_cache_[i].second;
+  
+  
+     // adjust vertices' halfedge handle
+     for (std::size_t i=0; i<n; ++i)
+       if (edge_data_[i].needs_adjust)
+         adjust_outgoing(vertex_handles[i]);
+  
+     return fh;
+   }
+  
+  
+  void adjust_outgoing(vertex_handle v)
+  {
+    for(auto he : outgoing_halfedges(v))
+    {
+      if (is_boundary(he))
+      {
+        incoming(v) = he;
+        break;
+      }
+    }
+  }
+
+
+*/
+    
       //ensures the first vertex of returned face is the vertices.front()
       //adding a face which results in a non-manifold vertex is not allowed
       template <typename VertexHandleRange, typename = std::enable_if_t<is_vertex_handle_range<VertexHandleRange>::value>>
@@ -1042,11 +1334,18 @@ namespace owl
       {
         if(std::size(vertices) < 3)
         {
-          std::cout << "not enough vertices"<<std::endl;
+          std::cout << "not enough vertices" << std::endl;
           return face_handle::invalid();
         }
-        face_handle f = face_handle{faces_.size()};
+        if(utils::any_of(vertices, [this](const vertex_handle& v){ return !is_boundary(v); }))
+        {
+          for(auto v: vertices)
+            std::cout << v << " " <<std::boolalpha <<is_boundary(v) <<std::endl;
+          std::cout << "new face will produce a complex vertex" << std::endl;
+          return face_handle::invalid();
+        }
       
+        face_handle f = face_handle{faces_.size()};
         std::vector<halfedge_handle> hes;
         hes.reserve(std::size(vertices));
       
@@ -1069,7 +1368,12 @@ namespace owl
         for(auto he : owl::utils::make_adjacent_range(hes))
         {
           if(next(he.current) == he.next)
-            continue;
+          {
+           auto v = target(he.current);
+           adjust_incoming(v);
+           continue;
+          }
+        
           // fix next pointer of incoming halfedges of target(he.current)
           auto he_outer = opposite(he.next);
           auto he_outer_next = next(he_outer);
@@ -1188,6 +1492,8 @@ namespace owl
       //ensure halfedge of v is a boundary halfedge if v is on boundary
       void adjust_incoming(vertex_handle v)
       {
+        if(is_boundary(incoming(v)))
+          return;
         for(auto he : incoming_halfedges(v))
         {
           if(is_boundary(he))
@@ -1388,6 +1694,104 @@ namespace owl
 
        return edge_handle::invalid();
       }
+    
+    
+    
+  
+      std::size_t check_mesh(bool supress_warnings = false)
+      {
+        std::size_t count_error = 0;
+        std::size_t count_warning = 0;
+        for(auto v: vertices())
+        {
+          if(is_isolated(v))
+          {
+            if(!supress_warnings)
+            {
+              std::cout << "mesh contains isolated vertex "<< v << std::endl;
+              ++count_warning;
+            }
+          }
+          else
+          {
+            if(status(edge(incoming(v))).is_removed())
+            {
+              std::cout << "mesh contains removed incoming halfedge at vertex "<< v << std::endl;
+               ++count_error;
+            }
+            if(target(incoming(v)) != v)
+            {
+              std::cout << "mesh contains inconsistent vertex <-> halfedge linkage" <<std::endl;
+              std::cout << "incoming("<< v << ") = " << incoming(v) << std::endl;
+              std::cout << "target("<<incoming(v)<< ") =  "<< target(incoming(v)) << std::endl;
+              ++count_error;
+            }
+            if(!is_boundary(v))
+            {
+              for(auto he: incoming_halfedges(v))
+              {
+                if(is_boundary(he))
+                {
+                 std::cout << "vertex "<< v << " is not adjusted to boundary vertex" << he << std::endl;
+                   ++count_error;
+                }
+              }
+            }
+          }
+        }
+     
+        for(auto f: faces())
+        {
+          if(status(f).is_removed())
+          {
+            if(halfedge(f).is_valid())
+            {
+              std::cout << "removed face " << f << "is referencing an halfedge " << std::endl;
+              ++count_error;
+            }
+            continue;
+          }
+       
+          if(!halfedge(f).is_valid() )
+          {
+            std::cout << "halfedge of face " << f << "is invalid "<<std::endl;
+            ++count_error;
+          }
+          else
+          {
+            if(status(edge(halfedge(f))).is_removed())
+            {
+              std::cout << "halfedge of face " << f << "is removed"<<std::endl;
+               ++count_error;
+            }
+           for(auto he : inner_halfedges(f))
+           {
+             if(face(he) != f)
+             {
+               std::cout << "face " << f << "contains inconsistent halfedge "<< he <<std::endl;
+                ++count_error;
+             }
+           }
+         }
+       }
+     
+       for(auto he: halfedges())
+       {
+          if(!target(he).is_valid() )
+          {
+             std::cout << "target(" << he << ") is invalid "<< he << std::endl;
+            ++count_error;
+          }
+          if(face(he) != face(next(he)))
+          {
+            std::cout << "face(" << he <<") = "<<face(he) << std::endl;
+            std::cout << "next(" << he <<") = "<< next(he) << std::endl;
+            std::cout << "face(" << next(he) <<") = "<< face(next(he)) << std::endl;
+            ++count_error;
+          }
+       }
+       return count_error + count_warning;
+     }
 
    private:
    
@@ -1583,6 +1987,9 @@ namespace owl
         edge_properties_.move(from.index(), to.index());
       }
     */
+    
+      
+    
       std::vector<edge_t> edges_;
       std::vector<vertex_t> vertices_;
       std::vector<face_t> faces_;
@@ -1600,88 +2007,6 @@ namespace owl
     };
   
    
-  
-   template <typename Scalar>
-   std::size_t check_mesh(const mesh<Scalar>& m)
-   {
-     std::size_t count_error = 0;
-     for(auto v: m.vertices())
-     {
-       if(m.is_isolated(v))
-       {
-       //  std::cout << "mesh contains isolated vertex "<< v << std::endl;
-         //++count_error;
-       }
-       else
-       {
-         if(m.status(m.edge(m.incoming(v))).is_removed())
-         {
-           std::cout << "mesh contains removed incoming halfedge at vertex "<< v << std::endl;
-            ++count_error;
-         }
-         if(m.target(m.incoming(v)) != v)
-         {
-           std::cout << "mesh contains inconsistent incoming halfedge at vertex "<< v << std::endl;
-           ++count_error;
-         }
-       }
-     }
-   
-     for(auto f: m.faces())
-     {
-       if(m.status(f).is_removed())
-       {
-         if(m.halfedge(f).is_valid())
-         {
-            std::cout << "removed face " << f << "is referencing an halfedge " << std::endl;
-           ++count_error;
-         }
-         continue;
-       }
-     
-       if(!m.halfedge(f).is_valid() )
-       {
-           std::cout << "halfedge of face " << f << "is invalid "<<std::endl;
-           ++count_error;
-       }
-       else
-       {
-          if(m.status(m.edge(m.halfedge(f))).is_removed())
-          {
-            std::cout << "halfedge of face " << f << "is removed"<<std::endl;
-             ++count_error;
-          }
-         for(auto he : m.inner_halfedges(f))
-         {
-           if(m.face(he) != f)
-           {
-             std::cout << "face " << f << "contains inconsistent halfedge "<< he <<std::endl;
-              ++count_error;
-           }
-         }
-       }
-     }
-   
-     for(auto he: m.halfedges())
-     {
-        if(!m.target(he).is_valid() )
-        {
-           std::cout << "target of halfedge " << he << "is invalid "<< he <<std::endl;
-          ++count_error;
-        }
-        if(m.next(m.prev(he)) != he)
-        {
-          std::cout << "next halfedge of halfedge " << m.prev(he) << "is "<<m.next(m.prev(he)) << "instead of "<< he <<std::endl;
-          ++count_error;
-        }
-         if(m.prev(m.next(he)) != he)
-        {
-          std::cout << "next halfedge of halfedge " << m.prev(he) << "is "<<m.next(m.prev(he)) << "instead of "<< he <<std::endl;
-          ++count_error;
-        }
-     }
-     return count_error;
-   }
   
    template<typename Scalar>
    bool is_closed(mesh<Scalar>& mesh)
