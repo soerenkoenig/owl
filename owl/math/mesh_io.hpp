@@ -42,7 +42,7 @@ namespace owl
     
       reader.listen_2_vertex([&mesh](const float& x, const float& y,const float& z)
         {
-          mesh.add_vertex(vector<Scalar,3>(x,y,z));
+          mesh.add_vertex(vector<Scalar,3>(x, y, z));
         });
     
       reader.listen_2_face([&mesh](const std::vector<std::size_t>& indices)
@@ -176,7 +176,7 @@ namespace owl
         ret = read_off(mesh, p);
       else ret = false;
       if(ret)
-        mesh.check_mesh();
+        mesh.check();
       return ret;
     }
   }

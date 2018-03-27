@@ -145,7 +145,7 @@ namespace owl
     make_filter_iterator(Predicate&& f, Iterator&& x, Iterator&& end)
     {
       return filter_iterator<Predicate, Iterator>(std::forward<Predicate>(f),
-        std::forward<Iterator>(x),std::forward<Iterator>(end));
+        std::forward<Iterator>(x), std::forward<Iterator>(end));
     }
 
     template<typename Predicate, typename Iterator>
@@ -153,7 +153,7 @@ namespace owl
     {
       auto f = make_filter_iterator<Predicate>(std::forward<Iterator>(first),
         std::forward<Iterator>(one_past_last));
-      return make_iterator_range(f,f.end());
+      return make_iterator_range(f, f.end());
     }
   
     template<typename Predicate, typename Range, typename = std::enable_if_t<is_container<std::decay_t<Range>>::value>>

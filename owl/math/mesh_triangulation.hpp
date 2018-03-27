@@ -148,7 +148,7 @@ namespace owl
     
       inline halfedge_handle next(halfedge_handle he) const
       {
-        return const_cast<const mesh<Scalar>&>(mesh_).next(he);
+        return mesh_.next(he);
       }
     
       inline halfedge_handle prev(halfedge_handle he) const
@@ -168,7 +168,7 @@ namespace owl
     
       inline halfedge_handle halfedge(face_handle he) const
       {
-        return const_cast<const mesh<Scalar>&>(mesh_).halfedge(face_);
+        return mesh_.inner(face_);
       }
     
     
