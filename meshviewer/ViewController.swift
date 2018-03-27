@@ -128,7 +128,7 @@ class ViewController: NSViewController{
    // let meshGeom = mesh?.triangleGeometry()
     self.meshNode = SCNNode()
     scene.rootNode.addChildNode(meshNode!)
-    loadMesh(url:"/Users/skoenig/Downloads/horse.off")
+    loadMesh(url:"/Users/skoenig/Downloads/bun_zipper.ply")
     sceneView.scene = scene
     sceneView.autoenablesDefaultLighting = true
     sceneView.allowsCameraControl = true

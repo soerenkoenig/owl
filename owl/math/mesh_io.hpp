@@ -169,11 +169,15 @@ namespace owl
     template <typename Scalar>
     bool read(math::mesh<Scalar>& mesh, const boost::filesystem::path& p)
     {
+      bool ret;
       if(p.extension() == ".ply" || p.extension() == ".PLY")
-        return read_ply(mesh, p);
-      if(p.extension() == ".off" || p.extension() == ".OFF")
-        return read_off(mesh, p);
-      return false;
+        ret = read_ply(mesh, p);
+      else if(p.extension() == ".off" || p.extension() == ".OFF")
+        ret = read_off(mesh, p);
+      else ret = false;
+      if(ret)
+        mesh.check_mesh();
+      return ret;
     }
   }
 }

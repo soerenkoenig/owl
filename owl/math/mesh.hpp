@@ -1035,297 +1035,7 @@ namespace owl
       {
          return add_face(std::array<vertex_handle, sizeof...(vertices)> { std::forward<VertexHandles>(vertices)... });
       }
-    
-    
-    
-    /*  bool check()
-      {
-        std::vector<face_handle> corrupt_faces;
-        for(auto he : halfedges())
-        {
-          if(face(he) != face(next(he)))
-          {
-            corrupt_faces.push_back(face(he));
-            corrupt_faces.push_back(face(next(he)));
-          
-            std::cout << he << " " <<next(he) << " " << next(next(he))<<std::endl;
-            std::cout <<face(he) << " " << face(next(he)) <<" " << face(next(next(he))) << std::endl;
-          
-          }
-        }
-        auto it = std::unique(corrupt_faces.begin(), corrupt_faces.end());
-        corrupt_faces.erase(it, corrupt_faces.end());
-      
-        std::vector<vertex_handle> corrupt_vertices;
-        for(auto v: vertices())
-        {
-          if(!is_boundary(v))
-          {
-            for(auto he: incoming_halfedges(v))
-            {
-                if(is_boundary(he))
-                {
-                  corrupt_vertices.push_back(v);
-                }
-            }
-          }
-        }
-        if(corrupt_faces.size() > 0 || corrupt_vertices.size() > 0)
-          return false;
-        return true;
-      }
-    
-    
-    
-      void print(face_handle f)
-      {
-        std::cout << "face "<<f<<": ";
-        for(auto he: inner_halfedges(f))
-        {
-            std::cout << he << " ";
-        }
-        std::cout << std::endl;
-      }
-    
-      void print_in_out(vertex_handle v)
-      {
-        std::cout << "halfedges of vertex "<< v << std::endl;
-        for(auto he : incoming_halfedges(v))
-        {
-          std::cout << "in: "<<he << (is_boundary(he)? "b":"") << ", out: "<< opposite(he) << (is_boundary(opposite(he))? "b":"") << " v:" << target(opposite(he))<<" face in: "<< face(he) << std::endl;
-        }
-      }
-    
-      void print_adj(face_handle f)
-      {
-        std::cout << "adj faces(" << f<< "):  ";
-        for(auto he : outer_halfedges(f))
-        {
-          if(face(he).is_valid())
-            std::cout << face(he) <<" ";
-        }
-        std::cout << std::endl;
-      }
-    
-      void print_verts(face_handle f)
-      {
-        std::cout << "vertices(" << f<< "):  ";
-        for(auto v : vertices(f))
-        {
-         std::cout << v << " ";
-        }
-        std::cout << std::endl;
-      }
-    */
-  /*    struct edge_data
-      {
-        halfedge_handle halfedge;
-        bool is_new;
-        bool needs_adjust;
-      };
-    
-      std::vector<edge_data> edge_data_;
-      std::vector<std::pair<halfedge_handle,halfedge_handle>> next_cache_;
-    
-      template <typename VertexHandleRange, typename = std::enable_if_t<is_vertex_handle_range<VertexHandleRange>::value>>
-      face_handle add_face(VertexHandleRange&& vertices)
-      {
-        size_t n = std::size(vertices);
-        halfedge_handle inner_next, inner_prev,
-                        outer_next, outer_prev,
-                        boundary_next, boundary_prev,
-                        patch_start, patch_end;
-        std:: vector<vertex_handle> vertex_handles(std::begin(vertices), std::end(vertices));
-      
-        // Check sufficient working storage available
-        if(edge_data_.size() < n)
-        {
-          edge_data_.resize(n);
-          next_cache_.resize(6*n);
-        }
   
-        size_t next_cache_count = 0;
-  
-        // don't allow degenerated faces
-        assert (n > 2);
-  
-       // test for topological errors
-       for (std::size_t i=0, ii=1; i<n; ++i, ++ii, ii%=n)
-       {
-         if ( !is_boundary(vertex_handles[i]) )
-         {
-          // omerr() << "PolyMeshT::add_face: complex vertex\n";
-           return face_handle::invalid();
-         }
-  
-         // Initialise edge attributes
-         edge_data_[i].halfedge = find_halfedge(vertex_handles[i],
-                                                    vertex_handles[ii]);
-       edge_data_[i].is_new = !edge_data_[i].halfedge.is_valid();
-       edge_data_[i].needs_adjust = false;
-  
-       if (!edge_data_[i].is_new && !is_boundary(edge_data_[i].halfedge))
-       {
-        // omerr() << "PolyMeshT::add_face: complex edge\n";
-         return face_handle::invalid();
-       }
-     }
-  
-     // re-link patches if necessary
-     for (std::size_t i=0, ii=1; i<n; ++i, ++ii, ii%=n)
-     {
-       if (!edge_data_[i].is_new && !edge_data_[ii].is_new)
-       {
-         inner_prev = edge_data_[i].halfedge;
-        inner_next = edge_data_[ii].halfedge;
-  
-  
-         if (next(inner_prev) != inner_next)
-         {
-           // here comes the ugly part... we have to relink a whole patch
-  
-           // search a free gap
-           // free gap will be between boundary_prev and boundary_next
-           outer_prev = opposite(inner_next);
-           outer_next = opposite(inner_prev);
-           boundary_prev = outer_prev;
-           do
-             boundary_prev = opposite(next(boundary_prev));
-           while (!is_boundary(boundary_prev));
-           auto boundary_next = next(boundary_prev);
-  
-           // ok ?
-           if (boundary_prev == inner_prev)
-           {
-            // omerr() << "PolyMeshT::add_face: patch re-linking failed\n";
-             return face_handle::invalid();
-           }
-  
-           assert(is_boundary(boundary_prev));
-           assert(is_boundary(boundary_next));
-  
-           // other halfedges' handles
-            patch_start = next(inner_prev);
-            patch_end   = prev(inner_next);
-  
-           assert(boundary_prev.is_valid());
-           assert(patch_start.is_valid());
-           assert(patch_end.is_valid());
-           assert(boundary_next.is_valid());
-           assert(inner_prev.is_valid());
-           assert(inner_next.is_valid());
-  
-           // relink
-           next_cache_[next_cache_count++] = std::make_pair(boundary_prev, patch_start);
-           next_cache_[next_cache_count++] = std::make_pair(patch_end, boundary_next);
-           next_cache_[next_cache_count++] = std::make_pair(inner_prev, inner_next);
-         }
-       }
-     }
-  
-     // create missing edges
-     for (std::size_t i=0, ii=1; i<n; ++i, ++ii, ii%=n)
-       if (edge_data_[i].is_new)
-         edge_data_[i].halfedge = halfedge(add_edge(vertex_handles[i], vertex_handles[ii]));
-  
-     // create the face
-     face_handle fh(create_face(edge_data_[n-1].halfedge));
-  
-     // setup halfedges
-     for (std::size_t i=0, ii=1; i<n; ++i, ++ii, ii%=n)
-     {
-       auto vh         = vertex_handles[ii];
-  
-       inner_prev = edge_data_[i].halfedge;
-       inner_next = edge_data_[ii].halfedge;
-       assert(inner_prev.is_valid());
-       assert(inner_next.is_valid());
-  
-       size_t id = 0;
-       if (edge_data_[i].is_new)  id |= 1;
-       if (edge_data_[ii].is_new) id |= 2;
-  
-  
-       if (id)
-       {
-         auto outer_prev = opposite(inner_next);
-         auto outer_next = opposite(inner_prev);
-         assert(outer_prev.is_valid());
-         assert(outer_next.is_valid());
-  
-         // set outer links
-         switch (id)
-         {
-           case 1: // prev is new, next is old
-             boundary_prev = prev(inner_next);
-             assert(boundary_prev.is_valid());
-             next_cache_[next_cache_count++] = std::make_pair(boundary_prev, outer_next);
-             incoming(vh) = outer_next;
-             break;
-  
-           case 2: // next is new, prev is old
-             boundary_next = next(inner_prev);
-             assert(boundary_next.is_valid());
-             next_cache_[next_cache_count++] = std::make_pair(outer_prev, boundary_next);
-             incoming(vh) = boundary_next;
-             break;
-  
-           case 3: // both are new
-             if (!incoming(vh).is_valid())
-             {
-               incoming(vh) = outer_next;
-               next_cache_[next_cache_count++] = std::make_pair(outer_prev, outer_next);
-             }
-             else
-             {
-               boundary_next = incoming(vh);
-               boundary_prev = prev(boundary_next);
-               assert(boundary_prev.is_valid());
-               assert(boundary_next.is_valid());
-               next_cache_[next_cache_count++] = std::make_pair(boundary_prev, outer_next);
-               next_cache_[next_cache_count++] = std::make_pair(outer_prev, boundary_next);
-             }
-             break;
-         }
-  
-         // set inner link
-         next_cache_[next_cache_count++] = std::make_pair(inner_prev, inner_next);
-       }
-       else edge_data_[ii].needs_adjust = (incoming(vh) == inner_next);
-  
-  
-       // set face handle
-       face(edge_data_[i].halfedge) = fh;
-     }
-  
-     // process next halfedge cache
-     for (std::size_t i = 0; i < next_cache_count; ++i)
-       next(next_cache_[i].first) = next_cache_[i].second;
-  
-  
-     // adjust vertices' halfedge handle
-     for (std::size_t i=0; i<n; ++i)
-       if (edge_data_[i].needs_adjust)
-         adjust_outgoing(vertex_handles[i]);
-  
-     return fh;
-   }
-  
-  
-  void adjust_outgoing(vertex_handle v)
-  {
-    for(auto he : outgoing_halfedges(v))
-    {
-      if (is_boundary(he))
-      {
-        incoming(v) = he;
-        break;
-      }
-    }
-  }
-
-
-*/
     
       //ensures the first vertex of returned face is the vertices.front()
       //adding a face which results in a non-manifold vertex is not allowed
@@ -1346,9 +1056,11 @@ namespace owl
         }
       
         face_handle f = face_handle{faces_.size()};
+      
+      
         std::vector<halfedge_handle> hes;
         hes.reserve(std::size(vertices));
-      
+        std::size_t num_edges_old = num_edges();
         for(auto v : owl::utils::make_adjacent_range(vertices))
         {
           auto he = find_halfedge(v.prev, v.current);
@@ -1357,77 +1069,86 @@ namespace owl
           else
           {
             if(!is_boundary(he))
+            {
+              edges_.resize(num_edges_old);
+              edge_properties_.resize(num_edges_old);
+              halfedge_properties_.resize(num_edges_old * 2);
               return face_handle::invalid();
-            //assert(is_boundary(he));
+            }
           }
           face(he) = f;
           hes.push_back(he);
         }
+  
         create_face(hes.back());
       
         for(auto he : owl::utils::make_adjacent_range(hes))
         {
+          auto v = target(he.current);
+        
+          if(is_isolated(v))
+          {
+            next(he.current) = he.next;
+            auto temp = opposite(he.next);
+            next(temp) = opposite(he.current);
+            incoming(v) = temp;
+            continue;
+          }
+        
           if(next(he.current) == he.next)
           {
-           auto v = target(he.current);
-           adjust_incoming(v);
+            if(incoming(v) == he.current)
+              adjust_incoming(v);
            continue;
           }
         
-          // fix next pointer of incoming halfedges of target(he.current)
-          auto he_outer = opposite(he.next);
-          auto he_outer_next = next(he_outer);
-          if(he_outer_next.is_valid())
+          if(next(he.current).is_valid())
           {
-            while(he_outer_next != he.next)
+            if(next(opposite(he.next)).is_valid())
             {
-              if(he_outer == he.current)
-                break;
-              he_outer = opposite(he_outer_next);
-              he_outer_next = next(he_outer);
-            }
-            if(he_outer == he.current)
-            {
-              auto he_a = opposite(he.next);
-              while(!is_boundary(he_a))
-                he_a = next_incoming(he_a);
-            
-             // auto he_b = prev(he.next);
-             auto he_b = opposite(he.next);
-             while(next(he_b) != he.next)
-              he_b = next_incoming(he_b);
-            
-              next(he_b) = next(he_a);
-              next(he_a) = next(he_outer);
-              next(he_outer) = he.next;
+              assert(next(he.current) != he.next);
+              auto a = next(he.current);
+              auto b = prev_circ(he.next);
+              auto he_gap = opposite(he.next);
+              while(!is_boundary(he_gap))
+                he_gap = next_incoming(he_gap);
+              next(b) = next(he_gap);
+              next(he_gap) = a;
+              next(he.current) = he.next;
+              adjust_incoming(v);
             }
             else
-             next(he_outer) = opposite(he.current);
-          }
-          else
-          {
-            if(next(he.current).is_valid())
-              next(he_outer) = next(he.current);
-            else
             {
-              auto he_p = incoming(target(he.current));
-              if(he_p.is_valid() && is_boundary(he_p))
-              {
-               next(he_outer) = next(he_p);
-               next(he_p) = opposite(he.current);
-              }
-              else
-                next(he_outer) = opposite(he.current);
+              auto temp = opposite(he.next);
+              next(temp) = next(he.current);
+              next(he.current) = he.next;
+              incoming(v) = temp;
             }
           }
-          next(he.current) = he.next;
-          auto v = target(he.current);
-          if(is_isolated(v))
-            incoming(v) = he.current;
-          adjust_incoming(v);
+          else //next(he.current) invalid
+          {
+            if(next(opposite(he.next)).is_valid())
+            {
+              auto b = prev_circ(he.next);
+              next(b) = opposite(he.current);
+              next(he.current) = he.next;
+              adjust_incoming(v);
+            }
+            else //both invalid
+            {
+              auto he_gap = incoming(v);
+              assert(is_boundary(he_gap));
+              next(opposite(he.next)) = next(he_gap);
+              next(he_gap) = opposite(he.current);
+              next(he.current) = he.next;
+              adjust_incoming(v);
+            }
+          }
         }
+  
         return f;
       }
+    
     
       /*//mark vertex v and all incident faces and edges as removed
       void remove(vertex_handle v, bool remove_isolated_vertices)
@@ -1661,6 +1382,19 @@ namespace owl
         return prev_he;
       }
     
+      halfedge_handle prev_circ(halfedge_handle he) const
+      {
+        auto prev_he = opposite(next(opposite(he)));
+        auto next_prev_he = next(prev_he);
+     
+        while(next_prev_he != he)
+        {
+          prev_he = opposite(next_prev_he);
+          next_prev_he = next(prev_he);
+        }
+        return prev_he;
+      }
+    
       edge_handle edge(halfedge_handle he) const
       {
         return edge_handle(he.index() >> 1);
@@ -1702,13 +1436,33 @@ namespace owl
       {
         std::size_t count_error = 0;
         std::size_t count_warning = 0;
+        for(auto he: halfedges())
+       {
+          if(!target(he).is_valid() )
+          {
+             std::cout << "target(" << he << ") is invalid "<< he << std::endl;
+            ++count_error;
+          }
+          if(!next(he).is_valid())
+          {
+            std::cout << "next(" << he << ") is invalid "<< he << std::endl;
+            ++count_error;
+          }
+          else if(face(he) != face(next(he)))
+          {
+            std::cout << "face(" << he <<") = "<<face(he) << std::endl;
+            std::cout << "next(" << he <<") = "<< next(he) << std::endl;
+            std::cout << "face(" << next(he) <<") = "<< face(next(he)) << std::endl;
+            ++count_error;
+          }
+       }
         for(auto v: vertices())
         {
           if(is_isolated(v))
           {
             if(!supress_warnings)
             {
-              std::cout << "mesh contains isolated vertex "<< v << std::endl;
+              std::cout << "mesh contains isolated vertex "<< v << " at " << position(v)<< std::endl;
               ++count_warning;
             }
           }
@@ -1775,21 +1529,7 @@ namespace owl
          }
        }
      
-       for(auto he: halfedges())
-       {
-          if(!target(he).is_valid() )
-          {
-             std::cout << "target(" << he << ") is invalid "<< he << std::endl;
-            ++count_error;
-          }
-          if(face(he) != face(next(he)))
-          {
-            std::cout << "face(" << he <<") = "<<face(he) << std::endl;
-            std::cout << "next(" << he <<") = "<< next(he) << std::endl;
-            std::cout << "face(" << next(he) <<") = "<< face(next(he)) << std::endl;
-            ++count_error;
-          }
-       }
+      
        return count_error + count_warning;
      }
 
@@ -1819,6 +1559,7 @@ namespace owl
     
       struct edge_t
       {
+        edge_t() = default;
         edge_t(vertex_handle from, vertex_handle to)
           : halfedges {halfedge_t(to), halfedge_t(from)}
         {

@@ -324,6 +324,7 @@ namespace owl
       void resize(std::size_t n)
       {
         for_each_property([&](auto& p){ p.resize(n); });
+         num_elems_ = n;
       }
     
       void clear()
@@ -333,16 +334,16 @@ namespace owl
     
       handle<Tag> add_elem()
       {
+        auto h = owl::utils::handle<Tag> {num_elems_};
         resize(num_elems_ + 1);
-        return owl::utils::handle<Tag> {num_elems_++};
+        return h;
       }
     
       //elem interface
       auto add_elems(std::size_t n)
       {
         owl::utils::handle<Tag> first{num_elems_};
-        num_elems_ += n;
-        resize(num_elems_);
+        resize(num_elems_ + n);
         return make_iterator_range(count_iterator<handle<Tag>>(first),
           count_iterator<handle<Tag>>(owl::utils::handle<Tag>(num_elems_)));
       }
