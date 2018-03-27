@@ -10,12 +10,12 @@ namespace owl
     {
     }
 
-    off_reader::off_reader(const boost::filesystem::path& filename)
+    off_reader::off_reader(const std::string& filename)
     {
       open(filename);
     }
 
-    void off_reader::open(const boost::filesystem::path& filename)
+    void off_reader::open(const std::string& filename)
     {
       file.open(filename, std::ios_base::in);
     }

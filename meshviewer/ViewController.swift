@@ -9,6 +9,7 @@ class ViewController: NSViewController{
   
   @IBOutlet weak var sceneView: SCNView!
   
+  @IBOutlet weak var progressIndicator: NSProgressIndicator!
   var meshNode: SCNNode?
   var mesh: Mesh?
   var grid: Grid?
@@ -74,14 +75,11 @@ class ViewController: NSViewController{
   
   func loadMesh(url: String){
     statusText.stringValue = "Status: Loading mesh \(url)"
-    let indicator: NSProgressIndicator = NSProgressIndicator(frame: NSRect(x: 10, y: 10, width: 400, height: 400));
+   
     //indicator.autoresizingMask =  NSViewHeightSizable | NSViewWidthSizable
-    indicator.usesThreadedAnimation = true
-    self.view.addSubview(indicator)
-    indicator.isBezeled = true
-    indicator.style = .spinning
-    indicator.controlTint = .clearControlTint
-    indicator.startAnimation(self)
+    progressIndicator.isHidden = false
+    progressIndicator.usesThreadedAnimation = true
+    progressIndicator.startAnimation(self)
     
    
    DispatchQueue.global(qos: .background).async {
@@ -93,8 +91,8 @@ class ViewController: NSViewController{
       DispatchQueue.main.async{
           self.meshNode?.geometry = self.mesh?.triangleGeometry()
           print("Mesh statistics: # faces = \(self.mesh!.faceCount), # vertices = \(self.mesh!.vertexCount)")
-          indicator.stopAnimation(self)
-          indicator.removeFromSuperview()
+          self.progressIndicator.stopAnimation(self)
+          self.progressIndicator.isHidden = true
           self.statusText.stringValue = "Status: idle"
       }
     }

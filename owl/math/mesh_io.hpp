@@ -13,18 +13,16 @@
 #include "owl/math/mesh.hpp"
 #include "owl/io/ply.hpp"
 #include "owl/io/off.hpp"
+#include "owl/utils/file_utils.hpp"
 
 namespace owl
 {
   namespace math
   {
     template <typename Scalar>
-    bool read_off(math::mesh<Scalar>& mesh, const boost::filesystem::path& p)
+    bool read_off(math::mesh<Scalar>& mesh, const std::string& p)
     {
-      if(!exists(p))
-        return false;
-    
-      if(!is_regular_file(p))
+      if(!utils::file_exists(p))
         return false;
     
       mesh.clear();
@@ -57,19 +55,17 @@ namespace owl
     }
   
     template <typename Scalar>
-    bool read_ply(math::mesh<Scalar>& mesh, const boost::filesystem::path& p)
+    bool read_ply(math::mesh<Scalar>& mesh, const std::string& p)
     {
-      if(!exists(p))
+      if(!utils::file_exists(p))
         return false;
     
-      if(!is_regular_file(p))
-        return false;
     
       mesh.clear();
     
       io::ply_reader ply;
     
-      ply.open(p.string());
+      ply.open(p);
       if(!ply.is_open())
         return false;
   
@@ -167,16 +163,20 @@ namespace owl
     }
   
     template <typename Scalar>
-    bool read(math::mesh<Scalar>& mesh, const boost::filesystem::path& p)
+    bool read(math::mesh<Scalar>& mesh, const std::string& p)
     {
+      std::cout << "reading mesh "<<p<<"... ";
+      std::cout.flush();
       bool ret;
-      if(p.extension() == ".ply" || p.extension() == ".PLY")
+      if(utils::file_extension(p) == ".ply" || utils::file_extension(p) == ".PLY")
         ret = read_ply(mesh, p);
-      else if(p.extension() == ".off" || p.extension() == ".OFF")
+      else if(utils::file_extension(p) == ".off" || utils::file_extension(p) == ".OFF")
         ret = read_off(mesh, p);
       else ret = false;
-      if(ret)
-        mesh.check();
+      std::cout << "complete" << std::endl;
+     // if(ret)
+     //   mesh.check();
+    
       return ret;
     }
   }

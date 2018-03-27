@@ -11,8 +11,8 @@
 
 #include <memory>
 #include <iostream>
-#include <boost/filesystem.hpp>
-#include <boost/filesystem/fstream.hpp>
+#include <fstream>
+#include <vector>
 
 namespace owl
 {
@@ -24,9 +24,9 @@ namespace owl
     
       ply_reader();
   
-      ply_reader(const boost::filesystem::path& filename);
+      ply_reader(const std::string& filename);
   
-      void open(const boost::filesystem::path& filename);
+      void open(const std::string& filename);
   
       bool is_open() const;
   
@@ -162,7 +162,7 @@ namespace owl
   
       std::function<void(const std::string&)> on_element_end;
   
-      boost::filesystem::ifstream file;
+      std::ifstream file;
     };
   
     namespace detail
@@ -409,7 +409,7 @@ namespace owl
   
     
   
-    bool create_ply_cube_ascii(const boost::filesystem::path& filename);
+    bool create_ply_cube_ascii(const std::string& filename);
   }
 }
 

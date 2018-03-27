@@ -14,7 +14,7 @@ namespace owl
     {
       std::size_t i = path.rfind('.', path.length());
       if (i != std::string::npos)
-        return(path.substr(i+1, path.length() - i));
+        return(path.substr(i, path.length() - i));
       return("");
     }
   

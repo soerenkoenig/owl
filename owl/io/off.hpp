@@ -11,8 +11,6 @@
 
 #include <memory>
 #include <iostream>
-#include <boost/filesystem.hpp>
-#include <boost/filesystem/fstream.hpp>
 #include <functional>
 #include <fstream>
 #include <vector>
@@ -26,9 +24,9 @@ namespace owl
     public:
       off_reader();
   
-      off_reader(const boost::filesystem::path& filename);
+      off_reader(const std::string& filename);
   
-      void open(const boost::filesystem::path& filename);
+      void open(const std::string& filename);
   
       bool is_open() const;
   
@@ -52,7 +50,7 @@ namespace owl
   
       std::size_t n_vertices, n_faces, n_edges;
     
-      boost::filesystem::ifstream file;
+      std::ifstream file;
     
       std::function<void(const float&, const float&, const float&)> on_vertex;
     

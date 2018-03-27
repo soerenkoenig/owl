@@ -192,7 +192,7 @@ namespace owl
     template<typename Predicate, typename Range, typename = std::enable_if_t< is_container<std::decay_t<Range>>::value>>
     auto map_range(Predicate &&pred, Range&& range)
     {
-      return  map_range(std::forward<Predicate>(pred),
+      return map_range(std::forward<Predicate>(pred),
         std::begin(std::forward<Range>(range)),
         std::end(std::forward<Range>(range)));
     }

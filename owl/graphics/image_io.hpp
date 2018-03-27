@@ -9,17 +9,15 @@
 
 #pragma once
 
-#include <boost/filesystem.hpp>
-#include <boost/filesystem/fstream.hpp>
 #include "owl/graphics/image.hpp"
 
 namespace owl
 {
   namespace graphics
   {
-    inline bool write_ppm(rgb8_image& img, const boost::filesystem::path& p)
+    inline bool write_ppm(rgb8_image& img, const std::string& p)
     {
-      boost::ofstream ofs;
+      std::ofstream ofs;
       ofs.open(p);
       if(!ofs.is_open)
         return false;

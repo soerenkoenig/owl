@@ -285,42 +285,42 @@ namespace owl
         return make_handle_circulator_range(inner(f), step, deref);
       }
 
-      const math::vector<Scalar,3>& position(vertex_handle v) const
+      const vector<3>& position(vertex_handle v) const
       {
         return vertex_properties_[vertex_position_handle_][v.index()];
       }
 
-      math::vector<Scalar,3>& position(vertex_handle v)
+      vector<3>& position(vertex_handle v)
       {
         return vertex_properties_[vertex_position_handle_][v.index()];
       }
 
-      const math::vector<Scalar,2>& texcoord(halfedge_handle he) const
+      const vector<2>& texcoord(halfedge_handle he) const
       {
         return halfedge_properties_[halfedge_texcoord_handle_][he.index()];
       }
 
-      math::vector<Scalar,2>& texcoord(halfedge_handle he)
+      vector<2>& texcoord(halfedge_handle he)
       {
         return halfedge_properties_[halfedge_texcoord_handle_][he.index()];
       }
 
-      const math::vector<Scalar,3>& normal(face_handle f) const
+      const vector<3>& normal(face_handle f) const
       {
         return face_properties_[face_normal_handle_][f.index()];
       }
     
-      math::vector<Scalar,3>& normal(face_handle f)
+      vector<3>& normal(face_handle f)
       {
         return face_properties_[face_normal_handle_][f.index()];
       }
     
-      const math::vector<Scalar,3>& normal(halfedge_handle he) const
+      const vector<3>& normal(halfedge_handle he) const
       {
         return halfedge_properties_[halfedge_normal_handle_][he.index()];
       }
     
-      math::vector<Scalar,3>& normal(halfedge_handle he)
+      vector<3>& normal(halfedge_handle he)
       {
         return halfedge_properties_[halfedge_normal_handle_][he.index()];
       }
@@ -569,9 +569,6 @@ namespace owl
         return edges_[e.index()].status;
       }
     
-    
-    
-    
       bool is_sharp(edge_handle e, const angle<Scalar>& max_angle = degrees<Scalar>(44)) const
       {
         return is_sharp(halfedge(e), max_angle);
@@ -748,10 +745,6 @@ namespace owl
         return face_properties_.add_elem();
       }
     
-     /* void subdivide_vertex_split()
-      {
-      
-      }*/
     
       // inserts an edge between target(he_prev) and origin(he_next).
       // returns the halfedge containing the new face
@@ -1343,7 +1336,6 @@ namespace owl
         mesh_properties_.remove_property(ph);
       }
     
-    
       template <typename T>
       bool has_vertex_property(const std::string& name = "") const
       {
@@ -1374,7 +1366,6 @@ namespace owl
          return mesh_properties_.get_property(name);
       }
     
-    
       const face_handle& face(halfedge_handle he) const
       {
         return operator[](he).face;
@@ -1390,8 +1381,7 @@ namespace owl
         return operator[](f).halfedge;
       }
     
-    
-       face_handle& face(halfedge_handle he)
+      face_handle& face(halfedge_handle he)
       {
         return operator[](he).face;
       }

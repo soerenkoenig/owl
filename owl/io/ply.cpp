@@ -66,14 +66,14 @@ namespace owl
     {
     }
   
-    ply_reader::ply_reader(const boost::filesystem::path& filename)
+    ply_reader::ply_reader(const std::string& filename)
       : header_complete(false)
       , format_complete(false)
     {
       open(filename);
     }
   
-    void ply_reader::open(const boost::filesystem::path& filename)
+    void ply_reader::open(const std::string& filename)
     {
       file.open(filename, std::ios_base::in | std::ios_base::binary);
       if(!file.is_open())
@@ -430,9 +430,9 @@ namespace owl
       }
     }
   
-    bool create_ply_cube_ascii(const boost::filesystem::path& filename)
+    bool create_ply_cube_ascii(const std::string& filename)
     {
-      boost::filesystem::ofstream ply(filename);
+      std::ofstream ply(filename);
       if(ply.is_open())
       {
         ply << "ply" << std::endl;
