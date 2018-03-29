@@ -54,7 +54,7 @@ namespace owl
       {
       }
     
-      template <typename... Args, typename = std::enable_if_t<sizeof...(Args) == N>>
+      template <typename... Args, typename = std::enable_if_t<sizeof...(Args) == (HasAlpha ? N + 1 : N) >>
       color(Args&&... args)
         : channels_{static_cast<value_type>(std::forward<Args>(args))...}
       {
@@ -261,7 +261,7 @@ namespace owl
     template <typename T, std::size_t N, bool HasAlpha, template <typename, bool> typename Derived>
     std::ostream& operator<<(std::ostream& out, const color<T, N, HasAlpha, Derived>& col)
     {
-      return out << static_cast<const math::vector<T,N>&>(col);
+      return out << static_cast<const typename color<T, N, HasAlpha, Derived>::vector_type&>(col);
     }
   
   

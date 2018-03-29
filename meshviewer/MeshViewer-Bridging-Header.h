@@ -37,6 +37,12 @@ void mesh_halfedge_position_data_deinit(void* pos);
 void* mesh_halfedge_normal_data_init(void* mesh);
 void mesh_halfedge_normal_data_deinit(void* nmls);
 
+void* mesh_halfedge_face_normal_data_init(void* mesh);
+void mesh_halfedge_face_normal_data_deinit(void* nmls);
+
+void* mesh_halfedge_face_color_data_init(void* mesh);
+void mesh_halfedge_face_color_data_deinit(void* colors);
+
 void* mesh_triangle_halfedge_indices_init(void* mesh);
 void mesh_triangle_halfedge_indices_deinit(void* indices);
 
@@ -50,6 +56,8 @@ void mesh_auto_center_and_scale(void* mesh);
 void mesh_print_vertex_positions(void * mesh);
 
 bool mesh_load(void* mesh, const char* filename);
+
+void colorize_mesh_faces(void* mesh, uint32_t color);
 
 //image
 void* image_init();

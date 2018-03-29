@@ -25,6 +25,19 @@ namespace owl
     struct color_conversion;
   
     template <typename T1, typename T2>
+    struct color_conversion<rgb<T2,true>, rgb<T1,true>>
+    {
+      static rgb<T2,true> convert(const rgb<T1,true>& col)
+      {
+        return rgb<T2,true> {channel_traits<T2>::convert(col(0)),
+          channel_traits<T2>::convert(col(1)),
+          channel_traits<T2>::convert(col(2)),
+          channel_traits<T2>::convert(col(3))
+        };
+      }
+    };
+  
+    template <typename T1, typename T2>
     struct color_conversion<rgb<T2>, rgb<T1>>
     {
       static rgb<T2> convert(const rgb<T1>& col)

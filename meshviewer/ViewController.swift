@@ -51,7 +51,7 @@ class ViewController: NSViewController{
     else
     {
       meshNode?.geometry?.firstMaterial?.lightingModel = SCNMaterial.LightingModel.blinn
-      meshNode?.geometry = mesh?.triangleGeometry()
+      meshNode?.geometry = mesh?.triangleGeometry(withFaceNormals:true)
     }
   }
   @IBAction func showCoordinateAxisPressed(_ sender: NSButton) {
@@ -85,11 +85,12 @@ class ViewController: NSViewController{
    DispatchQueue.global(qos: .background).async {
       self.mesh = Mesh.load(filename:url)
       self.mesh!.auto_center_and_scale()
-      self.mesh?.triangulate()
+      self.mesh!.triangulate()
+      self.mesh!.colorize_faces()
     
     
       DispatchQueue.main.async{
-          self.meshNode?.geometry = self.mesh?.triangleGeometry()
+          self.meshNode?.geometry = self.mesh?.triangleGeometry(withFaceNormals:true)
           print("Mesh statistics: # faces = \(self.mesh!.faceCount), # vertices = \(self.mesh!.vertexCount)")
           self.progressIndicator.stopAnimation(self)
           self.progressIndicator.isHidden = true

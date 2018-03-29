@@ -23,6 +23,7 @@
 #include "owl/math/angle.hpp"
 #include "owl/math/interval.hpp"
 #include "owl/math/constants.hpp"
+#include "owl/color/color.hpp"
 
 namespace owl
 {
@@ -116,6 +117,7 @@ namespace owl
       using vector3 = vector<3>;
       using vector2 = vector<2>;
       using box = box<Scalar>;
+      using color_t = color::rgba8u;
     
       template <typename Range>
       using is_vertex_handle_range = std::is_same<typename utils::container_traits<std::decay_t<Range>>::value_type, vertex_handle>;
@@ -136,6 +138,7 @@ namespace owl
       {
         add_property(vertex_position_handle_, "vertex_position");
         add_property(face_normal_handle_, "face_normal");
+        add_property(face_color_handle_, "face_color");
         add_property(halfedge_normal_handle_, "halfedge_normal");
         add_property(halfedge_texcoord_handle_, "halfedge_texcoord");
       }
@@ -318,6 +321,16 @@ namespace owl
       vector3& normal(face_handle f)
       {
         return face_properties_[face_normal_handle_][f.index()];
+      }
+    
+      const color_t& color(face_handle f) const
+      {
+        return face_properties_[face_color_handle_][f.index()];
+      }
+    
+      color_t& color(face_handle f)
+      {
+        return face_properties_[face_color_handle_][f.index()];
       }
     
       const vector3& normal(halfedge_handle he) const
@@ -1797,6 +1810,7 @@ namespace owl
 
       vertex_property_handle<vector3> vertex_position_handle_;
       face_property_handle<vector3> face_normal_handle_;
+      face_property_handle<color_t> face_color_handle_;
       halfedge_property_handle<vector3> halfedge_normal_handle_;
       halfedge_property_handle<vector2> halfedge_texcoord_handle_;
     
@@ -1806,6 +1820,15 @@ namespace owl
       utils::indexed_property_container<face_tag> face_properties_;
       utils::property_container mesh_properties_;
     };
+  
+  
+    template<typename Scalar>
+    void colorize_faces(mesh<Scalar>& m, const typename mesh<Scalar>::color_t& col)
+    {
+      for(auto f: m.faces())
+        m.color(f) = col;
+  
+    }
   
     template<typename Scalar>
     std::size_t num_shells(mesh<Scalar>& mesh)

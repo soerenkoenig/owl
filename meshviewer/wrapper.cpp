@@ -5,6 +5,7 @@
 #include "owl/math/mesh_primitives.hpp"
 #include "owl/math/mesh_io.hpp"
 #include "owl/math/trafos.hpp"
+#include "owl/color/color_conversion.hpp"
 
 extern "C" void* mesh_init()
 {
@@ -150,6 +151,48 @@ extern "C" void mesh_halfedge_normal_data_deinit(void* nmls)
   delete[] (float*)nmls;
 }
 
+extern "C" void* mesh_halfedge_face_normal_data_init(void * mesh)
+{
+  const owl::math::mesh<float>* m = (const owl::math::mesh<float>*)mesh;
+  float* normals = new float[m->num_halfedges()*3];
+ 
+  std::size_t i = 0;
+  for(auto he: m->halfedges())
+  {
+    normals[i++] = m->normal(m->face(he)).x();
+    normals[i++] = m->normal(m->face(he)).y();
+    normals[i++] = m->normal(m->face(he)).z();
+  }
+  return normals;
+}
+
+extern "C" void mesh_halfedge_face_normal_data_deinit(void* nmls)
+{
+  delete[] (float*)nmls;
+}
+
+extern "C" void* mesh_halfedge_face_color_data_init(void* mesh)
+{
+  const owl::math::mesh<float>* m = (const owl::math::mesh<float>*)mesh;
+  float* colors = new float[m->num_halfedges()*4];
+ 
+  std::size_t i = 0;
+  for(auto he: m->halfedges())
+  {
+    owl::color::rgba32f c = owl::color::convert<owl::color::rgba32f>(m->color(m->face(he)));
+    colors[i++] = c.r();
+    colors[i++] = c.g();
+    colors[i++] = c.b();
+    colors[i++] = c.a();
+  }
+  return colors;
+}
+
+extern "C" void mesh_halfedge_face_color_data_deinit(void* colors)
+{
+  delete[] (std::uint8_t*)colors;
+}
+
 extern "C" int* mesh_triangle_halfedge_indices_init(void* mesh)
 {
   owl::math::mesh<float>* m = (owl::math::mesh<float>*)mesh;
@@ -215,6 +258,14 @@ extern "C" bool mesh_load(void* mesh, const char* filename)
   owl::math::mesh<float>* m = (owl::math::mesh<float>*)mesh;
   bool success =  owl::math::read(*m,filename);
   return success;
+}
+
+extern "C" void colorize_mesh_faces(void* mesh, uint32_t color)
+{
+  owl::math::mesh<float>* m = (owl::math::mesh<float>*)mesh;
+  owl::math::colorize_faces(*m,(owl::color::rgba8u::hex(color)));
+  std::cout << m->color(owl::math::face_handle(0)) <<std::endl;
+  
 }
 
 

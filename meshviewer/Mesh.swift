@@ -46,7 +46,7 @@ class Mesh: NSObject
       return mesh;
     }
   
-     static func load(filename:String) -> Mesh
+    static func load(filename:String) -> Mesh
     {
       let mesh = Mesh();
       mesh_load(mesh.cpp_mesh_pointer, filename.cCharArray)
@@ -78,6 +78,11 @@ class Mesh: NSObject
     func triangulate()
     {
       mesh_triangulate(self.cpp_mesh_pointer)
+    }
+  
+    func colorize_faces(_ color : NSColor = #colorLiteral(red: 0.9607843161, green: 0.7058823705, blue: 0.200000003, alpha: 1))
+    {
+      colorize_mesh_faces(self.cpp_mesh_pointer,color.hexUInt32)
     }
   
     func auto_center_and_scale()
@@ -128,6 +133,7 @@ class Mesh: NSObject
       let normalData = Data(bytes: normalPtr, count: MemoryLayout<Float32>.size * halfedgeCount * 3)
       mesh_halfedge_normal_data_deinit(normalPtr)
       
+      
       let indexPtr = UnsafeMutableRawPointer(mesh_edge_halfedge_indices_init(self.cpp_mesh_pointer))!
       let indexData = Data(bytes: indexPtr, count: MemoryLayout<Int32>.size * edgeCount * 2)
       mesh_edge_halfedge_indices_deinit(indexPtr)
@@ -135,6 +141,7 @@ class Mesh: NSObject
       let sourcePositions = SCNGeometrySource(data: positionData, semantic: SCNGeometrySource.Semantic.vertex, vectorCount: halfedgeCount, usesFloatComponents: true, componentsPerVector: 3, bytesPerComponent: MemoryLayout<Float32>.size, dataOffset: 0, dataStride: 3*MemoryLayout<Float32>.size)
       
       let sourceNormals = SCNGeometrySource(data: normalData, semantic: SCNGeometrySource.Semantic.normal, vectorCount: halfedgeCount, usesFloatComponents: true, componentsPerVector: 3, bytesPerComponent: MemoryLayout<Float32>.size, dataOffset: 0, dataStride: 3*MemoryLayout<Float32>.size)
+      
       
       let element = SCNGeometryElement(data: indexData, primitiveType: .line, primitiveCount: edgeCount, bytesPerIndex: MemoryLayout<Int32>.size)
    
@@ -144,30 +151,41 @@ class Mesh: NSObject
     }
   
   
-    func triangleGeometry() -> SCNGeometry
+    func triangleGeometry(withFaceNormals: Bool) -> SCNGeometry
     {
-    
       let positionPtr = UnsafeMutableRawPointer(mesh_halfedge_position_data_init(self.cpp_mesh_pointer))
       let positionData = Data(bytes: positionPtr!, count: MemoryLayout<Float32>.size * halfedgeCount * 3)
       mesh_halfedge_position_data_deinit(positionPtr!)
       
-      let normalPtr = UnsafeMutableRawPointer(mesh_halfedge_normal_data_init(self.cpp_mesh_pointer))!
+      let normalPtr : UnsafeMutableRawPointer
+      if withFaceNormals
+      {
+        normalPtr = UnsafeMutableRawPointer(mesh_halfedge_face_normal_data_init(self.cpp_mesh_pointer))!
+      }
+      else
+      {
+         normalPtr = UnsafeMutableRawPointer(mesh_halfedge_normal_data_init(self.cpp_mesh_pointer))!
+      }
       let normalData = Data(bytes: normalPtr, count: MemoryLayout<Float32>.size * halfedgeCount * 3)
       mesh_halfedge_normal_data_deinit(normalPtr)
+      
+      let colorPtr = UnsafeMutableRawPointer(mesh_halfedge_face_color_data_init(self.cpp_mesh_pointer))
+      let colorData = Data(bytes: colorPtr!, count: MemoryLayout<Float32>.size * halfedgeCount * 4)
+      mesh_halfedge_face_color_data_deinit(colorPtr!)
       
       let indexPtr = UnsafeMutableRawPointer(mesh_triangle_halfedge_indices_init(self.cpp_mesh_pointer))!
       let indexData = Data(bytes: indexPtr, count: MemoryLayout<Int32>.size * faceCount * 3)
       mesh_triangle_halfedge_indices_deinit(indexPtr)
       
-      let sourcePositions = SCNGeometrySource(data: positionData, semantic: SCNGeometrySource.Semantic.vertex, vectorCount: halfedgeCount, usesFloatComponents: true, componentsPerVector: 3, bytesPerComponent: MemoryLayout<Float32>.size, dataOffset: 0, dataStride: 3*MemoryLayout<Float32>.size)
+      let sourcePositions = SCNGeometrySource(data: positionData, semantic: SCNGeometrySource.Semantic.vertex, vectorCount: halfedgeCount, usesFloatComponents: true, componentsPerVector: 3, bytesPerComponent: MemoryLayout<Float32>.size, dataOffset: 0, dataStride: 3 * MemoryLayout<Float32>.size)
       
-      let sourceNormals = SCNGeometrySource(data: normalData, semantic: SCNGeometrySource.Semantic.normal, vectorCount: halfedgeCount, usesFloatComponents: true, componentsPerVector: 3, bytesPerComponent: MemoryLayout<Float32>.size, dataOffset: 0, dataStride: 3*MemoryLayout<Float32>.size)
+      let sourceNormals = SCNGeometrySource(data: normalData, semantic: SCNGeometrySource.Semantic.normal, vectorCount: halfedgeCount, usesFloatComponents: true, componentsPerVector: 3, bytesPerComponent: MemoryLayout<Float32>.size, dataOffset: 0, dataStride: 3 * MemoryLayout<Float32>.size)
+      
+      let sourceColors = SCNGeometrySource(data: colorData, semantic: SCNGeometrySource.Semantic.color, vectorCount: halfedgeCount, usesFloatComponents: true, componentsPerVector: 4, bytesPerComponent: MemoryLayout<Float32>.size, dataOffset: 0, dataStride: 4 * MemoryLayout<Float32>.size)
      
-      
-  
       let element = SCNGeometryElement(data: indexData, primitiveType: .triangles, primitiveCount: faceCount, bytesPerIndex: MemoryLayout<Int32>.size)
-   
-      let meshGeom =  SCNGeometry(sources: [sourcePositions,sourceNormals], elements: [element])
+      
+      let meshGeom =  SCNGeometry(sources: [sourcePositions,sourceNormals, sourceColors], elements: [element])
       
       return meshGeom;
     }

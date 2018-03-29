@@ -22,9 +22,10 @@ namespace owl
     {
     public:
       using scalar = Scalar;
-      using matrix33 = square_matrix<Scalar,3>;
-      using matrix44 = square_matrix<Scalar,4>;
-      using vector3 = vector<Scalar,3>;
+      using matrix33 = square_matrix<Scalar, 3>;
+      using matrix44 = square_matrix<Scalar, 4>;
+      using vector3 = vector<Scalar, 3>;
+      using vector4 = vector<Scalar, 4>;
       using angle = angle<Scalar>;
       using euler_angles = euler_angles<Scalar>;
     
@@ -162,9 +163,9 @@ namespace owl
         auto r21 =  2 * (x() * z() + w() * y());
         auto r31 = -2 * (x() * y() - w() * z());
         auto r32 =  w() * w() + x() * x() - y() * y() - z() * z();
-        euler.roll = radians<Scalar>(std::atan2( r31, r32 ));
-        euler.yaw = radians<Scalar>(std::asin ( r21 ));
-        euler.pitch = radians<Scalar>(std::atan2( r11, r12 ));
+        euler.roll = radians<scalar>(std::atan2( r31, r32 ));
+        euler.yaw = radians<scalar>(std::asin ( r21 ));
+        euler.pitch = radians<scalar>(std::atan2( r11, r12 ));
         return euler;
       }
     
@@ -350,7 +351,7 @@ namespace owl
       }
 
     private:
-      vector<Scalar, 4> data_;
+      vector4 data_;
     };
   
     template <typename Scalar>
