@@ -251,7 +251,7 @@ namespace owl
       using value_type = decltype(std::declval<Deref>()(std::declval<Handle>()));
       using difference_type = decltype(std::declval<std::size_t>() - std::declval<std::size_t>());
       using pointer = void;
-      using reference = void;
+      using reference = value_type;
       using size_type = std::size_t;
     
     

@@ -1,4 +1,7 @@
 #include "owl/utils/filter_iterator.hpp"
+#include "owl/utils/range_algorithm.hpp"
+#include "owl/utils/filter_iterator.hpp"
+#include "owl/utils/handle.hpp"
 #include "catch/catch.hpp"
 
 namespace test
@@ -11,6 +14,7 @@ namespace test
     auto is_even = [](int x){ return x % 2 == 0;};
     auto even_numbers = filter(is_even, numbers);
     CHECK(even_numbers.size() == 4);
-    CHECK(std::all_of(even_numbers.begin(),even_numbers.end(), is_even));
+    CHECK(all_of(even_numbers, is_even));
+  
   }
 }

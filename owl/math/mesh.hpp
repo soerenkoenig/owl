@@ -281,8 +281,9 @@ namespace owl
         {
           return face(opposite(he));
         };
-
-        return make_handle_circulator_range(inner(f), step, deref);
+      
+        return utils::filter([](face_handle f){ return f.is_valid(); },
+            make_handle_circulator_range(inner(f), step, deref));
       }
 
       const vector<3>& position(vertex_handle v) const
@@ -1815,10 +1816,10 @@ namespace owl
           auto fc = stack.top();
           visited[fc.index()] = true;
           stack.pop();
-        
+                
           for(auto adj_face : mesh.faces(fc))
           {
-            if(adj_face.is_valid() && visited[adj_face.index()])
+            if(visited[adj_face.index()])
               continue;
             stack.push(adj_face);
           }

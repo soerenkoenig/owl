@@ -6,7 +6,7 @@
 namespace test
 {
   
-  TEST_CASE( "connected_compenents", "[math]" )
+  TEST_CASE( "connected_components", "[math]" )
   {
     using namespace owl::utils;
     struct element_tag {};
