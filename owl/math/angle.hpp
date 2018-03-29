@@ -21,7 +21,7 @@ namespace owl
     class angle
     {
     public:
-      using scalar_type = Scalar;
+      using scalar = Scalar;
     
       template <typename S1, typename S2 = Scalar>
       using enable_if_scalar_t = std::enable_if_t<std::is_convertible<S1, S2>::value>;
@@ -34,7 +34,7 @@ namespace owl
   
       template <typename S, typename = enable_if_scalar_t<S>>
       constexpr angle(const S& value, degree_tag)
-        : value_(value * constants::pi<scalar_type> / 180)
+        : value_(value * constants::pi<scalar> / 180)
       {
       }
   
@@ -46,32 +46,32 @@ namespace owl
   
       template <typename S, typename = enable_if_scalar_t<S>>
       constexpr angle(const S& value, gon_tag)
-        : value_(value * constants::pi<scalar_type> / 200)
+        : value_(value * constants::pi<scalar> / 200)
       {
       }
     
-      operator scalar_type() const
+      operator scalar() const
       {
         return value_;
       }
   
-      scalar_type degrees() const
+      scalar degrees() const
       {
-        return scalar_type(value_ * 180 / constants::pi<scalar_type>);
+        return scalar(value_ * 180 / constants::pi<scalar>);
       }
   
-      scalar_type gons() const
+      scalar gons() const
       {
-        return scalar_type(value_ * 200 / constants::pi<scalar_type>);
+        return scalar(value_ * 200 / constants::pi<scalar>);
       }
   
-      scalar_type radians() const
+      scalar radians() const
       {
         return value_;
       }
     
     private:
-      scalar_type value_;
+      scalar value_;
     };
   
     template<typename Scalar>
@@ -131,7 +131,7 @@ namespace owl
     template <typename Scalar>
     Scalar cotan(const angle<Scalar>& a)
     {
-      return Scalar{1}/tan(a);
+      return Scalar{1} / tan(a);
     }
   }
 }
