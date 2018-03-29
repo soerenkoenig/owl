@@ -10,13 +10,12 @@
 #pragma once
 #include <functional>
 
-
 namespace owl
 {
   namespace utils
   {
-    struct empty
-    {};
+    struct empty {};
+  
     template<typename T, typename Get, typename Set = empty>
     class property
     {
@@ -27,9 +26,9 @@ namespace owl
       {
         return get_();
       }
+    
       property(const property&) = delete;
   
-    
       template <typename T1,bool Dummy = true, typename = std::enable_if_t<Dummy && !readonly>>
       property& operator=(T1&& v)
       {
@@ -41,10 +40,9 @@ namespace owl
       property(Get&& g, Set&& s)
         : get_(std::forward<Get>(g))
         , set_(std::forward<Set>(s))
-        {}
+      {}
     
-    
-       property(Get&& g)
+      property(Get&& g)
         : get_(std::forward<Get>(g))
       {}
     
@@ -52,7 +50,6 @@ namespace owl
       Get get_;
       Set set_;
     };
-  
   
     template<typename T, typename Get, typename Set>
     property<T, Get, Set> make_property(Get&& g, Set&& s)
@@ -65,9 +62,5 @@ namespace owl
     {
       return {std::forward<Get>(g)};
     }
-  
-  
-  
   }
 }
-

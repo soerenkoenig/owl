@@ -109,9 +109,13 @@ namespace owl
     {
     public:
       using scalar = Scalar;
+      using angle = angle<scalar>;
+    
       template <std::size_t Dim>
       using vector = vector<Scalar, Dim>;
-    
+      using vector3 = vector<3>;
+      using vector2 = vector<2>;
+      using box = box<Scalar>;
     
       template <typename Range>
       using is_vertex_handle_range = std::is_same<typename utils::container_traits<std::decay_t<Range>>::value_type, vertex_handle>;
@@ -286,42 +290,42 @@ namespace owl
             make_handle_circulator_range(inner(f), step, deref));
       }
 
-      const vector<3>& position(vertex_handle v) const
+      const vector3& position(vertex_handle v) const
       {
         return vertex_properties_[vertex_position_handle_][v.index()];
       }
 
-      vector<3>& position(vertex_handle v)
+      vector3& position(vertex_handle v)
       {
         return vertex_properties_[vertex_position_handle_][v.index()];
       }
 
-      const vector<2>& texcoord(halfedge_handle he) const
+      const vector2& texcoord(halfedge_handle he) const
       {
         return halfedge_properties_[halfedge_texcoord_handle_][he.index()];
       }
 
-      vector<2>& texcoord(halfedge_handle he)
+      vector2& texcoord(halfedge_handle he)
       {
         return halfedge_properties_[halfedge_texcoord_handle_][he.index()];
       }
 
-      const vector<3>& normal(face_handle f) const
+      const vector3& normal(face_handle f) const
       {
         return face_properties_[face_normal_handle_][f.index()];
       }
     
-      vector<3>& normal(face_handle f)
+      vector3& normal(face_handle f)
       {
         return face_properties_[face_normal_handle_][f.index()];
       }
     
-      const vector<3>& normal(halfedge_handle he) const
+      const vector3& normal(halfedge_handle he) const
       {
         return halfedge_properties_[halfedge_normal_handle_][he.index()];
       }
     
-      vector<3>& normal(halfedge_handle he)
+      vector3& normal(halfedge_handle he)
       {
         return halfedge_properties_[halfedge_normal_handle_][he.index()];
       }
@@ -396,14 +400,16 @@ namespace owl
         return status(h).is_selected();
       }
     
-      template <typename VertexRange, typename = std::enable_if_t<is_vertex_handle_range<VertexRange>::value>>
+      template <typename VertexRange, typename =
+        std::enable_if_t<is_vertex_handle_range<VertexRange>::value>>
       auto positions(VertexRange&& vertices) const
       {
         return utils::map_range([this](vertex_handle v)->const auto&{ return position(v); },
           std::forward<VertexRange>(vertices));
       }
 
-      template <typename VertexRange, typename = std::enable_if_t<is_vertex_handle_range<VertexRange>::value>>
+      template <typename VertexRange, typename =
+        std::enable_if_t<is_vertex_handle_range<VertexRange>::value>>
       auto positions(VertexRange&& vertices)
       {
         return utils::map_range([this](vertex_handle v)->auto&{ return position(v); },
@@ -424,14 +430,16 @@ namespace owl
           std::forward<FaceHandleRange>(faces));
       }
 
-      template <typename HalfEdgeHandleRange, typename = std::enable_if_t<is_halfedge_handle_range<HalfEdgeHandleRange>::value>, typename = void, typename = void>
+      template <typename HalfEdgeHandleRange, typename = std::enable_if_t<is_halfedge_handle_range<HalfEdgeHandleRange>::value>,
+        typename = void, typename = void>
       auto normals(HalfEdgeHandleRange&& halfedges) const
       {
         return utils::map_range([this](halfedge_handle he)->const auto&{ return normal(he);},
           std::forward<HalfEdgeHandleRange>(halfedges));
       }
     
-      template <typename HalfEdgeHandleRange, typename = std::enable_if_t<is_halfedge_handle_range<HalfEdgeHandleRange>::value>, typename = void, typename = void>
+      template <typename HalfEdgeHandleRange, typename = std::enable_if_t<is_halfedge_handle_range<HalfEdgeHandleRange>::value>,
+        typename = void, typename = void>
       auto normals(HalfEdgeHandleRange&& halfedges)
       {
         return utils::map_range([this](halfedge_handle he)->auto&{ return normal(he);},
@@ -445,10 +453,11 @@ namespace owl
           std::forward<HalfEdgeHandleRange>(halfedges));
       }
 
-      template <typename HalfEdgeHandleRange, typename = std::enable_if_t<is_halfedge_handle_range<HalfEdgeHandleRange>::value>, typename = void>
+      template <typename HalfEdgeHandleRange, typename = std::enable_if_t<is_halfedge_handle_range<HalfEdgeHandleRange>::value>,
+        typename = void>
       auto texcoords(HalfEdgeHandleRange&& halfedges)
       {
-        return utils::map_range([this](halfedge_handle he)->auto&{ return texcoord(he);},
+        return utils::map_range([this](halfedge_handle he) -> auto&{ return texcoord(he);},
           std::forward<HalfEdgeHandleRange>(halfedges));
       }
     
@@ -475,10 +484,10 @@ namespace owl
       std::size_t num_n_gons(std::size_t n) const
       {
         return utils::count_if(faces(),
-         [this,n](face_handle f)
-         {
-           return is_n_gon(f, n);
-         });
+          [this,n](face_handle f)
+          {
+            return is_n_gon(f, n);
+          });
       }
     
       std::size_t num_triangles() const
@@ -570,33 +579,33 @@ namespace owl
         return edges_[e.index()].status;
       }
     
-      bool is_sharp(edge_handle e, const angle<Scalar>& max_angle = degrees<Scalar>(44)) const
+      bool is_sharp(edge_handle e, const angle& max_angle = degrees<scalar>(44)) const
       {
         return is_sharp(halfedge(e), max_angle);
       }
   
-      bool is_sharp(halfedge_handle he, const angle<Scalar>& max_angle = degrees<Scalar>(44)) const
+      bool is_sharp(halfedge_handle he, const angle& max_angle = degrees<scalar>(44)) const
       {
         auto angle = std::abs(dihedral_angle(he));
         return angle >= max_angle;
       }
     
-      vector<3> direction(halfedge_handle he) const
+      vector3 direction(halfedge_handle he) const
       {
         return position(target(he)) - position(origin(he));
       }
     
-      Scalar length(halfedge_handle he) const
+      scalar length(halfedge_handle he) const
       {
         return direction(he).length();
       }
     
-      Scalar length(edge_handle e) const
+      scalar length(edge_handle e) const
       {
         return length(halfedge(e));
       }
     
-      edge_handle split(edge_handle e, const vector<3>& position)
+      edge_handle split(edge_handle e, const vector3& position)
       {
          return edge(split(halfedge(e), position));
       }
@@ -606,7 +615,7 @@ namespace owl
         return edge(split(halfedge(e), v));
       }
     
-      halfedge_handle split(halfedge_handle he, const vector<3>& position)
+      halfedge_handle split(halfedge_handle he, const vector3& position)
       {
         auto v = add_vertex(position);
         return split(he, v);
@@ -776,25 +785,25 @@ namespace owl
         return he;
       }
     
-      void split(face_handle f, const vector<3>& pos)
+      void split(face_handle f, const vector3& pos)
       {
         split(f, add_vertex(pos));
       }
     
-      vector<3> centroid(halfedge_handle he) const
+      vector3 centroid(halfedge_handle he) const
       {
         return (position(target(he)) + position(origin(he)))/2;
       }
     
-      vector<3> centroid(edge_handle e) const
+      vector3 centroid(edge_handle e) const
       {
         return centroid(halfedge(e));
       }
     
-      vector<3> centroid(face_handle f) const
+      vector3 centroid(face_handle f) const
       {
         auto points = positions(vertices(f));
-        vector<3> mp = vector<3>::zero();
+        vector3 mp = vector3::zero();
         std::size_t n = 0;
         for(auto p : points)
         {
@@ -840,52 +849,52 @@ namespace owl
         incoming(v) = halfedge(edges_new.front());
       }
     
-      angle<Scalar> sector_angle(halfedge_handle he) const
+      angle sector_angle(halfedge_handle he) const
       {
         auto v0 = direction(next(he));
         auto v1 = direction(opposite(he));
         auto denom = v0.length() * v1.length();
         
-        if(denom == Scalar(0))
+        if(denom == scalar(0))
           return 0;
     
-        Scalar cos_a = dot(v0 , v1) / denom;
+        scalar cos_a = dot(v0 , v1) / denom;
         cos_a = std::clamp(cos_a, -1, 1);
         if(is_boundary(he))
         {
-          vector<3> f_n(compute_loop_normal(opposite(he)));
-          Scalar sign_a = dot(cross(v0, v1), f_n);
+          vector3 f_n(compute_loop_normal(opposite(he)));
+          scalar sign_a = dot(cross(v0, v1), f_n);
           return radians<Scalar>(sign_a >= 0 ? acos(cos_a) : -acos(cos_a));
         }
         else
           return radians<Scalar>(acos(cos_a));
       }
 
-      angle<Scalar> dihedral_angle(halfedge_handle he) const
+      angle dihedral_angle(halfedge_handle he) const
       {
         return dihedral_angle(edge(he));
       }
     
-      angle<Scalar> dihedral_angle(edge_handle e) const
+      angle dihedral_angle(edge_handle e) const
       {
         if(is_boundary(e))
-          return radians<Scalar>(0);
+          return radians<scalar>(0);
 
-        vector<3> n0, n1;
+        vector3 n0, n1;
         halfedge_handle he = halfedge(e);
         n0 = compute_sector_normal(he);
         n1 = compute_sector_normal(opposite(he));
         auto he_dir = direction(he);
-        Scalar denom = n0.length() * n1.length();
+        scalar denom = n0.length() * n1.length();
         if(denom == 0)
-          return radians<Scalar>(0);
-        Scalar da_cos = dot(n0, n1) / denom;
-        da_cos = std::clamp(da_cos, Scalar{-1}, Scalar{1});
-        Scalar da_sin_sign = dot(cross(n0, n1), he_dir);
-        return radians<Scalar>(da_sin_sign >= 0 ? acos(da_cos) : -acos(da_cos));
+          return radians<scalar>(0);
+        scalar da_cos = dot(n0, n1) / denom;
+        da_cos = std::clamp(da_cos, scalar{-1}, scalar{1});
+        scalar da_sin_sign = dot(cross(n0, n1), he_dir);
+        return radians<scalar>(da_sin_sign >= 0 ? acos(da_cos) : -acos(da_cos));
       }
     
-      vector<3> compute_sector_normal(halfedge_handle he, bool normalize = true) const
+      vector3 compute_sector_normal(halfedge_handle he, bool normalize = true) const
       {
         auto nml = cross(direction(next(he)), direction(opposite(he)));
         if(normalize)
@@ -893,9 +902,9 @@ namespace owl
         return nml;
       }
     
-      vector<3> compute_loop_normal(halfedge_handle he, bool normalize = true) const
+      vector3 compute_loop_normal(halfedge_handle he, bool normalize = true) const
       {
-        auto nml = vector<3>::zero();
+        auto nml = vector3::zero();
       
         for(auto he : halfedges(he))
           nml += compute_sector_normal(he, false);
@@ -906,14 +915,14 @@ namespace owl
         return nml;
       }
     
-      vector<3> compute_face_normal(face_handle f) const
+      vector3 compute_face_normal(face_handle f) const
       {
         return compute_loop_normal(inner(f));
       }
     
-      vector<3> compute_vertex_normal(vertex_handle v) const
+      vector3 compute_vertex_normal(vertex_handle v) const
       {
-        auto nml = vector<3>::zero();
+        auto nml = vector3::zero();
         if(v.index() == 217)
           return nml;
         for(auto he : incoming_halfedges(v))
@@ -929,13 +938,13 @@ namespace owl
           normal(f) = compute_face_normal(f);
       }
     
-      void update_halfedge_normals(const angle<Scalar>& max_angle = degrees<Scalar>(44))
+      void update_halfedge_normals(const angle& max_angle = degrees<scalar>(44))
       {
         for(auto he : halfedges())
           normal(he) = is_sharp(he, max_angle) ? compute_loop_normal(he) : compute_vertex_normal(target(he));
       }
     
-      void update_normals(const angle<Scalar>& max_angle = degrees<Scalar>(44))
+      void update_normals(const angle& max_angle = degrees<scalar>(44))
       {
         update_face_normals();
         update_halfedge_normals(max_angle);
@@ -979,7 +988,7 @@ namespace owl
         return he == next(next(next(next(he))));
       }
     
-      math::box<Scalar> bounds() const
+      box bounds() const
       {
         return math::bounds(positions(vertices()));
       }
@@ -1006,7 +1015,7 @@ namespace owl
         return vertex_properties_.add_elem();
       }
     
-      auto add_vertex(const vector<3>& pos)
+      auto add_vertex(const vector3& pos)
       {
         auto v = add_vertex();
         position(v) = pos;
@@ -1786,10 +1795,10 @@ namespace owl
       std::vector<vertex_t> vertices_;
       std::vector<face_t> faces_;
 
-      vertex_property_handle<vector3<Scalar>> vertex_position_handle_;
-      face_property_handle<vector3<Scalar>> face_normal_handle_;
-      halfedge_property_handle<vector3<Scalar>> halfedge_normal_handle_;
-      halfedge_property_handle<vector2<Scalar>> halfedge_texcoord_handle_;
+      vertex_property_handle<vector3> vertex_position_handle_;
+      face_property_handle<vector3> face_normal_handle_;
+      halfedge_property_handle<vector3> halfedge_normal_handle_;
+      halfedge_property_handle<vector2> halfedge_texcoord_handle_;
     
       utils::indexed_property_container<vertex_tag> vertex_properties_;
       utils::indexed_property_container<edge_tag> edge_properties_;
@@ -1816,12 +1825,11 @@ namespace owl
           auto fc = stack.top();
           visited[fc.index()] = true;
           stack.pop();
-                
+        
           for(auto adj_face : mesh.faces(fc))
           {
-            if(visited[adj_face.index()])
-              continue;
-            stack.push(adj_face);
+            if(!visited[adj_face.index()])
+              stack.push(adj_face);
           }
         }
       }

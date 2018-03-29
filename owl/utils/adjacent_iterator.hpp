@@ -41,8 +41,6 @@ namespace owl
       adjacent_iterator(Iterator first, Iterator last)
         : first_(first), last_(last), prev_(std::distance(first,last) < 3 ? last :first), current_(std::next(first)), next_(std::next(std::next(first)))
       {
- 
-      
       }
 
       bool operator==(const adjacent_iterator& other) const

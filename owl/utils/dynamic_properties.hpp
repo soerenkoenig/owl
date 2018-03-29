@@ -16,8 +16,6 @@
 #include <vector>
 #include <memory>
 
-
-
 namespace owl
 {
   namespace utils
@@ -27,7 +25,6 @@ namespace owl
     template <typename T>
     using property_handle = owl::utils::handle<property_tag>;
   
-
     class property_base
     {
      public:
@@ -377,7 +374,5 @@ namespace owl
     
       std::vector<std::unique_ptr<indexed_property_base>> properties_;
     };
-  
-  
   }
 }
