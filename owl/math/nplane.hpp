@@ -21,16 +21,16 @@ namespace owl
     class nplane
     {
     public:
-      using scalar_type = Scalar;
-      using vector_type = vector<Scalar, Dimension>;
-      using homogenous_vector_type = vector<Scalar, Dimension + 1>;
+      using scalar = Scalar;
+      using vector = vector<Scalar, Dimension>;
+      using homog_vector = math::vector<Scalar, Dimension + 1>;
    
       template <typename S1>
-      using enable_if_scalar_t = typename vector_type::template enable_if_scalar_t<S1>;
+      using enable_if_scalar_t = typename vector::template enable_if_scalar_t<S1>;
     
       nplane() = default;
     
-      nplane(const vector<Scalar, Dimension + 1>& arr)
+      nplane(const homog_vector& arr)
         : data_(arr)
       {
         normalize();
@@ -43,24 +43,22 @@ namespace owl
         normalize();
       }
     
-      const vector_type& normal() const
+      const vector& normal() const
       {
-        return reinterpret_cast<const vector_type&>(data_);
+        return reinterpret_cast<const vector&>(data_);
       }
     
-      scalar_type distance() const
+      scalar distance() const
       {
         return -data_[3];
       }
     
-  
-    
-      scalar_type operator()(const vector_type& vec)
+      scalar operator()(const vector& vec)
       {
         return dot(normal(), vec) + data_[3];
       }
     
-      scalar_type operator()(const homogenous_vector_type& hvec)
+      scalar operator()(const homog_vector& hvec)
       {
         return dot(data_, hvec);
       }
@@ -73,14 +71,14 @@ namespace owl
           data_ /= len;
       }
     
-      homogenous_vector_type data_;
+      homog_vector data_;
     };
   
     template<typename Scalar>
-    using line = nplane<Scalar,2>;
+    using line = nplane<Scalar, 2>;
   
     template<typename Scalar>
-    using plane = nplane<Scalar,3>;
+    using plane = nplane<Scalar, 3>;
   
   
     using planef = plane<float>;
@@ -97,21 +95,21 @@ namespace owl
       }*/
   
     template<typename T, std::size_t N>
-    nplane<T,N> nplane_from_point_and_normal(const vector<T,N>& point, const vector<T,N>& normal)
+    nplane<T, N> nplane_from_point_and_normal(const vector<T, N>& point, const vector<T, N>& normal)
     {
-      vector<T,N+1> coeffs;
+      vector<T, N + 1> coeffs;
       coeffs << normal, -dot(normal, point);
-      return nplane<T,N>(coeffs);
+      return nplane<T, N>(coeffs);
     }
     
     template<typename T, std::size_t N>
-    T distance(const nplane<T,N>& pl, const vector<T,N>& pnt)
+    T distance(const nplane<T, N>& pl, const vector<T, N>& pnt)
     {
       return dot(pl.normal(), pnt) - pl.distance();
     }
   
     template<typename T, std::size_t N>
-    std::optional<T> intersect(const ray<T,N> r, const nplane<T,N>& pl)
+    std::optional<T> intersect(const ray<T, N> r, const nplane<T, N>& pl)
     {
       T denom = dot( pl.normal(), r.direction());
       if( denom == 0)

@@ -21,49 +21,56 @@ namespace owl
     class quaternion
     {
     public:
+      using scalar = Scalar;
+      using matrix33 = square_matrix<Scalar,3>;
+      using matrix44 = square_matrix<Scalar,4>;
+      using vector3 = vector<Scalar,3>;
+      using angle = angle<Scalar>;
+      using euler_angles = euler_angles<Scalar>;
+    
       quaternion()
         : data_{0, 0, 0, 1}
       {
       }
     
-      quaternion(const Scalar& x, const Scalar& y, const Scalar& z, const Scalar& w)
+      quaternion(const scalar& x, const scalar& y, const scalar& z, const scalar& w)
         : data_{x, y, z, w}
       {
       }
     
-      quaternion(const matrix<Scalar,3,3>& m)
+      quaternion(const matrix33& m)
       {
         *this = m;
       }
     
-      quaternion(const matrix<Scalar,4,4>& m)
+      quaternion(const matrix44& m)
       {
         *this = m;
       }
     
-      quaternion(const euler_angles<Scalar>& other)
+      quaternion(const euler_angles& other)
       {
         *this = other;
       }
     
-      quaternion(const vector<Scalar,3>& axis, const angle<Scalar> &theta)
+      quaternion(const vector3& axis, const angle &theta)
       {
         set_from_axis_angle(axis, theta);
       }
     
-      quaternion& operator=(const euler_angles<Scalar>& other)
+      quaternion& operator=(const euler_angles& other)
       {
-        Scalar cy = cos(other.yaw * Scalar(0.5));
-        Scalar sy = sin(other.yaw * Scalar(0.5));
-        Scalar cz = cos(other.roll * Scalar(0.5));
-        Scalar sz = sin(other.roll * Scalar(0.5));
-        Scalar cx = cos(other.pitch * Scalar(0.5));
-        Scalar sx = sin(other.pitch * Scalar(0.5));
+        scalar cy = cos(other.yaw / 2);
+        scalar sy = sin(other.yaw / 2);
+        scalar cz = cos(other.roll / 2);
+        scalar sz = sin(other.roll / 2);
+        scalar cx = cos(other.pitch / 2);
+        scalar sx = sin(other.pitch / 2);
     
-        w() = cx*cy*cz - sx*sy*sz;
-        x() = sx*cy*cz + cx*sy*sz;
-        y() = cx*sy*cz - sx*cy*sz;
-        z() = cx*cy*sz + sx*sy*cz;
+        w() = cx * cy * cz - sx * sy * sz;
+        x() = sx * cy * cz + cx * sy * sz;
+        y() = cx * sy * cz - sx * cy * sz;
+        z() = cx * cy * sz + sx * sy * cz;
     
         return *this;
       }
@@ -104,58 +111,57 @@ namespace owl
       }
     
     
-      operator matrix<Scalar,3,3>() const
+      operator matrix33() const
       {
-        const Scalar q00 = 2.0 * data_[0] * data_[0];
-        const Scalar q11 = 2.0 * data_[1] * data_[1];
-        const Scalar q22 = 2.0 * data_[2] * data_[2];
-        const Scalar q01 = 2.0 * data_[0] * data_[1];
-        const Scalar q02 = 2.0 * data_[0] * data_[2];
-        const Scalar q03 = 2.0 * data_[0] * data_[3];
-        const Scalar q12 = 2.0 * data_[1] * data_[2];
-        const Scalar q13 = 2.0 * data_[1] * data_[3];
-        const Scalar q23 = 2.0 * data_[2] * data_[3];
+        const scalar q00 = 2 * data_[0] * data_[0];
+        const scalar q11 = 2 * data_[1] * data_[1];
+        const scalar q22 = 2 * data_[2] * data_[2];
+        const scalar q01 = 2 * data_[0] * data_[1];
+        const scalar q02 = 2 * data_[0] * data_[2];
+        const scalar q03 = 2 * data_[0] * data_[3];
+        const scalar q12 = 2 * data_[1] * data_[2];
+        const scalar q13 = 2 * data_[1] * data_[3];
+        const scalar q23 = 2 * data_[2] * data_[3];
     
-        matrix<Scalar,3,3> m;
+        matrix33 m;
       
-        m <<   1.0 - q11 - q22,       q01 - q23,       q02 + q13,
-                     q01 + q23, 1.0 - q22 - q00,       q12 - q03,
-                     q02 - q13,       q12 + q03, 1.0 - q11 - q00;
+        m << 1 - q11 - q22,     q01 - q23,     q02 + q13,
+                 q01 + q23, 1 - q22 - q00,     q12 - q03,
+                 q02 - q13,     q12 + q03, 1 - q11 - q00;
     
         return m;
       }
     
-      operator matrix<Scalar,4,4>() const
+      operator matrix44() const
       {
       
-        const Scalar q00 = 2.0 * data_[0] * data_[0];
-        const Scalar q11 = 2.0 * data_[1] * data_[1];
-        const Scalar q22 = 2.0 * data_[2] * data_[2];
-        const Scalar q01 = 2.0 * data_[0] * data_[1];
-        const Scalar q02 = 2.0 * data_[0] * data_[2];
-        const Scalar q03 = 2.0 * data_[0] * data_[3];
-        const Scalar q12 = 2.0 * data_[1] * data_[2];
-        const Scalar q13 = 2.0 * data_[1] * data_[3];
-        const Scalar q23 = 2.0 * data_[2] * data_[3];
+        const scalar q00 = 2 * data_[0] * data_[0];
+        const scalar q11 = 2 * data_[1] * data_[1];
+        const scalar q22 = 2 * data_[2] * data_[2];
+        const scalar q01 = 2 * data_[0] * data_[1];
+        const scalar q02 = 2 * data_[0] * data_[2];
+        const scalar q03 = 2 * data_[0] * data_[3];
+        const scalar q12 = 2 * data_[1] * data_[2];
+        const scalar q13 = 2 * data_[1] * data_[3];
+        const scalar q23 = 2 * data_[2] * data_[3];
     
-        matrix<Scalar,4,4> m;
+        matrix44 m;
       
         m << 1.0 - q11 - q22,       q01 - q23,       q02 + q13, 0,
                    q01 + q23, 1.0 - q22 - q00,       q12 - q03, 0,
                    q02 - q13,       q12 + q03, 1.0 - q11 - q00, 0,
                            0,               0,               0, 1;
-      
         return m;
       }
     
-      operator euler_angles<Scalar>() const
+      operator euler_angles() const
       {
-        euler_angles<Scalar> euler;
-        auto r11 = -2*(y()*z() - w()*x());
-        auto r12 =  w()*w() - x()*x() - y()*y() + z()*z();
-        auto r21 =  2*(x()*z() + w()*y());
-        auto r31 = -2*(x()*y() - w()*z());
-        auto r32 =  w()*w() + x()*x() - y()*y() - z()*z();
+        euler_angles euler;
+        auto r11 = -2 * (y() * z() - w() * x());
+        auto r12 =  w() * w() - x() * x() - y() * y() + z() * z();
+        auto r21 =  2 * (x() * z() + w() * y());
+        auto r31 = -2 * (x() * y() - w() * z());
+        auto r32 =  w() * w() + x() * x() - y() * y() - z() * z();
         euler.roll = radians<Scalar>(std::atan2( r31, r32 ));
         euler.yaw = radians<Scalar>(std::asin ( r21 ));
         euler.pitch = radians<Scalar>(std::atan2( r11, r12 ));
@@ -184,85 +190,84 @@ namespace owl
         return q;
       }
     
-      const Scalar& operator()(std::size_t index) const
+      const scalar& operator()(std::size_t index) const
       {
         return data_[index];
       }
     
-      Scalar& operator()(std::size_t index)
+      scalar& operator()(std::size_t index)
       {
         return data_[index];
       }
     
-      const Scalar& operator[](std::size_t index) const
+      const scalar& operator[](std::size_t index) const
       {
         return data_[index];
       }
     
-      Scalar& operator[](std::size_t index)
+      scalar& operator[](std::size_t index)
       {
         return data_[index];
       }
-      
-  
-      const Scalar& x() const
+    
+      const scalar& x() const
       {
         return data_[0];
       }
     
-      Scalar& x()
+      scalar& x()
       {
         return data_[0];
       }
     
-      const Scalar& y() const
+      const scalar& y() const
       {
         return data_[1];
       }
     
-      Scalar& y()
+      scalar& y()
       {
         return data_[1];
       }
     
-      const Scalar& z() const
+      const scalar& z() const
       {
         return data_[2];
       }
     
-      Scalar& z()
+      scalar& z()
       {
         return data_[2];
       }
     
-      const Scalar& w() const
+      const scalar& w() const
       {
         return data_[3];
       }
     
-      Scalar& w()
+      scalar& w()
       {
         return data_[3];
       }
     
-      const Scalar& real() const
+      const scalar& real() const
       {
         return data_[3];
       }
     
-      Scalar& real()
+      scalar& real()
       {
         return data_[3];
       }
     
-      const vector<Scalar,3>& imag() const
+      const vector3& imag() const
       {
-        return reinterpret_cast<const vector<Scalar,3>&>(*this);
+        return reinterpret_cast<const vector3&>(*this);
       }
     
-      vector<Scalar,3>& imag()
+      vector3& imag()
       {
-        return reinterpret_cast<vector<Scalar,3>&>(*this);
+        return reinterpret_cast<vector3&>(*this);
       }
     
       template< typename S>
@@ -304,7 +309,7 @@ namespace owl
       template <typename S>
       friend quaternion<S> operator*(const S& a, const quaternion<S>& b)
       {
-          return quaternion<S>(a * b[0], a * b[1], a * b[2], a * b[3]);
+        return quaternion<S>(a * b[0], a * b[1], a * b[2], a * b[3]);
       }
     
       quaternion& operator*=(const quaternion &q)
@@ -328,7 +333,7 @@ namespace owl
         data_.normalize();
       }
     
-      void set(const Scalar& x, const Scalar& y, const Scalar& z, const Scalar& w)
+      void set(const scalar& x, const scalar& y, const scalar& z, const scalar& w)
       {
         data_[0] = x;
         data_[1] = y;
@@ -336,12 +341,12 @@ namespace owl
         data_[3] = w;
       }
     
-      void set_from_axis_angle(const vector<Scalar,3>& axis, const angle<Scalar> &theta)
+      void set_from_axis_angle(const vector3& axis, const angle& theta)
       {
-          Scalar factor = sin(theta / 2.0);
-          imag() = factor * axis;
-          real() = cos(theta / 2.0);
-          normalize();
+        scalar factor = sin(theta / 2);
+        imag() = factor * axis;
+        real() = cos(theta / 2);
+        normalize();
       }
 
     private:
@@ -359,12 +364,10 @@ namespace owl
     {
       return compare_equal(lhs.real(), rhs.real(), margin, epsilon, scale) &&
         compare_equal(lhs.imag(), rhs.imag(), margin, epsilon, scale);
-    
     }
   
     using quaternionf = quaternion<float>;
     using quaterniond = quaternion<double>;
-  
   }
 }
 

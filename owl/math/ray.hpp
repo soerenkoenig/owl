@@ -20,43 +20,43 @@ namespace owl
     public:
       static_assert(Dimension > 1, "invalid parameter Dimension");
       
-      using scalar_type = Scalar;
-      using vector_type = vector<Scalar, Dimension>;
+      using scalar = Scalar;
+      using vector = vector<Scalar, Dimension>;
       
       ray() = default;
       
-      ray(const vector_type &origin, const vector_type& direction)
+      ray(const vector &origin, const vector& direction)
         : origin(origin)
       {
         set_direction(direction);
       }
       
-      void set_direction(const vector_type& direction)
+      void set_direction(const vector& direction)
       {
         direction_ = direction;
-        inv_direction_ = vector_type( Scalar(1) / direction.x(), Scalar(1) / direction.y(), Scalar(1) / direction.z());
+        inv_direction_ = vector(scalar(1) / direction.x(), scalar(1) / direction.y(), scalar(1) / direction.z());
       }
       
-      vector_type operator()(const scalar_type& t) const
+      vector operator()(const scalar& t) const
       {
         return origin + direction_ * t;
       }
       
-      const vector_type& direction() const
+      const vector& direction() const
       {
         return direction_;
       }
       
-      const vector_type& inv_direction() const
+      const vector& inv_direction() const
       {
         return inv_direction_;
       }
       
-      vector_type origin;
+      vector origin;
       
     private:
-      vector_type inv_direction_;
-      vector_type direction_;
+      vector inv_direction_;
+      vector direction_;
     };
     
     using ray3f = ray<float, 3>;
