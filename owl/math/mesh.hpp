@@ -24,6 +24,7 @@
 #include "owl/math/interval.hpp"
 #include "owl/math/constants.hpp"
 #include "owl/color/color.hpp"
+#include "owl/math/line_segment.hpp"
 
 namespace owl
 {
@@ -1908,5 +1909,22 @@ namespace owl
       for(auto pos: m.positions(m.vertices()))
         std::cout << pos << std::endl;
     }
+  
+    template <typename Scalar>
+    std::vector<line_segment<Scalar,3>> compute_face_normal_line_segments(const mesh<Scalar>& m, const Scalar& length = Scalar{1})
+    {
+      std::vector<line_segment<Scalar,3>> normal_line_segments;
+      normal_line_segments.reserve(m.num_faces());
+    
+      for(auto f: m.faces())
+      {
+        auto centroid = m.centroid(f);
+        normal_line_segments.emplace_back(centroid, centroid + length * m.normal(f));
+      }
+    
+     return normal_line_segments;
+    }
+  
+  
   }
 }

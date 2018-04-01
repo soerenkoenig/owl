@@ -29,7 +29,6 @@ size_t mesh_num_faces(void* mesh);
 
 size_t mesh_num_triangles(void* mesh);
 
-size_t mesh_num_quads(void* mesh);
 
 void* mesh_halfedge_position_data_init(void* mesh);
 void mesh_halfedge_position_data_deinit(void* pos);

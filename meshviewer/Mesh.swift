@@ -29,15 +29,75 @@ class Mesh: NSObject
 {
     private let cpp_mesh_pointer: UnsafeMutableRawPointer
   
+    var meshNode = Mesh.createNode()
+  
+    var useFaceNormals = true
+  
+    var isWireFrame = false
+  
+    func update()
+    {
+      if isWireFrame
+        {
+         self.meshNode.geometry = self.edgeGeometry()
+         
+        }
+        else{
+          self.meshNode.geometry = self.triangleGeometry(withFaceNormals:useFaceNormals)
+        }
+    }
+  
     override init () {
         self.cpp_mesh_pointer = mesh_init()
         super.init()
     }
   
-  
     deinit {
         mesh_deinit(self.cpp_mesh_pointer)
     }
+  
+    private static func createNode() -> SCNNode{
+     return SCNNode()
+    }
+  
+    func loadMesh(url: String, progressIndicator: NSProgressIndicator?){
+  //  statusText.stringValue = "Status: Loading mesh \(url)"
+    progressIndicator?.isHidden = false
+    progressIndicator?.usesThreadedAnimation = true
+    progressIndicator?.startAnimation(self)
+    
+   DispatchQueue.global(qos: .background).async {
+      mesh_load(self.cpp_mesh_pointer, url.cCharArray)
+      self.auto_center_and_scale()
+      self.triangulate()
+      self.colorize_faces()
+    
+    
+      DispatchQueue.main.async{
+        
+          self.update()
+          progressIndicator?.stopAnimation(self)
+          progressIndicator?.isHidden = true
+         // self.statusText.stringValue = "Status: idle"
+      }
+    }
+    
+  }
+  
+  /*
+      if isWireFrame
+    {
+     
+      meshNode?.geometry = mesh?.edgeGeometry()
+      meshNode?.geometry?.firstMaterial?.lightingModel = SCNMaterial.LightingModel.constant
+      meshNode?.geometry?.firstMaterial?.diffuse.contents  = #colorLiteral(red: 0.8446564078, green: 0.5145705342, blue: 1, alpha: 1)
+    }
+    else
+    {
+      meshNode?.geometry?.firstMaterial?.lightingModel = SCNMaterial.LightingModel.blinn
+      meshNode?.geometry = mesh?.triangleGeometry(withFaceNormals:true)
+    }
+    */
   
     static func create_geo_sphere(radius : Float, numLevels : Int) -> Mesh
     {
@@ -49,7 +109,7 @@ class Mesh: NSObject
     static func load(filename:String) -> Mesh
     {
       let mesh = Mesh();
-      mesh_load(mesh.cpp_mesh_pointer, filename.cCharArray)
+     
       return mesh;
     }
   
@@ -111,17 +171,6 @@ class Mesh: NSObject
         return Int(mesh_num_triangles(self.cpp_mesh_pointer))
     }
   
-     public var quadCount: Int {
-        return Int(mesh_num_quads(self.cpp_mesh_pointer))
-    }
-  /*
-    public var name: String {
-        return String(cString:mesh_name(self.cpp_mesh_pointer))
-    }
-  
-    func load(_ filename:String) -> Bool {
-      return Bool(mesh_load(self.cpp_mesh_pointer, filename.cCharArray))
-    }*/
   
     func edgeGeometry() -> SCNGeometry
     {

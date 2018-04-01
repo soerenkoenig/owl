@@ -24,7 +24,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
   func  application(_ sender: NSApplication, openFile filename: String) -> Bool
   {
     let myview = sender.mainWindow?.contentViewController as? ViewController
-    myview?.loadMesh(url:filename)
+    myview?.loadMesh(filename:URL(string:filename)!)
     return true
   }
   

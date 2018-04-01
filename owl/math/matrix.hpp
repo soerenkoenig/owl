@@ -632,12 +632,6 @@ namespace owl
         return prod;
     }
     
-    template<typename S1, typename  S2, std::size_t N, std::size_t M,
-      typename = enable_if_scalar_t<S1, S2>>
-    friend matrix<S2, N, M> operator*(S1&& lhs, matrix<S2, N, M> rhs)
-    {
-      return rhs *= lhs;
-    }
     
     template <typename S, typename = enable_if_scalar_t<S>>
     matrix& operator/=(S&& s)
@@ -758,6 +752,14 @@ namespace owl
     {
       return detail::comma_initializer<S, N, M>(lhs, std::forward<S2>(value));
     }
+  
+    template<typename S1, typename  S2, std::size_t N, std::size_t M,
+      typename = typename matrix<S2, N, M>:: template enable_if_scalar_t<S1, S2>>
+    matrix<S2, N, M> operator*(S1&& lhs, matrix<S2, N, M> rhs)
+    {
+      return rhs *= lhs;
+    }
+  
   
     template <typename Scalar, std::size_t Dim>
     using square_matrix = matrix<Scalar, Dim, Dim>;

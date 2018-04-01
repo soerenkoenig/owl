@@ -66,10 +66,6 @@ extern "C" size_t mesh_num_triangles(void* mesh)
   return ((owl::math::mesh<float> *)mesh)->num_triangles();
 }
 
-extern "C" size_t mesh_num_quads(void* mesh)
-{
-  return ((owl::math::mesh<float>*)mesh)->num_quads();
-}
 
 extern "C" void mesh_edge_indices(void* mesh, int* indices)
 {
@@ -93,18 +89,6 @@ extern "C" void mesh_triangle_indices(void* mesh, int* indices)
   }
 }
 
-extern "C" void mesh_quad_indices(void* mesh, int* indices)
-{
-  owl::math::mesh<float>& m = *((owl::math::mesh<float>*) mesh);
-  for(auto f: m.faces())
-  {
-    if(!m.is_quad(f))
-      continue;
-  
-    for(auto v: m.vertices(f))
-      *indices++ = (int)v.index();
-  }
-}
 
 extern "C" void mesh_print_vertex_positions(void* mesh)
 {

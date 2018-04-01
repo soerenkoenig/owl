@@ -10,7 +10,6 @@ class ViewController: NSViewController{
   @IBOutlet weak var sceneView: SCNView!
   
   @IBOutlet weak var progressIndicator: NSProgressIndicator!
-  var meshNode: SCNNode?
   var mesh: Mesh?
   var grid: Grid?
   
@@ -31,73 +30,67 @@ class ViewController: NSViewController{
     if(i == NSApplication.ModalResponse.OK)
     {
       print(openPanel.url!)
-     
-      loadMesh(url:openPanel.url!.path)
-      NSDocumentController.shared.noteNewRecentDocumentURL(openPanel.url!)
+      loadMesh(filename:openPanel.url!)
     }
+  }
+  
+  func loadMesh(filename:URL){
+     mesh?.loadMesh(url:filename.path, progressIndicator: progressIndicator)
+     NSDocumentController.shared.noteNewRecentDocumentURL(filename)
   }
  
   @IBAction func showGridButtonPressed(_ sender: NSButton) {
    self.grid?.gridVisible = sender.state == .on
   }
   
-  @IBAction func wireFrameButtonPressed(_ sender: NSButton) {
-    if sender.state == .on
-    {
-      meshNode?.geometry = mesh?.edgeGeometry()
-      meshNode?.geometry?.firstMaterial?.lightingModel = SCNMaterial.LightingModel.constant
-      meshNode?.geometry?.firstMaterial?.diffuse.contents  = #colorLiteral(red: 0.8446564078, green: 0.5145705342, blue: 1, alpha: 1)
-    }
-    else
-    {
-      meshNode?.geometry?.firstMaterial?.lightingModel = SCNMaterial.LightingModel.blinn
-      meshNode?.geometry = mesh?.triangleGeometry(withFaceNormals:true)
-    }
+   @IBAction func colorChanged(_ sender: NSColorWell) {
+    self.mesh?.colorize_faces(sender.color)
+    self.mesh?.update()
   }
+  
   @IBAction func showCoordinateAxisPressed(_ sender: NSButton) {
     self.grid?.coordinateAxisVisible = sender.state == .on
   }
   
+  @IBAction func wireFrameButtonPressed(_ sender: NSButton) {
+     self.mesh?.isWireFrame = sender.state == .on
+     self.mesh?.update()
+  }
   
-  
- /* override var representedObject: Any? {
-    didSet {
-    // Update the view, if already loaded.
-    }
-  }*/
+  @IBAction func faceNormalsButtonPressed(_ sender: NSButton) {
+     self.mesh?.useFaceNormals = sender.state == .on
+     self.mesh?.update()
+  }
   
   override func keyDown(with event: NSEvent) {
     if let key = event.charactersIgnoringModifiers, key == " "
     {
       resetCamera()
     }
+    
   }
   
-  func loadMesh(url: String){
-    statusText.stringValue = "Status: Loading mesh \(url)"
-   
-    //indicator.autoresizingMask =  NSViewHeightSizable | NSViewWidthSizable
-    progressIndicator.isHidden = false
-    progressIndicator.usesThreadedAnimation = true
-    progressIndicator.startAnimation(self)
-    
-   
-   DispatchQueue.global(qos: .background).async {
-      self.mesh = Mesh.load(filename:url)
-      self.mesh!.auto_center_and_scale()
-      self.mesh!.triangulate()
-      self.mesh!.colorize_faces()
-    
-    
-      DispatchQueue.main.async{
-          self.meshNode?.geometry = self.mesh?.triangleGeometry(withFaceNormals:true)
-          print("Mesh statistics: # faces = \(self.mesh!.faceCount), # vertices = \(self.mesh!.vertexCount)")
-          self.progressIndicator.stopAnimation(self)
-          self.progressIndicator.isHidden = true
-          self.statusText.stringValue = "Status: idle"
-      }
+  override func flagsChanged(with event: NSEvent) {
+   if event.modifierFlags.contains(.shift)
+    {
+      sceneView.allowsCameraControl = false;
     }
-    
+    else
+    {
+      sceneView.allowsCameraControl = true;
+    }
+  }
+  
+  override func mouseDown(with event: NSEvent) {
+    let local_point = sceneView.convert(event.locationInWindow, from: nil)
+    let pNear = sceneView.unprojectPoint(SCNVector3(local_point.x, local_point.y, 0.0));
+    let pFar = sceneView.unprojectPoint(SCNVector3(local_point.x, local_point.y, 1.0));
+    let source = SCNGeometrySource(vertices: [pNear, pFar])
+    let element = SCNGeometryElement(indices: [0, 1], primitiveType: .line)
+    let geometry = SCNGeometry(sources: [source], elements: [element])
+    geometry.firstMaterial?.lightingModel = .constant
+    geometry.firstMaterial?.diffuse.contents = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+    sceneView.scene?.rootNode.addChildNode(SCNNode(geometry: geometry));
   }
   
   func resetCamera() {
@@ -124,10 +117,9 @@ class ViewController: NSViewController{
     // self.mesh = Mesh.create_box()
     // self.mesh?.triangulate()
  
-   // let meshGeom = mesh?.triangleGeometry()
-    self.meshNode = SCNNode()
-    scene.rootNode.addChildNode(meshNode!)
-    loadMesh(url:"/Users/skoenig/Downloads/bun_zipper.ply")
+    mesh = Mesh()
+    scene.rootNode.addChildNode((mesh?.meshNode)!)
+    loadMesh(filename:URL(string:"/Users/skoenig/Downloads/bun_zipper.ply")!)
     sceneView.scene = scene
     sceneView.autoenablesDefaultLighting = true
     sceneView.allowsCameraControl = true

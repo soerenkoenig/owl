@@ -132,6 +132,7 @@
 		28175DB71F95BD14004ECB87 /* stop_watch.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = stop_watch.cpp; sourceTree = "<group>"; };
 		28175DB81F95BD14004ECB87 /* stop_watch.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = stop_watch.hpp; sourceTree = "<group>"; };
 		28175DBB1F95BEF0004ECB87 /* stop_watch.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = stop_watch.cpp; sourceTree = "<group>"; };
+		283E02DB206FC78E0074B568 /* line_segment.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = line_segment.hpp; sourceTree = "<group>"; };
 		28431BBC205FC899006AE1E2 /* ply.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = ply.hpp; sourceTree = "<group>"; };
 		28431BBF205FCCD6006AE1E2 /* ply.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ply.cpp; sourceTree = "<group>"; };
 		284972912057F8C300028ABC /* Grid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Grid.swift; path = meshviewer/Grid.swift; sourceTree = SOURCE_ROOT; };
@@ -573,6 +574,7 @@
 				28CE67D22061937E00232EA0 /* mesh_primitives.hpp */,
 				28CE67D42061950800232EA0 /* mesh_io.hpp */,
 				28C06A432064FAF900239E24 /* triangle.hpp */,
+				283E02DB206FC78E0074B568 /* line_segment.hpp */,
 			);
 			path = math;
 			sourceTree = "<group>";
@@ -734,7 +736,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0920;
-				LastUpgradeCheck = 0920;
+				LastUpgradeCheck = 0930;
 				ORGANIZATIONNAME = "Sören König";
 				TargetAttributes = {
 					2883C2401F91BA7F007DDB3C = {
@@ -893,6 +895,7 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
@@ -900,6 +903,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
@@ -951,6 +955,7 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
@@ -958,6 +963,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
