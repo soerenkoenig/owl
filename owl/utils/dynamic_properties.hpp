@@ -190,6 +190,8 @@ namespace owl
     
       std::string name;
     
+      virtual ~indexed_property_base() {}
+    
     };
   
   
