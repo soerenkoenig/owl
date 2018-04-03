@@ -51,6 +51,8 @@
 		28A19CB1205131C400D012F9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 28A19CB0205131C400D012F9 /* Assets.xcassets */; };
 		28A19CB4205131C400D012F9 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 28A19CB2205131C400D012F9 /* Main.storyboard */; };
 		28A19CBC2051327D00D012F9 /* wrapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28A19CBB2051327D00D012F9 /* wrapper.cpp */; };
+		28BA68C8207383B6003A5F4A /* progress.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28BA68C7207383B6003A5F4A /* progress.cpp */; };
+		28BA68CA20738AE0003A5F4A /* progress.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28BA68C920738AE0003A5F4A /* progress.cpp */; };
 		28BB756A1FB0F6CC009A6290 /* signal.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28BB75691FB0F6CC009A6290 /* signal.cpp */; };
 		28BB756C1FB3D030009A6290 /* signal.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28BB756B1FB3D030009A6290 /* signal.cpp */; };
 		28C66FA71FC1BF1D00F9C0D1 /* handle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28C66FA61FC1BF1D00F9C0D1 /* handle.cpp */; };
@@ -221,6 +223,9 @@
 		28A19CB6205131C400D012F9 /* MeshViewer.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MeshViewer.entitlements; sourceTree = "<group>"; };
 		28A19CBA2051327D00D012F9 /* MeshViewer-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MeshViewer-Bridging-Header.h"; sourceTree = "<group>"; };
 		28A19CBB2051327D00D012F9 /* wrapper.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = wrapper.cpp; path = meshviewer/wrapper.cpp; sourceTree = SOURCE_ROOT; };
+		28BA68C62071705C003A5F4A /* progress.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = progress.hpp; sourceTree = "<group>"; };
+		28BA68C7207383B6003A5F4A /* progress.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = progress.cpp; sourceTree = "<group>"; };
+		28BA68C920738AE0003A5F4A /* progress.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = progress.cpp; sourceTree = "<group>"; };
 		28BB75661FB0F254009A6290 /* non_copyable.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = non_copyable.hpp; sourceTree = "<group>"; };
 		28BB75671FB0F393009A6290 /* export.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = export.hpp; sourceTree = "<group>"; };
 		28BB75681FB0F541009A6290 /* signal.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = signal.hpp; sourceTree = "<group>"; };
@@ -356,6 +361,7 @@
 				286FE413203AC81F006BF193 /* mesh.cpp */,
 				28E3DA5C204580D600D6CAFE /* property.cpp */,
 				28A19C442046B6CA00D012F9 /* raytracer.cpp */,
+				28BA68C7207383B6003A5F4A /* progress.cpp */,
 			);
 			path = owl;
 			sourceTree = "<group>";
@@ -395,6 +401,8 @@
 				28E3DA5A20455FA500D6CAFE /* range_algorithm.hpp */,
 				28E3DA5B204580BB00D6CAFE /* property.hpp */,
 				2873F7EE20529A1E003BE1D7 /* dynamic_properties.hpp */,
+				28BA68C62071705C003A5F4A /* progress.hpp */,
+				28BA68C920738AE0003A5F4A /* progress.cpp */,
 			);
 			path = utils;
 			sourceTree = "<group>";
@@ -799,6 +807,7 @@
 				28BB756A1FB0F6CC009A6290 /* signal.cpp in Sources */,
 				28175DB91F95BD14004ECB87 /* stop_watch.cpp in Sources */,
 				2816E6A91FA139AB00CCE00A /* file_utils.cpp in Sources */,
+				28BA68CA20738AE0003A5F4A /* progress.cpp in Sources */,
 				28431BC0205FCCD6006AE1E2 /* ply.cpp in Sources */,
 				2857F0301FF128B200DEF030 /* gamma_correction.cpp in Sources */,
 				28CE67D72061A12D00232EA0 /* off.cpp in Sources */,
@@ -838,6 +847,7 @@
 				28175DB51F91FD0B004ECB87 /* binary_serialization.cpp in Sources */,
 				2857F02B1FEF280700DEF030 /* colors.cpp in Sources */,
 				28175DBC1F95BEF0004ECB87 /* stop_watch.cpp in Sources */,
+				28BA68C8207383B6003A5F4A /* progress.cpp in Sources */,
 				28E3DA5D204580D600D6CAFE /* property.cpp in Sources */,
 				284C09CB1F9B0B370062BFF1 /* step_iterator.cpp in Sources */,
 				28A19C452046B6CA00D012F9 /* raytracer.cpp in Sources */,
