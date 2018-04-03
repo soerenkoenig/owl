@@ -12,6 +12,7 @@
 #include <stack>
 #include <cassert>
 #include <vector>
+#include <chrono>
 #include "owl/utils/range_algorithm.hpp"
 
 namespace owl
@@ -25,6 +26,7 @@ namespace owl
       progress(std::uint64_t num_steps)
         : num_steps_(num_steps)
       {
+        start_ = std::chrono::steady_clock::now();
         if(current())
           add_child_to_current(this);
       }
@@ -63,6 +65,14 @@ namespace owl
         return num_steps_ == 0 ? 0.0 : static_cast<double>(num_steps_completed_) / num_steps_;
       }
     
+      auto estimated_time_remaining() const
+      {
+        if(num_steps_completed_ == num_steps_ )
+          return 0.0 * (start_ - start_);
+        auto now =  std::chrono::steady_clock::now();
+        return (now - start_) * (1.0 - fraction_completed())/fraction_completed();
+      }
+    
       void make_current(std::uint64_t num_steps_pending)
       {
         if(current() != this)
@@ -72,6 +82,7 @@ namespace owl
       void resign_current()
       {
         assert(current() == this);
+        //divide num steps pending among added children
         current_progress_.pop();
       }
   
@@ -154,6 +165,7 @@ namespace owl
     
       bool is_paused_ = false;
       bool is_pausable_ = false;
+      std::chrono::steady_clock::time_point start_;
   
     };
   }

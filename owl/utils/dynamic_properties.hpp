@@ -373,7 +373,7 @@ namespace owl
     
       private:
       std::size_t num_elems_ = 0;
-    
+
       std::vector<std::unique_ptr<indexed_property_base>> properties_;
     };
   }
