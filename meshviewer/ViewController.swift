@@ -61,6 +61,20 @@ class ViewController: NSViewController{
      self.mesh?.useFaceNormals = sender.state == .on
      self.mesh?.update()
   }
+  @IBAction func autoCenterAndScaleButtonPressed(_ sender: NSButton) {
+    self.mesh?.auto_center_and_scale()
+    self.mesh?.update()
+  }
+  
+  @IBAction func XYZ2ZYXButtonPressed(_ sender: NSButton) {
+    self.mesh?.xyz2yzx()
+    self.mesh?.update()
+  }
+  
+  @IBAction func triangulateButtonPressed(_ sender: NSButton) {
+    self.mesh?.triangulate()
+    self.mesh?.update()
+  }
   
   override func keyDown(with event: NSEvent) {
     if let key = event.charactersIgnoringModifiers, key == " "

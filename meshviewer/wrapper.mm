@@ -91,6 +91,11 @@ extern "C" void mesh_triangle_indices(void* mesh, int* indices)
   }
 }
 
+extern "C" void mesh_xyz_2_yzx(void* mesh)
+{
+  owl::math::XYZ_to_YZX(*(owl::math::mesh<float>*)mesh);
+}
+
 
 extern "C" void mesh_print_vertex_positions(void* mesh)
 {

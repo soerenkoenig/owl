@@ -36,96 +36,96 @@ namespace owl
       handle& operator=(const handle&) = default;
       handle& operator=(handle&&) = default;
       
-      const std::size_t& index() const
+      inline const std::size_t& index() const
       {
         return index_;
       }
       
-      bool is_valid() const
+      inline bool is_valid() const
       {
         return index_ != invalid_index();
       }
       
-      void invalidate()
+      inline void invalidate()
       {
         index_ = invalid_index();
       }
     
-      handle& operator+=(const difference_type& n)
+      inline handle& operator+=(const difference_type& n)
       {
         index_ += n;
         return *this;
       }
     
-      handle& operator-=(const difference_type& n)
+      inline handle& operator-=(const difference_type& n)
       {
         index_ += n;
         return *this;
       }
     
-      handle& operator++()
+      inline handle& operator++()
       {
         ++index_;
         return *this;
       }
       
-      handle& operator--()
+      inline handle& operator--()
       {
         --index_;
         return *this;
       }
       
-      handle operator++(int)
+      inline handle operator++(int)
       {
         auto tmp = *this;
         operator++();
         return tmp;
       }
       
-      handle operator--(int)
+      inline handle operator--(int)
       {
         auto tmp = *this;
         operator--();
         return tmp;
       }
     
-      auto operator-(const handle& other) const
+      inline auto operator-(const handle& other) const
       {
         return index_ - other.index_;
       }
     
-      auto operator+(const difference_type& other) const
+      inline auto operator+(const difference_type& other) const
       {
         return handle{index_ + other};
       }
     
     
-      bool operator==(const handle& other) const
+      inline bool operator==(const handle& other) const
       {
         return index_ == other.index_;
       }
       
-      bool operator!=(const handle& other) const
+      inline bool operator!=(const handle& other) const
       {
         return index_ != other.index_;
       }
       
-      bool operator<(const handle& other) const
+      inline bool operator<(const handle& other) const
       {
         return index_ < other.index_;
       }
       
-      bool operator>(const handle& other) const
+      inline bool operator>(const handle& other) const
       {
         return  index_ > other.index_;
       }
       
-      bool operator<=(const handle& other) const
+      inline bool operator<=(const handle& other) const
       {
         return index_ <= other.index_;
       }
       
-      bool operator>=(const handle& other) const
+      inline bool operator>=(const handle& other) const
       {
         return  index_ >= other.index_;
       }

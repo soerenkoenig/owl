@@ -52,7 +52,9 @@ void mesh_triangulate(void* mesh);
 
 void mesh_auto_center_and_scale(void* mesh);
 
-void mesh_print_vertex_positions(void * mesh);
+void mesh_print_vertex_positions(void* mesh);
+
+void mesh_xyz_2_yzx(void* mesh);
 
 bool mesh_load(void* mesh, const char* filename);
 

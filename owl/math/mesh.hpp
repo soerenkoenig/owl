@@ -1917,6 +1917,19 @@ namespace owl
       transform(mesh, point_trafo, transpose(invert(point_trafo)), auto_normalize);
     }
   
+  
+    template<typename Scalar>
+    void XYZ_to_YZX(mesh<Scalar>& mesh)
+    {
+      matrix<Scalar,4,4> m;
+      m << 0, 1, 0, 0,
+           0, 0, 1, 0,
+           1, 0, 0, 0,
+           0, 0, 0, 1;
+    
+      transform(mesh, m,false);
+    }
+  
     template <typename Scalar>
     void print_vertex_positions(const mesh<Scalar>& m)
     {

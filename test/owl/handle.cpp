@@ -16,8 +16,7 @@ namespace test
     test_handle h;
     CHECK_FALSE(h.is_valid());
     std::hash<test_handle> hasher;
-    
-    
+  
   }
 }
 

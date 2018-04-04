@@ -76,14 +76,14 @@ class Mesh: NSObject
     //  print(progress.fractionCompleted)
         }
       }
-      progress.becomeCurrent(withPendingUnitCount: 50)
+      progress.becomeCurrent(withPendingUnitCount: 100)
       mesh_load(self.cpp_mesh_pointer, url.cCharArray)
       progress.resignCurrent()
-      self.auto_center_and_scale()
-      progress.becomeCurrent(withPendingUnitCount: 50)
-      self.triangulate()
+     // self.auto_center_and_scale()
+   //   progress.becomeCurrent(withPendingUnitCount: 50)
+      //self.triangulate()
       self.colorize_faces()
-      progress.resignCurrent()
+     // progress.resignCurrent()
       
       
       DispatchQueue.main.async{
@@ -158,6 +158,11 @@ class Mesh: NSObject
     func auto_center_and_scale()
     {
       mesh_auto_center_and_scale(self.cpp_mesh_pointer);
+    }
+  
+    func xyz2yzx()
+    {
+      mesh_xyz_2_yzx(self.cpp_mesh_pointer);
     }
     
   
