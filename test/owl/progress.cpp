@@ -48,7 +48,7 @@ namespace test
    
      overall_progress.on_changed = [&]()
      {
-      std::cout << overall_progress.fraction_completed() << "% " <<std::chrono::duration_cast<std::chrono::seconds>(overall_progress.estimated_time_remaining()).count()<<"s ";
+      std::cout << overall_progress.fraction_completed()*100 << "% " <<std::chrono::duration_cast<std::chrono::seconds>(overall_progress.estimated_time_remaining()).count()<<"s ";
      };
 
      overall_progress.make_current(1);

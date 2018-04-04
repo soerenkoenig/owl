@@ -52,6 +52,8 @@ namespace owl
   
       void close();
     
+      std::size_t get_element_count(const std::string& name) const;
+    
     private:
       struct ply_property
       {
@@ -117,6 +119,8 @@ namespace owl
   
       //get element by name returning an optional element
       element* get_element(const std::string& name);
+    
+      const element* get_element(const std::string& name) const;
   
       std::istream& read_header(std::istream& in);
   

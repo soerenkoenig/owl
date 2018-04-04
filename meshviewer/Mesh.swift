@@ -63,25 +63,35 @@ class Mesh: NSObject
     func loadMesh(url: String, progressIndicator: NSProgressIndicator?){
   //  statusText.stringValue = "Status: Loading mesh \(url)"
     progressIndicator?.isHidden = false
-    progressIndicator?.usesThreadedAnimation = true
-    progressIndicator?.startAnimation(self)
+ 
+    progressIndicator?.isIndeterminate = false
     
-   DispatchQueue.global(qos: .background).async {
+   
+     DispatchQueue.global(qos: .background).async {
+      let progress = Progress(totalUnitCount: 100)
+    
+      let KVO = progress.observe(\Progress.fractionCompleted , options: [.initial]) { (progress, change) in
+      DispatchQueue.main.async{
+      progressIndicator?.doubleValue = progress.fractionCompleted
+    //  print(progress.fractionCompleted)
+        }
+      }
+      progress.becomeCurrent(withPendingUnitCount: 50)
       mesh_load(self.cpp_mesh_pointer, url.cCharArray)
+      progress.resignCurrent()
       self.auto_center_and_scale()
+      progress.becomeCurrent(withPendingUnitCount: 50)
       self.triangulate()
       self.colorize_faces()
-    
-    
+      progress.resignCurrent()
+      
+      
       DispatchQueue.main.async{
-        
-          self.update()
-          progressIndicator?.stopAnimation(self)
-          progressIndicator?.isHidden = true
-         // self.statusText.stringValue = "Status: idle"
+        self.update()
+        progressIndicator?.isHidden = true
+      //  self.statusText.stringValue = "Status: Loading mesh completed. "
       }
     }
-    
   }
   
   /*

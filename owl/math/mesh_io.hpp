@@ -14,6 +14,7 @@
 #include "owl/io/ply.hpp"
 #include "owl/io/off.hpp"
 #include "owl/utils/file_utils.hpp"
+#include "owl/utils/progress.hpp"
 
 namespace owl
 {
@@ -32,11 +33,15 @@ namespace owl
       if(!reader.is_open())
         return false;
     
-      reader.listen_2_counts([&mesh](const std::size_t& num_vertices, const std::size_t& num_faces)
-        {
-          mesh.reserve_vertices(num_vertices);
-          mesh.reserve_faces(num_faces);
-        });
+      const std::uint64_t vertex_step_size = 1;
+      const std::uint64_t face_step_size = 6;
+    
+      std::uint64_t n = vertex_step_size * reader.num_vertices() +
+                      face_step_size * reader.num_faces();
+      utils::progress loading_progress(n);
+      mesh.reserve_vertices(reader.num_vertices());
+      mesh.reserve_faces(reader.num_faces());
+    
     
       reader.listen_2_vertex([&mesh](const float& x, const float& y,const float& z)
         {
@@ -68,6 +73,13 @@ namespace owl
       ply.open(p);
       if(!ply.is_open())
         return false;
+    
+      const std::uint64_t vertex_step_size = 1;
+      const std::uint64_t face_step_size = 6;
+    
+      std::uint64_t n = vertex_step_size * ply.get_element_count("vertex") +
+                      face_step_size * ply.get_element_count("face");
+      utils::progress loading_progress(n);
   
       std::vector<math::vector<Scalar,3>> positions;
       std::vector<math::vector<Scalar,3>> normals;
@@ -75,6 +87,7 @@ namespace owl
       math::vector<Scalar,3> pos, nml;
       color::rgba8u col, back_col;
       std::int32_t material_idx;
+    
     
       ply.listen_2_element_begin(
         [&](const std::string& element_name, std::size_t n)
@@ -94,7 +107,8 @@ namespace owl
       ply.listen_2_element_property<float>("vertex", "y",
         [&pos](const float& y){ pos.y() = y; });
       ply.listen_2_element_property<float>("vertex", "z",
-        [&pos](const float& z){ pos.z() = z; });
+        [&pos](const float& z){ pos.z() = z;
+        });
     
       ply.listen_2_element_property<float>("vertex", "nx",
         [&nml](const float& nx){ nml.x() = nx; });
@@ -125,13 +139,18 @@ namespace owl
           for(auto v: vindices)
             vertex_indices.push_back(math::vertex_handle(v));
           mesh.add_face(vertex_indices);
+          loading_progress.step(face_step_size);
         });
     
       ply.listen_2_element_property<std::int32_t>("vertex", "material_index",
         [&material_idx](const std::int32_t& id){ material_idx = id; });
   
       ply.listen_2_element_item_end("vertex",
-        [&](std::size_t i){ mesh.add_vertex(pos); });
+        [&](std::size_t i)
+        {
+          mesh.add_vertex(pos);
+          loading_progress.step(vertex_step_size);
+        });
     
       ply.listen_2_element_property<std::int32_t>("edge", "vertex1",
         [](const std::int32_t& i){ std::cout << " vertex1 = " << i; });
@@ -165,14 +184,19 @@ namespace owl
     template <typename Scalar>
     bool read(math::mesh<Scalar>& mesh, const std::string& p)
     {
-      std::cout << "reading mesh "<<p<<"... ";
+      std::cout << "reading mesh "<< p << "... ";
       std::cout.flush();
+    
+      utils::progress overall_progress(10);
+      overall_progress.make_current(10);
       bool ret;
-      if(utils::file_extension(p) == ".ply" || utils::file_extension(p) == ".PLY")
+      auto extension = utils::file_extension(p);
+      if(extension == ".ply" || extension == ".PLY")
         ret = read_ply(mesh, p);
-      else if(utils::file_extension(p) == ".off" || utils::file_extension(p) == ".OFF")
+      else if(extension == ".off" || extension == ".OFF")
         ret = read_off(mesh, p);
       else ret = false;
+     overall_progress.resign_current();
       std::cout << "complete" << std::endl;
      // if(ret)
      //   mesh.check();

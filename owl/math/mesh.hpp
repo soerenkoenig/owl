@@ -25,6 +25,7 @@
 #include "owl/math/constants.hpp"
 #include "owl/color/color.hpp"
 #include "owl/math/line_segment.hpp"
+#include "owl/utils/progress.hpp"
 
 namespace owl
 {
@@ -948,20 +949,33 @@ namespace owl
     
       void update_face_normals()
       {
+        utils::progress progress(num_faces());
         for(auto f : faces())
+        {
           normal(f) = compute_face_normal(f);
+          progress.step();
+        }
       }
     
       void update_halfedge_normals(const angle& max_angle = degrees<scalar>(44))
       {
+        utils::progress progress(num_halfedges());
         for(auto he : halfedges())
+        {
           normal(he) = is_sharp(he, max_angle) ? compute_loop_normal(he) : compute_vertex_normal(target(he));
+          progress.step();
+        }
       }
     
       void update_normals(const angle& max_angle = degrees<scalar>(44))
       {
+        utils::progress progress(num_faces() + num_halfedges());
+        progress.make_current(num_faces());
         update_face_normals();
+        progress.resign_current();
+        progress.make_current(num_halfedges());
         update_halfedge_normals(max_angle);
+        progress.resign_current();
       }
     
       template <typename Handle>

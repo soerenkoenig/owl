@@ -10,6 +10,7 @@
 #pragma once
 
 #include "owl/math/mesh.hpp"
+#include "owl/utils/progress.hpp"
 
 namespace owl
 {
@@ -260,12 +261,25 @@ namespace owl
   
       void triangulate_monoton()
       {
-        for(auto f : mesh_.faces())
-          triangulate_monoton(f);
+        utils::progress progress(2*mesh_.num_faces() + mesh_.num_halfedges());
+        progress.make_current(mesh_.num_faces());
+        {
+          utils::progress progress_tri(mesh_.num_faces());
+          for(auto f : mesh_.faces())
+          {
+            triangulate_monoton(f);
+            progress.step();
+          }
+        }
+        progress.resign_current();
+        progress.make_current(mesh_.num_faces() + mesh_.num_halfedges());
+      
         if(update_normals_)
           mesh_.update_normals();
+      
+        progress.resign_current();
       }
-  
+    
       void triangulate_convex()
       {
         for(auto f : mesh_.faces())

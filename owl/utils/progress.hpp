@@ -31,12 +31,24 @@ namespace owl
           add_child_to_current(this);
       }
     
+      bool is_cancellable() const
+      {
+        return is_leaf() ? is_cancellable_ : owl::utils::all_of(children_,
+          [](const auto& c) { return c->is_cancellable();});
+      }
+    
       void cancel()
       {
         assert(is_cancellable());
         for(auto& c: children_)
           c->cancel();
         is_canceled_ = true;
+      }
+    
+       bool is_pausable() const
+      {
+        return is_leaf() ? is_pausable_ : owl::utils::all_of(children_,
+          [](const auto& c) { return c->is_pausable();});
       }
   
       void pause()
@@ -62,12 +74,23 @@ namespace owl
   
       double fraction_completed() const
       {
-        return num_steps_ == 0 ? 0.0 : static_cast<double>(num_steps_completed_) / num_steps_;
+        if(num_steps_ == 0)
+          return 0;
+      
+        auto fc = static_cast<double>(num_steps_completed_) / num_steps_;
+        for(const auto& child : children_)
+        {
+          if(child->num_steps_completed_ != child->num_steps_)
+            fc += child->fraction_completed() * static_cast<double>(child->num_steps_parent_)/num_steps_;
+        }
+        if(fc > 1)
+          return fc;
+        return fc;
       }
     
       auto estimated_time_remaining() const
       {
-        if(num_steps_completed_ == num_steps_ )
+        if(num_steps_completed_ == num_steps_)
           return 0.0 * (start_ - start_);
         auto now =  std::chrono::steady_clock::now();
         return (now - start_) * (1.0 - fraction_completed())/fraction_completed();
@@ -82,31 +105,21 @@ namespace owl
       void resign_current()
       {
         assert(current() == this);
-        //divide num steps pending among added children
+        if(children_.size() == 0)
+          num_steps_completed_ += current_progress_.top().num_steps_pending;
         current_progress_.pop();
+        children_.clear();
       }
   
-  
-      void step(std::uint64_t n = 1)
+      void step(std::uint64_t n = 1, bool notify_change = true)
       {
         num_steps_completed_ += n;
         assert(num_steps_completed_ <= num_steps_);
-        if(on_changed)
-          on_changed();
-      
-        if(parent_ != nullptr)
-        {
-          std::uint64_t n_parent = static_cast<std::uint64_t>(fraction_completed() * num_steps_parent_) -num_steps_parent_completed_;
-          if(n_parent > 0)
-          {
-            num_steps_parent_completed_ += n_parent;
-          
-            parent_->step(n_parent);
-          }
-        }
+        if(parent_ != nullptr && num_steps_completed_ == num_steps_)
+          parent_->step(num_steps_parent_, false);
+        if(notify_change)
+          notify_changed();
       }
-    
-      std::function<void()> on_changed;
     
       void add_child(progress* child, std::uint64_t num_steps_pending)
       {
@@ -114,23 +127,31 @@ namespace owl
         child->parent_ = this;
         child->num_steps_parent_ = num_steps_pending;
       }
+  
+      std::function<void()> on_changed;
     
-      bool is_pausable() const
-      {
-      return is_leaf() ? is_pausable_ : owl::utils::all_of(children_, [](const auto& c) { return c->is_pausable();});
-      }
-    
-      bool is_cancellable() const
-      {
-        return is_leaf() ? is_cancellable_ : owl::utils::all_of(children_, [](const auto& c) { return c->is_cancellable();});
-      }
-    
+    private:
       bool is_leaf() const
       {
         return parent_ == nullptr;
       }
-  
-    private:
+    
+      void notify_changed()
+      {
+        if(on_changed)
+          on_changed();
+        if(parent_)
+          parent_->notify_changed();
+      }
+    
+      /*void balance(std::uint64_t num_steps_pending)
+      {
+        for(std::size_t i = 0; i < children_.size(); ++i)
+        {
+          children_[i]->num_steps_parent_ = (i + 1) * num_steps_pending / children_.size();
+        }
+      }*/
+      
       static progress* current()
       {
         if(progress::current_progress_.empty())
@@ -141,7 +162,9 @@ namespace owl
       static void add_child_to_current(progress* child)
       {
         assert(current() != nullptr);
+        
         current()->add_child(child, current_progress_.top().num_steps_pending);
+        //current()->balance(current_progress_.top().num_steps_pending);
       }
     
       struct current_info
@@ -154,8 +177,7 @@ namespace owl
   
       progress* parent_ = nullptr;
       std::atomic<std::uint64_t> num_steps_parent_ = 0;
-      std::atomic<std::uint64_t> num_steps_parent_completed_ = 0;
-    
+
       std::vector<progress*> children_;
       std::atomic<std::uint64_t> num_steps_ = 0;
       std::atomic<std::uint64_t> num_steps_completed_ = 0;

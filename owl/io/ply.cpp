@@ -142,13 +142,32 @@ namespace owl
     }
   
     //get element by name returning an optional element
-    auto ply_reader::get_element(const std::string& name) -> element*
+    ply_reader::element* ply_reader::get_element(const std::string& name)
     {
       auto it = std::find_if(elements.begin(),elements.end(),
         [&name](const element& e)-> bool { return e.name == name; });
       if(it != elements.end())
         return &(*it);
       return nullptr;
+    }
+  
+    //get element by name returning an optional element
+    const ply_reader::element* ply_reader::get_element(const std::string& name) const
+    {
+      auto it = std::find_if(elements.begin(),elements.end(),
+        [&name](const element& e)-> bool { return e.name == name; });
+      if(it != elements.end())
+        return &(*it);
+      return nullptr;
+    }
+  
+    std::size_t ply_reader::get_element_count(const std::string& name) const
+    {
+      const element* e = get_element(name);
+      if(e == nullptr)
+        return 0;
+      else
+        return e->count;
     }
   
     std::istream& ply_reader::read_header(std::istream& in)

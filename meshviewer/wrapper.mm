@@ -7,6 +7,8 @@
 #include "owl/math/trafos.hpp"
 #include "owl/color/color_conversion.hpp"
 
+#import <Foundation/Foundation.h>
+
 extern "C" void* mesh_init()
 {
   return new owl::math::mesh<float>();
@@ -221,26 +223,47 @@ extern "C" void mesh_edge_halfedge_indices_deinit(void* indices)
 
 extern "C" void mesh_triangulate(void* mesh)
 {
+ owl::utils::progress native_progress(100);
+ NSProgress *progress = [NSProgress progressWithTotalUnitCount:
+        100];
+  progress.cancellable = NO;
+  progress.pausable = NO;
+  native_progress.on_changed = [&]()
+  {
+    progress.completedUnitCount = native_progress.fraction_completed()* 100;
+  };
+  native_progress.make_current(100);
   owl::math::mesh<float>* m = (owl::math::mesh<float>*)mesh;
   triangulate_monoton(*m);
+   native_progress.resign_current();
 }
 
 extern "C" void mesh_auto_center_and_scale(void* mesh)
 {
-  float s = 10;
+  const float s = 10;
   owl::math::mesh<float>* m = (owl::math::mesh<float>*)mesh;
-  std::cout <<" bounds: before" << m->bounds() << std::endl;
   auto acs = owl::math::auto_center_and_scale(m->bounds(),
-    owl::math::box<float>(s * owl::math::vector3f(-0.5, 0, -0.5), s*owl::math::vector3f(0.5,1,0.5)));
+    owl::math::box<float>(s * owl::math::vector3f(-0.5, 0, -0.5), s * owl::math::vector3f(0.5,1,0.5)));
   transform(*m, acs);
-  std::cout << "bounds: after:"<< m->bounds() << std::endl;
 }
 
 
 extern "C" bool mesh_load(void* mesh, const char* filename)
 {
+  owl::utils::progress native_progress(100);
+  
+  NSProgress *progress = [NSProgress progressWithTotalUnitCount:
+        100];
+  progress.cancellable = NO;
+  progress.pausable = NO;
+  native_progress.on_changed = [&]()
+  {
+    progress.completedUnitCount = native_progress.fraction_completed()* 100;
+  };
+  native_progress.make_current(100);
   owl::math::mesh<float>* m = (owl::math::mesh<float>*)mesh;
   bool success =  owl::math::read(*m,filename);
+  native_progress.resign_current();
   return success;
 }
 

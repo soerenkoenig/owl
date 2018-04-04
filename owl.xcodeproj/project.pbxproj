@@ -50,7 +50,7 @@
 		28A19CAD205131C400D012F9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28A19CAC205131C400D012F9 /* AppDelegate.swift */; };
 		28A19CB1205131C400D012F9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 28A19CB0205131C400D012F9 /* Assets.xcassets */; };
 		28A19CB4205131C400D012F9 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 28A19CB2205131C400D012F9 /* Main.storyboard */; };
-		28A19CBC2051327D00D012F9 /* wrapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28A19CBB2051327D00D012F9 /* wrapper.cpp */; };
+		28A19CBC2051327D00D012F9 /* wrapper.mm in Sources */ = {isa = PBXBuildFile; fileRef = 28A19CBB2051327D00D012F9 /* wrapper.mm */; };
 		28BA68C8207383B6003A5F4A /* progress.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28BA68C7207383B6003A5F4A /* progress.cpp */; };
 		28BA68CA20738AE0003A5F4A /* progress.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28BA68C920738AE0003A5F4A /* progress.cpp */; };
 		28BB756A1FB0F6CC009A6290 /* signal.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28BB75691FB0F6CC009A6290 /* signal.cpp */; };
@@ -222,7 +222,7 @@
 		28A19CB5205131C400D012F9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		28A19CB6205131C400D012F9 /* MeshViewer.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MeshViewer.entitlements; sourceTree = "<group>"; };
 		28A19CBA2051327D00D012F9 /* MeshViewer-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MeshViewer-Bridging-Header.h"; sourceTree = "<group>"; };
-		28A19CBB2051327D00D012F9 /* wrapper.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = wrapper.cpp; path = meshviewer/wrapper.cpp; sourceTree = SOURCE_ROOT; };
+		28A19CBB2051327D00D012F9 /* wrapper.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = wrapper.mm; path = meshviewer/wrapper.mm; sourceTree = SOURCE_ROOT; };
 		28BA68C62071705C003A5F4A /* progress.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = progress.hpp; sourceTree = "<group>"; };
 		28BA68C7207383B6003A5F4A /* progress.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = progress.cpp; sourceTree = "<group>"; };
 		28BA68C920738AE0003A5F4A /* progress.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = progress.cpp; sourceTree = "<group>"; };
@@ -622,7 +622,7 @@
 				28A19CB2205131C400D012F9 /* Main.storyboard */,
 				28A19CB5205131C400D012F9 /* Info.plist */,
 				28A19CB6205131C400D012F9 /* MeshViewer.entitlements */,
-				28A19CBB2051327D00D012F9 /* wrapper.cpp */,
+				28A19CBB2051327D00D012F9 /* wrapper.mm */,
 				28A19CBA2051327D00D012F9 /* MeshViewer-Bridging-Header.h */,
 				289CAEE8205133960016894A /* Mesh.swift */,
 				284972912057F8C300028ABC /* Grid.swift */,
@@ -873,7 +873,7 @@
 				289CAEE9205133960016894A /* Mesh.swift in Sources */,
 				2873F7ED2051388B003BE1D7 /* ViewController.swift in Sources */,
 				284972922057F8C300028ABC /* Grid.swift in Sources */,
-				28A19CBC2051327D00D012F9 /* wrapper.cpp in Sources */,
+				28A19CBC2051327D00D012F9 /* wrapper.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -30,15 +30,18 @@ namespace owl
   
       bool is_open() const;
   
-      bool listen_2_counts(std::function<void(const std::size_t&, const std::size_t&)> fn);
-  
       bool listen_2_face(std::function<void(const std::vector<std::size_t>&)> fn);
   
       bool listen_2_vertex(std::function<void(const float &, const float&, const float&)> fn);
     
-       bool read();
+      bool read();
+    
+      std::size_t num_vertices() const;
+    
+      std::size_t num_faces() const;
   
   private:
+      bool read_header();
   
       bool read_magic(std::istream& in);
     
@@ -48,15 +51,16 @@ namespace owl
     
       bool read_faces(std::istream& in);
   
-      std::size_t n_vertices, n_faces, n_edges;
+      std::size_t n_vertices_ = 0;
+      std::size_t n_faces_ = 0;
+      std::size_t n_edges_ = 0;
     
-      std::ifstream file;
+      std::ifstream file_;
     
-      std::function<void(const float&, const float&, const float&)> on_vertex;
+      std::function<void(const float&, const float&, const float&)> on_vertex_;
     
-      std::function<void(const std::vector<std::size_t>&)> on_face;
+      std::function<void(const std::vector<std::size_t>&)> on_face_;
     
-      std::function<void(const std::size_t&, std::size_t&)> on_counts;
     };
   
     bool create_off_cube(const std::string& filename)
