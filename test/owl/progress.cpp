@@ -39,7 +39,7 @@ namespace test
     sub_progress.resign_current();
   }
 
-
+/*
    TEST_CASE( "progress", "[utils]" )
    {
      using namespace owl::utils;
@@ -62,5 +62,5 @@ namespace test
      overall_progress.resign_current();
  
    }
-  
+  */
 }

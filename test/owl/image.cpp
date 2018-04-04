@@ -1,17 +1,10 @@
-#include "owl/graphics/image_temp.hpp"
+#include "owl/graphics/image.hpp"
+#include "owl/graphics/image_io.hpp"
 #include "catch/catch.hpp"
 
 
 namespace test
 {
-
-void writer(void *context, void *data, int size)
-{
-  std::vector<unsigned char>& buffer = *reinterpret_cast<std::vector<unsigned char>*>(context);
-  unsigned char* beg = static_cast<unsigned char*>(data);
-  unsigned char* end = static_cast<unsigned char*>(data)+size;
-  buffer.insert(buffer.end(), beg, end);
-}
 
   TEST_CASE( "image", "[graphics]" )
   {
@@ -19,19 +12,26 @@ void writer(void *context, void *data, int size)
     using namespace owl::utils;
     std::string path = "images/owl.png";
   
+    rgb8u_image img;
+    CHECK(read_image(img, path));
   
-    image<unsigned char> img(path);
-    
-    
     CHECK(img.width() == 512);
     CHECK(img.height() == 512);
-    CHECK(img.depth() == 3);
-  /*
-  
-    std::vector<unsigned char> buffer2;
-    stbi_write_jpg_to_func(&writer,&buffer2,w,h,comp,image,96);
-    CHECK(write_file("images/owl.jpg",buffer2));
-    stbi_image_free(image);*/
+    auto gridimg = create_grid_color(21,21);
+    CHECK(write_bmp(gridimg, "images/grid.bmp"));
+    CHECK(write_png(gridimg, "images/grid.png"));
+    CHECK(write_jpg(gridimg, "images/grid.jpg",96));
+    CHECK(read_image(img,"images/grid.bmp"));
+    CHECK(img.width() == 101);
+    CHECK(img.height() == 101);
+    CHECK(img.color(img.pixel(50,50)) == owl::color::rgb8u(255,100,100));
+    CHECK(read_image(img,"images/grid.png"));
+    CHECK(img.width() == 101);
+    CHECK(img.height() == 101);
+    CHECK(img.color(img.pixel(50,50)) == owl::color::rgb8u(255,100,100));
+    CHECK(read_image(img,"images/grid.jpg"));
+    CHECK(img.width() == 101);
+    CHECK(img.height() == 101);
   
   }
 }

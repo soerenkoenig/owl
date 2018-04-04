@@ -15,16 +15,11 @@ namespace owl
 {
   namespace graphics
   {
-    inline bool write_ppm(rgb8_image& img, const std::string& p)
-    {
-      std::ofstream ofs;
-      ofs.open(p);
-      if(!ofs.is_open)
-        return false;
-    
-      ofs << "P6\n" << img.width() << " " << img.height() << "\n255\n";
-      ofs.write(img.data(), img.width() * img.height() * 3);
-      return true;
-    }
+    bool write_ppm(const rgb8u_image& img, const std::string& path);
+    bool write_jpg(const rgb8u_image& img, const std::string& path, int quality = 96);
+    bool write_bmp(const rgb8u_image& img, const std::string& path);
+    bool write_png(const rgb8u_image& img, const std::string& path);
+  
+    bool read_image(rgb8u_image& img, const std::string& path);
   }
 }
